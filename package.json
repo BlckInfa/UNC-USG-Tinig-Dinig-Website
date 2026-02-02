@@ -1,0 +1,26 @@
+{
+  "name": "usg-system",
+  "version": "1.0.0",
+  "description": "The official digital archive and transparency portal for the UNC University Student Government",
+  "scripts": {
+    "start:client": "npm run start --prefix client",
+    "start:server": "npm run start --prefix server",
+    "start:all": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:all": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server",
+    "build:client": "npm run build --prefix client"
+  },
+  "keywords": [
+    "usg",
+    "tinig-dinig",
+    "transparency",
+    "student-government"
+  ],
+  "author": "UNC USG",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

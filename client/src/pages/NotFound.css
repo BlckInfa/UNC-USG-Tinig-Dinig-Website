@@ -1,0 +1,30 @@
+.not-found-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-xl);
+}
+
+.not-found-content {
+  max-width: 400px;
+}
+
+.error-code {
+  font-size: 6rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1;
+}
+
+.error-title {
+  font-size: 1.5rem;
+  margin: var(--spacing-md) 0;
+}
+
+.error-message {
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-xl);
+}

@@ -1,0 +1,73 @@
+.public-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-header {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.public-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.logo-subtitle {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.public-nav {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.public-nav a {
+  color: var(--gray-600);
+  font-weight: 500;
+  padding: var(--spacing-sm) 0;
+  transition: color var(--transition-fast);
+}
+
+.public-nav a:hover {
+  color: var(--primary-color);
+}
+
+.public-main {
+  flex: 1;
+  padding: var(--spacing-xl) 0;
+}
+
+.public-footer {
+  background-color: var(--gray-800);
+  color: var(--gray-300);
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+}
+
+.public-footer p {
+  margin: 0;
+  font-size: 0.875rem;
+}
