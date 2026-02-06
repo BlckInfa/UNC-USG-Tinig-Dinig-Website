@@ -1,107 +1,125 @@
+/* ============================================
+   Issuance List - Clean Design
+   ============================================ */
+
 .issuance-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .issuance-list--grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .issuance-list--grid .issuance-card {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* Loading State */
 .issuance-list__loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-2xl);
-    min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 40px;
+  min-height: 300px;
 }
 
 .issuance-list__loading-text {
-    font-size: 0.875rem;
-    color: var(--unc-text-light);
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
 /* Error State */
 .issuance-list__error {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-2xl);
-    background-color: var(--status-rejected-bg);
-    border: 1px solid var(--unc-error);
-    border-radius: var(--radius-md);
-    min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 32px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  min-height: 200px;
 }
 
 .issuance-list__error-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-full);
-    background-color: var(--unc-error);
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
 .issuance-list__error-message {
-    font-size: 0.875rem;
-    color: var(--unc-error);
-    text-align: center;
+  font-size: 0.875rem;
+  color: #dc2626;
+  text-align: center;
+  max-width: 360px;
 }
 
 /* Empty State */
 .issuance-list__empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-2xl);
-    background-color: var(--gray-50);
-    border: 2px dashed var(--gray-300);
-    border-radius: var(--radius-md);
-    min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 40px;
+  background: white;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  min-height: 300px;
 }
 
 .issuance-list__empty-icon {
-    color: var(--gray-400);
+  color: #d1d5db;
+}
+
+.issuance-list__empty-icon svg {
+  width: 48px;
+  height: 48px;
 }
 
 .issuance-list__empty-message {
-    font-size: 0.875rem;
-    color: var(--unc-text-light);
-    text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 1200px) {
-    .issuance-list--grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .issuance-list--grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 900px) {
-    .issuance-list--grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .issuance-list--grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
 }
 
 @media (max-width: 600px) {
-    .issuance-list--grid {
-        grid-template-columns: 1fr;
-    }
+  .issuance-list--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .issuance-list__empty,
+  .issuance-list__error,
+  .issuance-list__loading {
+    padding: 40px 24px;
+    min-height: 220px;
+  }
 }

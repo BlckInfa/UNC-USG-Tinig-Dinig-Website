@@ -1,41 +1,121 @@
 import { useState, useEffect } from "react";
-import { Spinner } from "../../../../components";
-import { IssuanceCard, IssuanceViewer } from "../../components";
+import {
+    IssuanceFilters,
+    IssuanceList,
+    IssuanceViewer,
+} from "../../components";
 import { issuanceService } from "../../services/issuance.service";
 import "./IssuanceListPage.css";
 
 /**
- * Issuance types for filter dropdown
+ * Department options for filter
  */
-const ISSUANCE_TYPES = [
-    { value: "", label: "All Types" },
-    { value: "resolution", label: "Resolution" },
-    { value: "memorandum", label: "Memorandum" },
-    { value: "ordinance", label: "Ordinance" },
-    { value: "report", label: "Report" },
+const DEPARTMENTS = [
+    { value: "USG Executive Department", label: "USG Executive Department" },
+    { value: "USG Legislative Assembly", label: "USG Legislative Assembly" },
+    { value: "USG Finance Committee", label: "USG Finance Committee" },
+    { value: "USG Academic Affairs", label: "USG Academic Affairs" },
+    { value: "USG Student Services", label: "USG Student Services" },
+];
+
+/**
+ * Mock comments data for demo purposes
+ */
+const generateMockComments = (issuanceId) => [
+    {
+        _id: `comment-1-${issuanceId}`,
+        author: { name: "Juan Dela Cruz", role: "USG Secretary" },
+        content:
+            "This document has been reviewed and approved by the executive committee.",
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+        _id: `comment-2-${issuanceId}`,
+        author: { name: "Maria Santos", role: "Finance Officer" },
+        content:
+            "Budget allocation has been verified. All figures are correct.",
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+];
+
+/**
+ * Mock status history for demo purposes
+ */
+const generateMockStatusHistory = (issuanceId) => [
+    {
+        _id: `status-1-${issuanceId}`,
+        fromStatus: "Draft",
+        toStatus: "Under Review",
+        changedBy: { name: "Admin User" },
+        changedAt: new Date(
+            Date.now() - 10 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+        notes: "Submitted for initial review",
+    },
+    {
+        _id: `status-2-${issuanceId}`,
+        fromStatus: "Under Review",
+        toStatus: "Published",
+        changedBy: { name: "USG President" },
+        changedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        notes: "Approved and published",
+    },
+];
+
+/**
+ * Mock version history for demo purposes
+ */
+const generateMockVersionHistory = (issuanceId) => [
+    {
+        _id: `version-1-${issuanceId}`,
+        version: "1.0",
+        createdAt: new Date(
+            Date.now() - 15 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+        createdBy: { name: "Document Author" },
+        changes: "Initial draft created",
+    },
+    {
+        _id: `version-2-${issuanceId}`,
+        version: "1.1",
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        createdBy: { name: "Editor" },
+        changes: "Minor formatting corrections and typo fixes",
+    },
 ];
 
 /**
  * Issuance List Page
  * Displays a filterable list of issuances sorted by newest first
+ * Uses IssuanceFilters and IssuanceList components
  */
 const IssuanceListPage = () => {
     const [issuances, setIssuances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [typeFilter, setTypeFilter] = useState("");
+    const [filters, setFilters] = useState({});
     const [selectedIssuance, setSelectedIssuance] = useState(null);
     const [viewerOpen, setViewerOpen] = useState(false);
+    const [comments, setComments] = useState([]);
+    const [statusHistory, setStatusHistory] = useState([]);
+    const [versionHistory, setVersionHistory] = useState([]);
 
     useEffect(() => {
         fetchIssuances();
-    }, [typeFilter]);
+    }, [filters]);
 
     const fetchIssuances = async () => {
         try {
             setLoading(true);
             setError(null);
-            const params = typeFilter ? { type: typeFilter } : {};
+            // Build params from active filters
+            const params = {};
+            if (filters.type) params.type = filters.type;
+            if (filters.category) params.category = filters.category;
+            if (filters.status) params.status = filters.status;
+            if (filters.priority) params.priority = filters.priority;
+            if (filters.department) params.department = filters.department;
+
             const data = await issuanceService.getAll(params);
             // Sort by newest first
             const sorted = [...data].sort(
@@ -50,14 +130,18 @@ const IssuanceListPage = () => {
         }
     };
 
-    const handleFilterChange = (e) => {
-        setTypeFilter(e.target.value);
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
     };
 
-    const handleCardClick = async (issuance) => {
+    const handleIssuanceClick = async (issuance) => {
         try {
             const fullIssuance = await issuanceService.getById(issuance._id);
             setSelectedIssuance(fullIssuance);
+            // Load mock data for comments and history
+            setComments(generateMockComments(issuance._id));
+            setStatusHistory(generateMockStatusHistory(issuance._id));
+            setVersionHistory(generateMockVersionHistory(issuance._id));
             setViewerOpen(true);
         } catch (err) {
             console.error("Error fetching issuance details:", err);
@@ -67,6 +151,19 @@ const IssuanceListPage = () => {
     const handleCloseViewer = () => {
         setViewerOpen(false);
         setSelectedIssuance(null);
+        setComments([]);
+        setStatusHistory([]);
+        setVersionHistory([]);
+    };
+
+    const handleAddComment = (commentText) => {
+        const newComment = {
+            _id: `comment-new-${Date.now()}`,
+            author: { name: "Current User", role: "Member" },
+            content: commentText,
+            createdAt: new Date().toISOString(),
+        };
+        setComments([newComment, ...comments]);
     };
 
     return (
@@ -75,60 +172,38 @@ const IssuanceListPage = () => {
                 <h2 className="issuance-list-title">
                     Official Issuances & Reports
                 </h2>
-                <div className="issuance-filter">
-                    <label
-                        htmlFor="type-filter"
-                        className="issuance-filter-label">
-                        Filter by Type:
-                    </label>
-                    <select
-                        id="type-filter"
-                        className="issuance-filter-select"
-                        value={typeFilter}
-                        onChange={handleFilterChange}>
-                        {ISSUANCE_TYPES.map((type) => (
-                            <option key={type.value} value={type.value}>
-                                {type.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <IssuanceFilters
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    showCategoryFilter
+                    showStatusFilter
+                    showPriorityFilter
+                    showDepartmentFilter
+                    departments={DEPARTMENTS}
+                    loading={loading}
+                />
             </div>
 
-            {loading && (
-                <div className="issuance-list-loading">
-                    <Spinner size="lg" />
-                </div>
-            )}
-
-            {error && (
-                <div className="issuance-list-error">
-                    <p>{error}</p>
-                </div>
-            )}
-
-            {!loading && !error && issuances.length === 0 && (
-                <div className="issuance-list-empty">
-                    <p>No issuances found.</p>
-                </div>
-            )}
-
-            {!loading && !error && issuances.length > 0 && (
-                <div className="issuance-list">
-                    {issuances.map((issuance) => (
-                        <IssuanceCard
-                            key={issuance._id}
-                            issuance={issuance}
-                            onClick={() => handleCardClick(issuance)}
-                        />
-                    ))}
-                </div>
-            )}
+            <IssuanceList
+                issuances={issuances}
+                loading={loading}
+                error={error}
+                onIssuanceClick={handleIssuanceClick}
+                showPreview
+                showWorkflowInfo
+                gridView
+                emptyMessage="No issuances found matching your filters."
+            />
 
             <IssuanceViewer
                 issuance={selectedIssuance}
                 isOpen={viewerOpen}
                 onClose={handleCloseViewer}
+                comments={comments}
+                statusHistory={statusHistory}
+                versionHistory={versionHistory}
+                onAddComment={handleAddComment}
+                showWorkflowInfo
             />
         </div>
     );

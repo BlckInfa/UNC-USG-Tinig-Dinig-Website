@@ -1,117 +1,70 @@
+/* ============================================
+   Issuance List Page - Clean Modern Design
+   ============================================ */
+
+/* Page Container */
 .issuance-list-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: 32px 24px 48px;
+  min-height: 100vh;
+  background: #f8f9fa;
 }
 
+/* Header Section */
 .issuance-list-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
+/* Page Title */
 .issuance-list-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--gray-900);
+  color: #1a1a1a;
   margin: 0;
-}
-
-.issuance-filter {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 12px;
 }
 
-.issuance-filter-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--gray-700);
+.issuance-list-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 28px;
+  background: var(--unc-primary-red);
+  border-radius: 2px;
 }
 
-.issuance-filter-select {
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  color: var(--gray-700);
-  background-color: var(--white);
-  border: 1px solid var(--gray-300);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.25rem;
-}
-
-.issuance-filter-select:focus {
-  outline: none;
-  border-color: var(--unc-primary-red);
-  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
-}
-
-/* Grid Layout for Cards */
-.issuance-list {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-lg);
-}
-
-.issuance-list .issuance-card {
-  margin-bottom: 0;
-}
-
-.issuance-list-loading,
-.issuance-list-error,
-.issuance-list-empty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  text-align: center;
-}
-
-.issuance-list-error {
-  color: var(--unc-error);
-}
-
-.issuance-list-empty {
-  color: var(--gray-500);
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .issuance-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
+/* Responsive */
 @media (max-width: 900px) {
-  .issuance-list {
-    grid-template-columns: repeat(2, 1fr);
+  .issuance-list-container {
+    padding: 24px 16px 40px;
+  }
+
+  .issuance-list-header {
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .issuance-list-title {
+    font-size: 1.5rem;
   }
 }
 
 @media (max-width: 640px) {
-  .issuance-list-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .issuance-list-container {
+    padding: 20px 16px 32px;
   }
 
-  .issuance-filter {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
+  .issuance-list-title {
+    font-size: 1.25rem;
   }
 
-  .issuance-filter-select {
-    width: 100%;
-  }
-
-  .issuance-list {
-    grid-template-columns: 1fr;
+  .issuance-list-title::before {
+    height: 22px;
   }
 }

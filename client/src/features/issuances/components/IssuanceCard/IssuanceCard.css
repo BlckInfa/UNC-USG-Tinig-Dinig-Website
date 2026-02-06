@@ -1,30 +1,36 @@
+/* ============================================
+   Issuance Card - Clean Design
+   ============================================ */
+
 .issuance-card {
-  margin-bottom: var(--spacing-md);
-  background-color: var(--gray-50);
-  border-radius: var(--radius-lg);
+  background: white;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
 }
 
 .issuance-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: transparent;
 }
 
 /* Preview Image Section */
 .issuance-card-preview {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 160px;
   overflow: hidden;
-  background-color: var(--gray-200);
+  background: #f3f4f6;
 }
 
 .issuance-card-preview__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-normal);
+  transition: transform 0.3s ease;
 }
 
 .issuance-card:hover .issuance-card-preview__image {
@@ -38,92 +44,94 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
-  color: var(--gray-400);
-  font-size: 0.875rem;
-  font-weight: 500;
+  gap: 8px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: #9ca3af;
+  font-size: 0.6875rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+}
+
+.issuance-card-preview__placeholder svg {
+  opacity: 0.5;
 }
 
 .issuance-card-preview__badges {
   position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
+  top: 10px;
+  right: 10px;
   display: flex;
-  gap: var(--spacing-xs);
+  gap: 6px;
 }
 
 /* Card Content */
 .issuance-card-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  gap: 10px;
+  padding: 16px;
 }
 
 .issuance-card-badges {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 6px;
 }
 
 .issuance-type-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background-color: var(--status-published-bg);
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #fef2f2;
   color: var(--unc-primary-red);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
-  border-radius: var(--radius-full);
-  width: fit-content;
+  letter-spacing: 0.04em;
+  border-radius: 4px;
 }
 
 .issuance-category-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background-color: var(--gray-100);
-  color: var(--unc-secondary-gray-dark);
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 0.6875rem;
   font-weight: 500;
   text-transform: capitalize;
-  letter-spacing: 0.025em;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--gray-300);
-  width: fit-content;
+  border-radius: 4px;
 }
 
-/* Title - UNC Red Style */
+/* Title */
 .issuance-title {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--unc-primary-red);
+  color: #1f2937;
   margin: 0;
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.issuance-title:hover {
-  text-decoration: underline;
+.issuance-card:hover .issuance-title {
+  color: var(--unc-primary-red);
 }
 
-/* Source/Department Info */
+/* Source/Department */
 .issuance-source {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 4px;
 }
 
 .issuance-source-name {
-  font-size: 0.875rem;
-  color: var(--unc-text-light);
+  font-size: 0.8125rem;
+  color: #6b7280;
 }
 
 /* Meta Row */
@@ -131,13 +139,13 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
-  font-size: 0.875rem;
-  color: var(--gray-500);
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #9ca3af;
 }
 
 .issuance-separator {
-  color: var(--gray-300);
+  color: #d1d5db;
 }
 
 .issuance-date,
@@ -149,27 +157,28 @@
 .issuance-read-more {
   display: inline-flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  margin-top: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: 0.875rem;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--unc-primary-red);
-  background-color: transparent;
-  border: 1px solid var(--unc-primary-red);
-  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
   width: fit-content;
 }
 
 .issuance-read-more:hover {
-  background-color: var(--unc-primary-red);
-  color: var(--white);
+  background: var(--unc-primary-red);
+  color: white;
+  border-color: var(--unc-primary-red);
 }
 
 .issuance-read-more svg {
-  transition: transform var(--transition-fast);
+  transition: transform 0.2s ease;
 }
 
 .issuance-read-more:hover svg {
@@ -179,10 +188,19 @@
 /* Responsive */
 @media (max-width: 480px) {
   .issuance-card-preview {
-    height: 150px;
+    height: 140px;
   }
-  
+
+  .issuance-card-content {
+    padding: 14px;
+  }
+
   .issuance-title {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+  }
+
+  .issuance-read-more {
+    width: 100%;
+    justify-content: center;
   }
 }
