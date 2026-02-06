@@ -5,4 +5,6 @@ module.exports = {
     financeService: require("./finance.service"),
     orgService: require("./org.service"),
     issuanceService: require("./issuance.service"),
+    commentService: require("./comment.service"),
+    reportService: require("./report.service"),
 };

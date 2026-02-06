@@ -48,6 +48,35 @@ export const ENDPOINTS = {
     ISSUANCES: {
         BASE: "/issuances",
         BY_ID: (id) => `/issuances/${id}`,
+        ADMIN: "/issuances/admin/all",
+        STATUS: (id) => `/issuances/${id}/status`,
+        VALID_STATUSES: (id) => `/issuances/${id}/valid-statuses`,
+        ATTACHMENTS: (id) => `/issuances/${id}/attachments`,
+        ATTACHMENT_BY_ID: (id, attachmentId) =>
+            `/issuances/${id}/attachments/${attachmentId}`,
+        STATUS_HISTORY: (id) => `/issuances/${id}/status-history`,
+        VERSION_HISTORY: (id) => `/issuances/${id}/version-history`,
+        COMMENTS: (id) => `/issuances/${id}/comments`,
+        COMMENTS_COUNT: (id) => `/issuances/${id}/comments/count`,
+    },
+
+    // Comments
+    COMMENTS: {
+        BASE: "/comments",
+        BY_ID: (id) => `/comments/${id}`,
+    },
+
+    // Reports (Layer 2 - Scaffolded)
+    REPORTS: {
+        BASE: "/reports",
+        DASHBOARD: "/reports/dashboard",
+        SUMMARY: "/reports/summary",
+        TRENDS: "/reports/trends",
+        DEPARTMENTS: "/reports/departments",
+        SEARCH: "/reports/search",
+        GENERATE: (id) => `/reports/${id}/generate`,
+        EXPORT: (id) => `/reports/${id}/export`,
+        SCHEDULE: (id) => `/reports/${id}/schedule`,
     },
 };
 

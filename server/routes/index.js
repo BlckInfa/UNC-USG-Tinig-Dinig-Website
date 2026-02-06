@@ -5,4 +5,6 @@ module.exports = {
     financeRoutes: require("./finance.routes"),
     orgRoutes: require("./org.routes"),
     issuanceRoutes: require("./issuance.routes"),
+    commentRoutes: require("./comment.routes"),
+    reportRoutes: require("./report.routes"),
 };

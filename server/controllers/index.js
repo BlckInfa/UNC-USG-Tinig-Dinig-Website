@@ -5,4 +5,6 @@ module.exports = {
     financeController: require("./finance.controller"),
     orgController: require("./org.controller"),
     issuanceController: require("./issuance.controller"),
+    commentController: require("./comment.controller"),
+    reportController: require("./report.controller"),
 };

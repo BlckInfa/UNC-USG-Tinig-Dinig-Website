@@ -8,11 +8,18 @@
   gap: var(--spacing-sm);
 }
 
+.issuance-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .issuance-type-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background-color: var(--primary-100);
-  color: var(--primary-700);
+  background-color: var(--status-published-bg);
+  color: var(--unc-primary-red);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -32,6 +39,7 @@
 .issuance-meta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--spacing-xs);
   font-size: 0.875rem;
   color: var(--gray-500);
@@ -42,6 +50,11 @@
 }
 
 .issuance-date,
-.issuance-issuer {
+.issuance-issuer,
+.issuance-department {
   white-space: nowrap;
+}
+
+.issuance-department {
+  color: var(--unc-text-light);
 }

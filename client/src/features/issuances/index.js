@@ -2,7 +2,14 @@
 export { IssuanceListPage } from "./pages";
 
 // Components
-export { IssuanceCard, IssuanceViewer } from "./components";
+export {
+    IssuanceCard,
+    IssuanceViewer,
+    PriorityBadge,
+    StatusBadge,
+    CommentList,
+    HistoryViewer,
+} from "./components";
 
 // Services
-export { issuanceService } from "./services";
+export { issuanceService, commentService, reportService } from "./services";
