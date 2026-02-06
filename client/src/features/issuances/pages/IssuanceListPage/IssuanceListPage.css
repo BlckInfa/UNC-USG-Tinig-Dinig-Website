@@ -1,5 +1,5 @@
 .issuance-list-container {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: var(--spacing-lg);
 }
@@ -49,13 +49,19 @@
 
 .issuance-filter-select:focus {
   outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 2px var(--primary-100);
+  border-color: var(--unc-primary-red);
+  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
 }
 
+/* Grid Layout for Cards */
 .issuance-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
+}
+
+.issuance-list .issuance-card {
+  margin-bottom: 0;
 }
 
 .issuance-list-loading,
@@ -69,7 +75,7 @@
 }
 
 .issuance-list-error {
-  color: var(--red-600);
+  color: var(--unc-error);
 }
 
 .issuance-list-empty {
@@ -77,6 +83,18 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+  .issuance-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .issuance-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 640px) {
   .issuance-list-header {
     flex-direction: column;
@@ -91,5 +109,9 @@
 
   .issuance-filter-select {
     width: 100%;
+  }
+
+  .issuance-list {
+    grid-template-columns: 1fr;
   }
 }

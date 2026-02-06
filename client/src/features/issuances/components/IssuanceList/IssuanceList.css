@@ -1,0 +1,107 @@
+.issuance-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.issuance-list--grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.issuance-list--grid .issuance-card {
+    margin-bottom: 0;
+}
+
+/* Loading State */
+.issuance-list__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-2xl);
+    min-height: 200px;
+}
+
+.issuance-list__loading-text {
+    font-size: 0.875rem;
+    color: var(--unc-text-light);
+}
+
+/* Error State */
+.issuance-list__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-2xl);
+    background-color: var(--status-rejected-bg);
+    border: 1px solid var(--unc-error);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+}
+
+.issuance-list__error-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background-color: var(--unc-error);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.issuance-list__error-message {
+    font-size: 0.875rem;
+    color: var(--unc-error);
+    text-align: center;
+}
+
+/* Empty State */
+.issuance-list__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-2xl);
+    background-color: var(--gray-50);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-md);
+    min-height: 200px;
+}
+
+.issuance-list__empty-icon {
+    color: var(--gray-400);
+}
+
+.issuance-list__empty-message {
+    font-size: 0.875rem;
+    color: var(--unc-text-light);
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .issuance-list--grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .issuance-list--grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .issuance-list--grid {
+        grid-template-columns: 1fr;
+    }
+}
