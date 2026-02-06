@@ -4,7 +4,7 @@
  */
 
 // Status types for tickets/requests
-export const STATUS_TYPES = {
+const STATUS_TYPES = {
     PENDING: "PENDING",
     IN_PROGRESS: "IN_PROGRESS",
     APPROVED: "APPROVED",
@@ -14,7 +14,7 @@ export const STATUS_TYPES = {
 };
 
 // User roles
-export const USER_ROLES = {
+const USER_ROLES = {
     STUDENT: "STUDENT",
     OFFICER: "OFFICER",
     ADMIN: "ADMIN",
@@ -22,7 +22,7 @@ export const USER_ROLES = {
 };
 
 // Ticket categories for TINIG DINIG
-export const TICKET_CATEGORIES = {
+const TICKET_CATEGORIES = {
     COMPLAINT: "COMPLAINT",
     SUGGESTION: "SUGGESTION",
     INQUIRY: "INQUIRY",
@@ -31,14 +31,14 @@ export const TICKET_CATEGORIES = {
 };
 
 // Transaction types for finance
-export const TRANSACTION_TYPES = {
+const TRANSACTION_TYPES = {
     INCOME: "INCOME",
     EXPENSE: "EXPENSE",
     TRANSFER: "TRANSFER",
 };
 
 // Priority levels
-export const PRIORITY_LEVELS = {
+const PRIORITY_LEVELS = {
     LOW: "LOW",
     MEDIUM: "MEDIUM",
     HIGH: "HIGH",
@@ -46,7 +46,7 @@ export const PRIORITY_LEVELS = {
 };
 
 // Issuance status types (workflow)
-export const ISSUANCE_STATUS = {
+const ISSUANCE_STATUS = {
     DRAFT: "DRAFT",
     PENDING: "PENDING",
     UNDER_REVIEW: "UNDER_REVIEW",
@@ -56,14 +56,14 @@ export const ISSUANCE_STATUS = {
 };
 
 // Issuance priority levels
-export const ISSUANCE_PRIORITY = {
+const ISSUANCE_PRIORITY = {
     LOW: "LOW",
     MEDIUM: "MEDIUM",
     HIGH: "HIGH",
 };
 
 // Issuance document types
-export const ISSUANCE_TYPES = {
+const ISSUANCE_TYPES = {
     RESOLUTION: "RESOLUTION",
     MEMORANDUM: "MEMORANDUM",
     REPORT: "REPORT",
@@ -71,14 +71,14 @@ export const ISSUANCE_TYPES = {
 };
 
 // Attachment file types
-export const ATTACHMENT_TYPES = {
+const ATTACHMENT_TYPES = {
     DOCUMENT: "document",
     IMAGE: "image",
     OTHER: "other",
 };
 
 // Valid status transitions for workflow
-export const VALID_STATUS_TRANSITIONS = {
+const VALID_STATUS_TRANSITIONS = {
     DRAFT: ["PENDING"],
     PENDING: ["UNDER_REVIEW", "DRAFT"],
     UNDER_REVIEW: ["APPROVED", "REJECTED", "PENDING"],
@@ -88,13 +88,12 @@ export const VALID_STATUS_TRANSITIONS = {
 };
 
 // Pagination defaults
-export const PAGINATION = {
+const PAGINATION = {
     DEFAULT_PAGE: 1,
     DEFAULT_LIMIT: 10,
     MAX_LIMIT: 100,
 };
 
-// For CommonJS compatibility
 module.exports = {
     STATUS_TYPES,
     USER_ROLES,
