@@ -1,0 +1,44 @@
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-radius: var(--radius-sm);
+}
+
+.priority-badge--high {
+    color: var(--priority-high);
+    background-color: var(--priority-high-bg);
+}
+
+.priority-badge--medium {
+    color: var(--priority-medium);
+    background-color: var(--priority-medium-bg);
+}
+
+.priority-badge--low {
+    color: var(--priority-low);
+    background-color: var(--priority-low-bg);
+}
+
+.priority-badge__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.priority-badge--high .priority-badge__indicator {
+    background-color: var(--priority-high);
+}
+
+.priority-badge--medium .priority-badge__indicator {
+    background-color: var(--priority-medium);
+}
+
+.priority-badge--low .priority-badge__indicator {
+    background-color: var(--priority-low);
+}

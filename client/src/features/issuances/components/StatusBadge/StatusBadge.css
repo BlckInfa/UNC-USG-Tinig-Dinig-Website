@@ -1,0 +1,41 @@
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-radius: var(--radius-full);
+}
+
+.status-badge--draft {
+    color: var(--status-draft);
+    background-color: var(--status-draft-bg);
+}
+
+.status-badge--pending {
+    color: #856404;
+    background-color: var(--status-pending-bg);
+}
+
+.status-badge--under_review,
+.status-badge--under-review {
+    color: #0C5460;
+    background-color: var(--status-under-review-bg);
+}
+
+.status-badge--approved {
+    color: #155724;
+    background-color: var(--status-approved-bg);
+}
+
+.status-badge--rejected {
+    color: #721C24;
+    background-color: var(--status-rejected-bg);
+}
+
+.status-badge--published {
+    color: var(--unc-primary-red);
+    background-color: var(--status-published-bg);
+}

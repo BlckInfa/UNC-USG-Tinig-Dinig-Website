@@ -9,15 +9,20 @@ import "./IssuanceCard.css";
  * Displays a single issuance item with title, type, date, issuer, priority, and status
  */
 const IssuanceCard = ({ issuance, onClick, showWorkflowInfo = false }) => {
-    const { title, type, issuedDate, issuedBy, priority, status, department } = issuance;
+    const { title, type, issuedDate, issuedBy, priority, status, department } =
+        issuance;
 
     return (
         <Card className="issuance-card" hoverable onClick={onClick}>
             <div className="issuance-card-content">
                 <div className="issuance-card-badges">
                     <span className="issuance-type-badge">{type}</span>
-                    {showWorkflowInfo && status && <StatusBadge status={status} />}
-                    {showWorkflowInfo && priority && <PriorityBadge priority={priority} />}
+                    {showWorkflowInfo && status && (
+                        <StatusBadge status={status} />
+                    )}
+                    {showWorkflowInfo && priority && (
+                        <PriorityBadge priority={priority} />
+                    )}
                 </div>
                 <h4 className="issuance-title">{title}</h4>
                 <div className="issuance-meta">
@@ -33,7 +38,9 @@ const IssuanceCard = ({ issuance, onClick, showWorkflowInfo = false }) => {
                     {showWorkflowInfo && department && (
                         <>
                             <span className="issuance-separator">•</span>
-                            <span className="issuance-department">{department}</span>
+                            <span className="issuance-department">
+                                {department}
+                            </span>
                         </>
                     )}
                 </div>

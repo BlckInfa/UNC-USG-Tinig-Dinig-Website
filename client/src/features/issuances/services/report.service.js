@@ -4,10 +4,10 @@ import { ENDPOINTS } from "../../../config";
 /**
  * Report Service (Frontend)
  * Handles all report-related API calls
- * 
+ *
  * NOTE: This is a SCAFFOLDED feature (Layer 2)
  * Backend returns mock/placeholder data for most endpoints.
- * 
+ *
  * @stub - Full implementation deferred
  */
 export const reportService = {
@@ -35,7 +35,7 @@ export const reportService = {
      */
     getTrends: async (period = "monthly") => {
         const response = await api.get(ENDPOINTS.REPORTS.TRENDS, {
-            params: { period }
+            params: { period },
         });
         return response.data?.data || {};
     },
@@ -55,7 +55,7 @@ export const reportService = {
      */
     search: async (query, params = {}) => {
         const response = await api.get(ENDPOINTS.REPORTS.SEARCH, {
-            params: { q: query, ...params }
+            params: { q: query, ...params },
         });
         return response.data?.data || { results: [], pagination: {} };
     },
@@ -96,7 +96,7 @@ export const reportService = {
      */
     export: async (id, format = "json") => {
         const response = await api.get(ENDPOINTS.REPORTS.EXPORT(id), {
-            params: { format }
+            params: { format },
         });
         return response.data?.data || {};
     },
@@ -108,7 +108,10 @@ export const reportService = {
      * @param {Object} schedule - Schedule configuration
      */
     schedule: async (id, schedule) => {
-        const response = await api.post(ENDPOINTS.REPORTS.SCHEDULE(id), schedule);
+        const response = await api.post(
+            ENDPOINTS.REPORTS.SCHEDULE(id),
+            schedule,
+        );
         return response.data?.data || {};
     },
 };
