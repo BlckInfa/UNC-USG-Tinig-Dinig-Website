@@ -12,7 +12,7 @@ export const issuanceService = {
      */
     getAll: async (params = {}) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.BASE, { params });
-        return response.data;
+        return response.data?.data?.issuances || [];
     },
 
     /**
@@ -21,7 +21,7 @@ export const issuanceService = {
      */
     getById: async (id) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.BY_ID(id));
-        return response.data;
+        return response.data?.data?.issuance || null;
     },
 };
 

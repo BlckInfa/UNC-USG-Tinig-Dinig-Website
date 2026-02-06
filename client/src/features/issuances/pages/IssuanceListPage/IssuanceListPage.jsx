@@ -56,7 +56,7 @@ const IssuanceListPage = () => {
 
     const handleCardClick = async (issuance) => {
         try {
-            const fullIssuance = await issuanceService.getById(issuance.id);
+            const fullIssuance = await issuanceService.getById(issuance._id);
             setSelectedIssuance(fullIssuance);
             setViewerOpen(true);
         } catch (err) {
@@ -117,7 +117,7 @@ const IssuanceListPage = () => {
                 <div className="issuance-list">
                     {issuances.map((issuance) => (
                         <IssuanceCard
-                            key={issuance.id}
+                            key={issuance._id}
                             issuance={issuance}
                             onClick={() => handleCardClick(issuance)}
                         />
