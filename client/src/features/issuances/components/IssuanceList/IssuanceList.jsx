@@ -1,6 +1,23 @@
-import { Spinner } from "../../../../components";
 import IssuanceCard from "../IssuanceCard";
 import "./IssuanceList.css";
+
+/**
+ * Skeleton card placeholder for loading state
+ */
+const SkeletonCard = () => (
+    <div className="skeleton-card">
+        <div className="skeleton-card__preview skeleton-pulse" />
+        <div className="skeleton-card__content">
+            <div className="skeleton-card__title skeleton-pulse" />
+            <div className="skeleton-card__title skeleton-card__title--short skeleton-pulse" />
+            <div className="skeleton-card__badges">
+                <div className="skeleton-card__badge skeleton-pulse" />
+                <div className="skeleton-card__badge skeleton-card__badge--wide skeleton-pulse" />
+            </div>
+            <div className="skeleton-card__meta skeleton-pulse" />
+        </div>
+    </div>
+);
 
 /**
  * IssuanceList Component
@@ -17,14 +34,14 @@ const IssuanceList = ({
     emptyMessage = "No issuances found.",
     gridView = true,
 }) => {
-    // Loading state
+    // Loading state - skeleton cards
     if (loading) {
         return (
-            <div className="issuance-list__loading">
-                <Spinner size="lg" />
-                <span className="issuance-list__loading-text">
-                    Loading issuances...
-                </span>
+            <div
+                className={`issuance-list ${gridView ? "issuance-list--grid" : ""}`}>
+                {Array.from({ length: 8 }).map((_, i) => (
+                    <SkeletonCard key={i} />
+                ))}
             </div>
         );
     }
