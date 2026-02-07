@@ -1,5 +1,5 @@
 /* ============================================
-   Issuance Card
+   Issuance Card — GDrive-style document preview
    ============================================ */
 
 .issuance-card {
@@ -10,21 +10,28 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid #f0f0f0;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .issuance-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   border-color: transparent;
 }
 
-/* Preview Section - sized for PDF / document previews */
+/* ── Preview area ── */
 .issuance-card-preview {
   position: relative;
   width: 100%;
   height: 180px;
   overflow: hidden;
   background: #f3f4f6;
+}
+
+/* Live preview (image / gdrive thumbnail) */
+.issuance-card-preview--live {
+  background: #fafafa;
 }
 
 .issuance-card-preview__image {
@@ -39,9 +46,64 @@
   transform: scale(1.03);
 }
 
-.issuance-card-preview__placeholder {
+/* File-type overlay badge (bottom-left) */
+.issuance-card-preview__overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.issuance-card-preview__overlay--pdf {
+  background: rgba(139, 0, 0, 0.75);
+}
+
+/* PDF iframe preview — scaled-down render */
+.issuance-card-preview--pdf {
+  background: #fff;
+}
+
+.issuance-card-preview__pdf-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+.issuance-card-preview__pdf-iframe {
   width: 100%;
   height: 100%;
+  border: none;
+  pointer-events: none;
+}
+
+/* Click-through shield so card onClick fires instead of iframe */
+.issuance-card-preview__click-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Placeholder fallback */
+.issuance-card-preview--placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,18 +117,17 @@
   letter-spacing: 0.08em;
 }
 
-.issuance-card-preview__placeholder svg {
-  width: 36px;
-  height: 36px;
-  opacity: 0.4;
+.issuance-card-preview--placeholder svg {
+  opacity: 0.35;
 }
 
-/* Card Content */
+/* ── Card content ── */
 .issuance-card-content {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px 16px;
+  flex: 1;
 }
 
 /* Title */
@@ -137,7 +198,7 @@
 
 .issuance-separator {
   color: #d1d5db;
-  font-size: 0.5rem;
+  font-size: 0.625rem;
 }
 
 .issuance-date,
@@ -145,7 +206,7 @@
   white-space: nowrap;
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 480px) {
   .issuance-card-preview {
     height: 140px;

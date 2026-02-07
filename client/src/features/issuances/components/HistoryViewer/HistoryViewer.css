@@ -1,3 +1,7 @@
+/* ══════════════════════════════════════════
+   History Viewer — Timeline Component
+   ══════════════════════════════════════════ */
+
 .history-viewer {
     display: flex;
     flex-direction: column;
@@ -9,45 +13,46 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid var(--gray-200);
 }
 
 .history-viewer__title {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 600;
     color: var(--unc-text-dark);
 }
 
 .history-viewer__tabs {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: 4px;
+    background-color: var(--gray-100);
+    padding: 3px;
+    border-radius: var(--radius-md);
 }
 
 .history-viewer__tab {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--unc-text-light);
     background: none;
-    border: 1px solid var(--gray-300);
-    border-radius: var(--radius-sm);
+    border: none;
+    border-radius: calc(var(--radius-md) - 2px);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all 0.2s ease;
 }
 
 .history-viewer__tab:hover {
-    border-color: var(--unc-primary-red);
     color: var(--unc-primary-red);
 }
 
 .history-viewer__tab--active {
-    background-color: var(--unc-primary-red);
-    border-color: var(--unc-primary-red);
-    color: var(--white);
+    background-color: var(--white);
+    color: var(--unc-primary-red);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .history-viewer__tab--active:hover {
-    color: var(--white);
+    color: var(--unc-primary-red);
 }
 
 .history-viewer__empty {
@@ -55,6 +60,7 @@
     padding: var(--spacing-xl);
     color: var(--unc-text-light);
     font-style: italic;
+    font-size: 0.8125rem;
 }
 
 .history-timeline {
@@ -66,76 +72,94 @@
 
 .history-item {
     position: relative;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     padding-left: var(--spacing-lg);
     margin-left: calc(-1 * var(--spacing-md) - 1px);
+    transition: background-color 0.15s ease;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.history-item:hover {
+    background-color: var(--gray-50);
 }
 
 .history-item::before {
     content: "";
     position: absolute;
     left: -6px;
-    top: var(--spacing-md);
-    width: 12px;
-    height: 12px;
+    top: calc(var(--spacing-sm) + 4px);
+    width: 10px;
+    height: 10px;
     border-radius: var(--radius-full);
     background-color: var(--white);
-    border: 2px solid var(--unc-primary-red);
+    border: 2px solid var(--gray-300);
+    transition: all 0.2s ease;
+}
+
+.history-item:hover::before {
+    border-color: var(--unc-primary-red);
 }
 
 .history-item--status::before {
     background-color: var(--unc-primary-red);
+    border-color: var(--unc-primary-red);
 }
 
 .history-item__header {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 2px;
 }
 
 .history-item__field {
     font-weight: 600;
     color: var(--unc-text-dark);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     text-transform: capitalize;
 }
 
 .history-item__timestamp {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--unc-text-light);
+    margin-left: auto;
 }
 
 .history-item__change {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--unc-text-dark);
+    margin-bottom: 2px;
 }
 
 .history-item__old-value {
     color: var(--unc-text-light);
     text-decoration: line-through;
+    font-size: 0.8125rem;
 }
 
 .history-item__arrow {
-    color: var(--unc-text-light);
+    color: var(--gray-300);
+    font-size: 0.75rem;
 }
 
 .history-item__new-value {
     color: var(--unc-text-dark);
     font-weight: 500;
+    font-size: 0.8125rem;
 }
 
 .history-item__reason {
-    margin-top: var(--spacing-xs);
+    margin-top: 2px;
     font-size: 0.75rem;
     color: var(--unc-text-light);
     font-style: italic;
 }
 
 .history-item__user {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--unc-text-light);
+    margin-top: 2px;
 }
