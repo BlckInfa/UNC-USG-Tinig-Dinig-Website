@@ -6,3 +6,7 @@ export { default as PriorityBadge } from "./PriorityBadge";
 export { default as StatusBadge } from "./StatusBadge";
 export { default as CommentList } from "./CommentList";
 export { default as HistoryViewer } from "./HistoryViewer";
+export { default as StatusSelect } from "./StatusSelect";
+export { default as PrioritySelect } from "./PrioritySelect";
+export { default as DepartmentSelect } from "./DepartmentSelect";
+export { default as FileUploadField } from "./FileUploadField";

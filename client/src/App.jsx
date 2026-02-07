@@ -16,7 +16,11 @@ import Register from "./features/auth/pages/Register";
 import FinanceDashboard from "./features/finance/pages/FinanceDashboard";
 import TinigDashboard from "./features/tinig/pages/TinigDashboard";
 import OrgChart from "./features/org/pages/OrgChart";
-import { IssuanceListPage } from "./features/issuances";
+import {
+    IssuanceListPage,
+    AdminIssuanceList,
+    AdminReports,
+} from "./features/issuances";
 
 // Hooks
 import { useAuth } from "./hooks/useAuth";
@@ -41,6 +45,11 @@ function App() {
                 <Route path="/finance" element={<FinanceDashboard />} />
                 <Route path="/tinig" element={<TinigDashboard />} />
                 <Route path="/organization" element={<OrgChart />} />
+                <Route
+                    path="/admin/issuances"
+                    element={<AdminIssuanceList />}
+                />
+                <Route path="/admin/reports" element={<AdminReports />} />
             </Route>
 
             {/* 404 */}

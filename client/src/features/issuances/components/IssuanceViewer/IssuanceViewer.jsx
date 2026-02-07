@@ -1,4 +1,11 @@
 import { useState, useEffect } from "react";
+import {
+    FileText,
+    FileSpreadsheet,
+    Presentation,
+    Image,
+    Paperclip,
+} from "lucide-react";
 import { formatDate } from "../../../../utils/dateFormatter";
 import StatusBadge from "../StatusBadge";
 import PriorityBadge from "../PriorityBadge";
@@ -23,15 +30,15 @@ const AttachmentItem = ({ attachment }) => {
 
     const getFileIcon = (type) => {
         const iconMap = {
-            pdf: "📄",
-            doc: "📝",
-            docx: "📝",
-            xls: "📊",
-            xlsx: "📊",
-            ppt: "📽️",
-            pptx: "📽️",
-            image: "🖼️",
-            default: "📎",
+            pdf: FileText,
+            doc: FileText,
+            docx: FileText,
+            xls: FileSpreadsheet,
+            xlsx: FileSpreadsheet,
+            ppt: Presentation,
+            pptx: Presentation,
+            image: Image,
+            default: Paperclip,
         };
         if (mimeType?.startsWith("image/")) return iconMap.image;
         return iconMap[type?.toLowerCase()] || iconMap.default;
@@ -46,7 +53,10 @@ const AttachmentItem = ({ attachment }) => {
     return (
         <div className="attachment-item">
             <span className="attachment-item__icon">
-                {getFileIcon(fileType)}
+                {(() => {
+                    const IconComponent = getFileIcon(fileType);
+                    return <IconComponent size={18} />;
+                })()}
             </span>
             <div className="attachment-item__info">
                 <span className="attachment-item__name">{displayName}</span>
