@@ -67,51 +67,33 @@ const IssuanceCard = ({
                             <span>{type || "Document"}</span>
                         </div>
                     }
-                    {/* Overlay badges on image */}
-                    {showWorkflowInfo && (status || priority) && (
-                        <div className="issuance-card-preview__badges">
-                            {status && <StatusBadge status={status} />}
-                            {priority && <PriorityBadge priority={priority} />}
-                        </div>
-                    )}
                 </div>
             )}
 
             <div className="issuance-card-content">
-                {/* Badge Row: Type, Category (only when no preview) */}
-                {!showPreview && (
-                    <div className="issuance-card-badges">
-                        <span className="issuance-type-badge">
-                            {type || "Document"}
-                        </span>
-                        {category && (
-                            <span className="issuance-category-badge">
-                                {category}
-                            </span>
-                        )}
-                        {showWorkflowInfo && status && (
-                            <StatusBadge status={status} />
-                        )}
-                        {showWorkflowInfo && priority && (
-                            <PriorityBadge priority={priority} />
-                        )}
-                    </div>
-                )}
-
-                {/* Title - UNC Red style */}
+                {/* Title first */}
                 <h4 className="issuance-title">
                     {title || "Untitled Issuance"}
                 </h4>
 
-                {/* Source/Department Info */}
-                <div className="issuance-source">
-                    <span className="issuance-source-name">
-                        {department || "University of Nueva Caceres"}
-                    </span>
+                {/* Tags: Type & Category */}
+                <div className="issuance-card-badges">
+                    {type && (
+                        <span className="issuance-type-badge">{type}</span>
+                    )}
+                    {category && (
+                        <span className="issuance-category-badge">
+                            {category}
+                        </span>
+                    )}
                 </div>
 
-                {/* Meta Row: Date, Issuer */}
+                {/* Meta: Department, Date, Issuer */}
                 <div className="issuance-meta">
+                    <span className="issuance-department">
+                        {department || "UNC"}
+                    </span>
+                    <span className="issuance-separator">•</span>
                     <span className="issuance-date">
                         {issuedDate ? formatDate(issuedDate) : "No date"}
                     </span>
@@ -122,23 +104,6 @@ const IssuanceCard = ({
                         </>
                     )}
                 </div>
-
-                {/* Read More Button */}
-                <button type="button" className="issuance-read-more">
-                    Read more
-                    <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round">
-                        <line x1="7" y1="17" x2="17" y2="7" />
-                        <polyline points="7 7 17 7 17 17" />
-                    </svg>
-                </button>
             </div>
         </Card>
     );

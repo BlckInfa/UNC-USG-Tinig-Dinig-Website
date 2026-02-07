@@ -1,42 +1,59 @@
 /* ============================================
-   Issuance Filters - Clean Design
+   Issuance Filters - Compact & Responsive
    ============================================ */
 
 .issuance-filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px;
-  padding: 16px 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  align-items: center;
+  gap: 8px;
 }
 
+/* Mobile toggle button - hidden on desktop */
+.issuance-filters__toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #374151;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.issuance-filters__toggle:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.issuance-filters__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: white;
+  background: var(--unc-primary-red);
+  border-radius: 9px;
+}
+
+/* Filter controls row */
 .issuance-filters__controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  flex: 1;
-}
-
-.issuance-filters__group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 130px;
-}
-
-.issuance-filters__label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  align-items: center;
+  gap: 8px;
 }
 
 .issuance-filters__select {
-  padding: 8px 32px 8px 12px;
+  padding: 8px 30px 8px 12px;
   font-size: 0.8125rem;
   font-weight: 500;
   color: #374151;
@@ -49,7 +66,7 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 8px center;
   background-repeat: no-repeat;
-  background-size: 16px;
+  background-size: 14px;
 }
 
 .issuance-filters__select:hover {
@@ -71,12 +88,12 @@
 }
 
 .issuance-filters__clear {
-  padding: 8px 16px;
+  padding: 8px 14px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: white;
-  background: var(--unc-primary-red);
-  border: none;
+  color: var(--unc-primary-red);
+  background: transparent;
+  border: 1px solid var(--unc-primary-red);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -84,39 +101,57 @@
 }
 
 .issuance-filters__clear:hover {
-  background: #b30d29;
+  color: white;
+  background: var(--unc-primary-red);
 }
 
 .issuance-filters__clear:disabled {
-  background: #e5e7eb;
+  border-color: #e5e7eb;
   color: #9ca3af;
   cursor: not-allowed;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* ---- Tablet ---- */
+@media (max-width: 900px) {
+  .issuance-filters__select {
+    min-width: 0;
+    flex: 1 1 calc(50% - 4px);
+  }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 640px) {
   .issuance-filters {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
+  }
+
+  .issuance-filters__toggle {
+    display: inline-flex;
   }
 
   .issuance-filters__controls {
+    display: none;
     flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  .issuance-filters__group {
-    min-width: unset;
-    width: 100%;
+  .issuance-filters__controls--open {
+    display: flex;
   }
 
   .issuance-filters__select {
     width: 100%;
+    flex: unset;
   }
 
   .issuance-filters__clear {
     width: 100%;
     text-align: center;
-    margin-top: 4px;
   }
 }

@@ -12,11 +12,12 @@ class IssuanceService {
     static VALID_TRANSITIONS = VALID_STATUS_TRANSITIONS;
 
     /**
-     * Get all published issuances
+     * Get all published issuances with optional filters
+     * @param {Object} query - MongoDB query object (defaults to published only)
      * Sorted by issuedDate descending
      */
-    async getAllPublished() {
-        const issuances = await Issuance.find({ status: "PUBLISHED" })
+    async getAllPublished(query = { status: "PUBLISHED" }) {
+        const issuances = await Issuance.find(query)
             .sort({ issuedDate: -1 })
             .lean();
 

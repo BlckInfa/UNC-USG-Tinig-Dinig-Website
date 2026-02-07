@@ -1,19 +1,14 @@
+import { useState } from "react";
 import "./IssuanceFilters.css";
 
-/**
- * Filter options for issuance types
- */
 const TYPE_OPTIONS = [
     { value: "", label: "All Types" },
-    { value: "resolution", label: "Resolution" },
-    { value: "memorandum", label: "Memorandum" },
-    { value: "ordinance", label: "Ordinance" },
-    { value: "report", label: "Report" },
+    { value: "RESOLUTION", label: "Resolution" },
+    { value: "MEMORANDUM", label: "Memorandum" },
+    { value: "CIRCULAR", label: "Circular" },
+    { value: "REPORT", label: "Report" },
 ];
 
-/**
- * Filter options for issuance statuses
- */
 const STATUS_OPTIONS = [
     { value: "", label: "All Statuses" },
     { value: "DRAFT", label: "Draft" },
@@ -24,9 +19,6 @@ const STATUS_OPTIONS = [
     { value: "PUBLISHED", label: "Published" },
 ];
 
-/**
- * Filter options for priority levels
- */
 const PRIORITY_OPTIONS = [
     { value: "", label: "All Priorities" },
     { value: "HIGH", label: "High" },
@@ -34,21 +26,17 @@ const PRIORITY_OPTIONS = [
     { value: "LOW", label: "Low" },
 ];
 
-/**
- * Filter options for categories
- */
 const CATEGORY_OPTIONS = [
     { value: "", label: "All Categories" },
-    { value: "academic", label: "Academic" },
-    { value: "administrative", label: "Administrative" },
-    { value: "financial", label: "Financial" },
-    { value: "general", label: "General" },
+    { value: "Academic", label: "Academic" },
+    { value: "Administrative", label: "Administrative" },
+    { value: "Financial", label: "Financial" },
+    { value: "General", label: "General" },
 ];
 
 /**
  * IssuanceFilters Component
- * Provides filter controls for issuance list
- * Uses UNC design system colors
+ * Compact inline filters with mobile-friendly collapsible panel
  */
 const IssuanceFilters = ({
     filters = {},
@@ -60,6 +48,8 @@ const IssuanceFilters = ({
     departments = [],
     loading = false,
 }) => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+
     const handleChange = (field, value) => {
         if (onFilterChange) {
             onFilterChange({ ...filters, [field]: value });
@@ -72,146 +62,122 @@ const IssuanceFilters = ({
         }
     };
 
-    const hasActiveFilters = Object.values(filters).some((v) => v);
+    const activeCount = Object.values(filters).filter(Boolean).length;
 
     return (
         <div className="issuance-filters">
-            <div className="issuance-filters__controls">
-                {/* Type Filter */}
-                <div className="issuance-filters__group">
-                    <label
-                        htmlFor="filter-type"
-                        className="issuance-filters__label">
-                        Type
-                    </label>
+            {/* Mobile toggle */}
+            <button
+                type="button"
+                className="issuance-filters__toggle"
+                onClick={() => setMobileOpen(!mobileOpen)}
+                disabled={loading}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path
+                        d="M1 3h14M4 8h8M6 13h4"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                    />
+                </svg>
+                Filters
+                {activeCount > 0 && (
+                    <span className="issuance-filters__badge">
+                        {activeCount}
+                    </span>
+                )}
+            </button>
+
+            {/* Filter controls */}
+            <div
+                className={`issuance-filters__controls ${mobileOpen ? "issuance-filters__controls--open" : ""}`}>
+                <select
+                    className="issuance-filters__select"
+                    value={filters.type || ""}
+                    onChange={(e) => handleChange("type", e.target.value)}
+                    disabled={loading}>
+                    {TYPE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
+
+                {showCategoryFilter && (
                     <select
-                        id="filter-type"
                         className="issuance-filters__select"
-                        value={filters.type || ""}
-                        onChange={(e) => handleChange("type", e.target.value)}
+                        value={filters.category || ""}
+                        onChange={(e) =>
+                            handleChange("category", e.target.value)
+                        }
                         disabled={loading}>
-                        {TYPE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
+                        {CATEGORY_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
                             </option>
                         ))}
                     </select>
-                </div>
-
-                {/* Category Filter */}
-                {showCategoryFilter && (
-                    <div className="issuance-filters__group">
-                        <label
-                            htmlFor="filter-category"
-                            className="issuance-filters__label">
-                            Category
-                        </label>
-                        <select
-                            id="filter-category"
-                            className="issuance-filters__select"
-                            value={filters.category || ""}
-                            onChange={(e) =>
-                                handleChange("category", e.target.value)
-                            }
-                            disabled={loading}>
-                            {CATEGORY_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
                 )}
 
-                {/* Department Filter */}
                 {showDepartmentFilter && (
-                    <div className="issuance-filters__group">
-                        <label
-                            htmlFor="filter-department"
-                            className="issuance-filters__label">
-                            Department
-                        </label>
-                        <select
-                            id="filter-department"
-                            className="issuance-filters__select"
-                            value={filters.department || ""}
-                            onChange={(e) =>
-                                handleChange("department", e.target.value)
-                            }
-                            disabled={loading}>
-                            <option value="">All Departments</option>
-                            {departments.map((dept) => (
-                                <option
-                                    key={dept.value || dept}
-                                    value={dept.value || dept}>
-                                    {dept.label || dept}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        className="issuance-filters__select"
+                        value={filters.department || ""}
+                        onChange={(e) =>
+                            handleChange("department", e.target.value)
+                        }
+                        disabled={loading}>
+                        <option value="">All Departments</option>
+                        {departments.map((dept) => (
+                            <option
+                                key={dept.value || dept}
+                                value={dept.value || dept}>
+                                {dept.label || dept}
+                            </option>
+                        ))}
+                    </select>
                 )}
 
-                {/* Status Filter */}
                 {showStatusFilter && (
-                    <div className="issuance-filters__group">
-                        <label
-                            htmlFor="filter-status"
-                            className="issuance-filters__label">
-                            Status
-                        </label>
-                        <select
-                            id="filter-status"
-                            className="issuance-filters__select"
-                            value={filters.status || ""}
-                            onChange={(e) =>
-                                handleChange("status", e.target.value)
-                            }
-                            disabled={loading}>
-                            {STATUS_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        className="issuance-filters__select"
+                        value={filters.status || ""}
+                        onChange={(e) => handleChange("status", e.target.value)}
+                        disabled={loading}>
+                        {STATUS_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
                 )}
 
-                {/* Priority Filter */}
                 {showPriorityFilter && (
-                    <div className="issuance-filters__group">
-                        <label
-                            htmlFor="filter-priority"
-                            className="issuance-filters__label">
-                            Priority
-                        </label>
-                        <select
-                            id="filter-priority"
-                            className="issuance-filters__select"
-                            value={filters.priority || ""}
-                            onChange={(e) =>
-                                handleChange("priority", e.target.value)
-                            }
-                            disabled={loading}>
-                            {PRIORITY_OPTIONS.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        className="issuance-filters__select"
+                        value={filters.priority || ""}
+                        onChange={(e) =>
+                            handleChange("priority", e.target.value)
+                        }
+                        disabled={loading}>
+                        {PRIORITY_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                )}
+
+                {activeCount > 0 && (
+                    <button
+                        type="button"
+                        className="issuance-filters__clear"
+                        onClick={handleClearAll}
+                        disabled={loading}>
+                        Clear
+                    </button>
                 )}
             </div>
-
-            {/* Clear All Button */}
-            {hasActiveFilters && (
-                <button
-                    type="button"
-                    className="issuance-filters__clear"
-                    onClick={handleClearAll}
-                    disabled={loading}>
-                    Clear All
-                </button>
-            )}
         </div>
     );
 };

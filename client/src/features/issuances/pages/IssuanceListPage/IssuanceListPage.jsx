@@ -11,11 +11,10 @@ import "./IssuanceListPage.css";
  * Department options for filter
  */
 const DEPARTMENTS = [
-    { value: "USG Executive Department", label: "USG Executive Department" },
-    { value: "USG Legislative Assembly", label: "USG Legislative Assembly" },
-    { value: "USG Finance Committee", label: "USG Finance Committee" },
-    { value: "USG Academic Affairs", label: "USG Academic Affairs" },
-    { value: "USG Student Services", label: "USG Student Services" },
+    { value: "USG Executive Department", label: "Executive Department" },
+    { value: "USG Legislative Assembly", label: "Legislative Assembly" },
+    { value: "USG Finance Committee", label: "Finance Committee" },
+    { value: "USG COMELEC", label: "COMELEC" },
 ];
 
 /**
@@ -176,8 +175,6 @@ const IssuanceListPage = () => {
                     filters={filters}
                     onFilterChange={handleFilterChange}
                     showCategoryFilter
-                    showStatusFilter
-                    showPriorityFilter
                     showDepartmentFilter
                     departments={DEPARTMENTS}
                     loading={loading}

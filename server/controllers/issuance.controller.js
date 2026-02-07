@@ -9,10 +9,20 @@ class IssuanceController {
     /**
      * Get all published issuances (public endpoint)
      * GET /api/issuances
+     * Supports query filters: type, category, priority, department
+     * Status is always forced to PUBLISHED for the public endpoint
      */
     async getAll(req, res, next) {
         try {
-            const issuances = await issuanceService.getAllPublished();
+            const { type, category, priority, department } = req.query;
+
+            const query = { status: "PUBLISHED" };
+            if (type) query.type = type;
+            if (category) query.category = category;
+            if (priority) query.priority = priority;
+            if (department) query.department = department;
+
+            const issuances = await issuanceService.getAllPublished(query);
 
             res.json({
                 success: true,

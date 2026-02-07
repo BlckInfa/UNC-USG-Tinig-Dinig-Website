@@ -250,76 +250,156 @@ const getTransactions = (userIds) => [
 ];
 
 // Mock Issuances
-const issuances = [
+const getIssuances = (userIds) => [
     {
         title: "Resolution No. 2025-001: Adoption of the USG Constitution",
         type: "RESOLUTION",
+        category: "Administrative",
+        department: "USG Legislative Assembly",
         description:
             "A resolution adopting the revised University Student Government Constitution for Academic Year 2025-2026.",
         documentUrl: "/documents/resolution-2025-001.pdf",
         issuedBy: "USG Legislative Assembly",
         issuedDate: new Date("2025-07-15"),
         status: "PUBLISHED",
+        priority: "HIGH",
+        createdBy: userIds[1],
+        lastModifiedBy: userIds[1],
     },
     {
         title: "Resolution No. 2025-002: Allocation of Student Activity Funds",
         type: "RESOLUTION",
+        category: "Financial",
+        department: "USG Legislative Assembly",
         description:
             "A resolution allocating student activity funds for various campus organizations and events.",
         documentUrl: "/documents/resolution-2025-002.pdf",
         issuedBy: "USG Legislative Assembly",
         issuedDate: new Date("2025-08-20"),
         status: "PUBLISHED",
+        priority: "HIGH",
+        createdBy: userIds[1],
+        lastModifiedBy: userIds[1],
     },
     {
         title: "Memorandum No. 2025-001: Guidelines for Campus Events",
         type: "MEMORANDUM",
+        category: "Administrative",
+        department: "USG Executive Department",
         description:
             "Guidelines and procedures for organizing campus events and activities.",
         documentUrl: "/documents/memo-2025-001.pdf",
         issuedBy: "USG Executive Department",
         issuedDate: new Date("2025-09-01"),
         status: "PUBLISHED",
+        priority: "MEDIUM",
+        createdBy: userIds[0],
+        lastModifiedBy: userIds[0],
     },
     {
         title: "First Semester Financial Report 2025",
         type: "REPORT",
+        category: "Financial",
+        department: "USG Finance Committee",
         description:
             "Comprehensive financial report detailing income, expenses, and fund utilization for the first semester.",
         documentUrl: "/documents/financial-report-1st-sem-2025.pdf",
         issuedBy: "USG Finance Committee",
         issuedDate: new Date("2025-12-20"),
         status: "PUBLISHED",
+        priority: "MEDIUM",
+        createdBy: userIds[2],
+        lastModifiedBy: userIds[2],
     },
     {
         title: "Circular No. 2026-001: Tinig Dinig System Launch",
         type: "CIRCULAR",
+        category: "General",
+        department: "USG Executive Department",
         description:
             "Announcing the launch of the Tinig Dinig digital feedback system for students.",
         documentUrl: "/documents/circular-2026-001.pdf",
         issuedBy: "USG Executive Department",
         issuedDate: new Date("2026-01-15"),
         status: "PUBLISHED",
+        priority: "MEDIUM",
+        createdBy: userIds[0],
+        lastModifiedBy: userIds[0],
     },
     {
         title: "Resolution No. 2026-001: Support for Mental Health Initiatives",
         type: "RESOLUTION",
+        category: "Academic",
+        department: "USG Legislative Assembly",
         description:
             "A resolution expressing support for expanded mental health services and awareness programs on campus.",
         documentUrl: "/documents/resolution-2026-001.pdf",
         issuedBy: "USG Legislative Assembly",
         issuedDate: new Date("2026-02-01"),
         status: "PUBLISHED",
+        priority: "HIGH",
+        createdBy: userIds[1],
+        lastModifiedBy: userIds[1],
     },
     {
         title: "Memorandum No. 2026-001: Updated Election Guidelines",
         type: "MEMORANDUM",
+        category: "Administrative",
+        department: "USG COMELEC",
         description:
             "Updated guidelines for the upcoming USG general elections.",
         documentUrl: "/documents/memo-2026-001.pdf",
         issuedBy: "USG COMELEC",
         issuedDate: new Date("2026-02-05"),
         status: "DRAFT",
+        priority: "HIGH",
+        createdBy: userIds[0],
+        lastModifiedBy: userIds[0],
+    },
+    {
+        title: "Memorandum No. 2025-002: Academic Integrity Policy Reminder",
+        type: "MEMORANDUM",
+        category: "Academic",
+        department: "USG Executive Department",
+        description:
+            "A reminder to all students regarding the university's academic integrity policy and consequences of violations.",
+        documentUrl: "/documents/memo-2025-002.pdf",
+        issuedBy: "USG Executive Department",
+        issuedDate: new Date("2025-10-10"),
+        status: "PUBLISHED",
+        priority: "MEDIUM",
+        createdBy: userIds[0],
+        lastModifiedBy: userIds[0],
+    },
+    {
+        title: "Circular No. 2025-001: Midyear Budget Summary",
+        type: "CIRCULAR",
+        category: "Financial",
+        department: "USG Finance Committee",
+        description:
+            "Summary of midyear budget utilization and remaining allocations for student organizations.",
+        documentUrl: "/documents/circular-2025-001.pdf",
+        issuedBy: "USG Finance Committee",
+        issuedDate: new Date("2025-11-05"),
+        status: "PUBLISHED",
+        priority: "LOW",
+        createdBy: userIds[2],
+        lastModifiedBy: userIds[2],
+    },
+    {
+        title: "Resolution No. 2025-003: Recognition of Outstanding Student Organizations",
+        type: "RESOLUTION",
+        category: "General",
+        department: "USG Legislative Assembly",
+        description:
+            "A resolution recognizing student organizations that demonstrated exceptional service and leadership during AY 2025-2026.",
+        documentUrl: "/documents/resolution-2025-003.pdf",
+        issuedBy: "USG Legislative Assembly",
+        issuedDate: new Date("2025-11-20"),
+        status: "PUBLISHED",
+        priority: "LOW",
+        createdBy: userIds[1],
+        lastModifiedBy: userIds[1],
     },
 ];
 
@@ -400,6 +480,7 @@ const seedDatabase = async () => {
 
         // Create issuances
         logger.info("Creating issuances...");
+        const issuances = getIssuances(userIds);
         const createdIssuances = await Issuance.create(issuances);
         logger.info(`Created ${createdIssuances.length} issuances`);
 

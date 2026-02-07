@@ -11,8 +11,7 @@
 .issuance-list--grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
+  gap: 14px;}
 
 .issuance-list--grid .issuance-card {
   margin-bottom: 0;
@@ -107,7 +106,7 @@
 @media (max-width: 900px) {
   .issuance-list--grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
 }
 

@@ -1,27 +1,28 @@
 /* ============================================
-   Issuance Card - Clean Design
+   Issuance Card
    ============================================ */
 
 .issuance-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid #f0f0f0;
+  cursor: pointer;
 }
 
 .issuance-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   border-color: transparent;
 }
 
-/* Preview Image Section */
+/* Preview Section - sized for PDF / document previews */
 .issuance-card-preview {
   position: relative;
   width: 100%;
-  height: 160px;
+  height: 180px;
   overflow: hidden;
   background: #f3f4f6;
 }
@@ -30,11 +31,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   transition: transform 0.3s ease;
 }
 
 .issuance-card:hover .issuance-card-preview__image {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .issuance-card-preview__placeholder {
@@ -44,9 +46,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-  color: #9ca3af;
+  color: #b0b7c3;
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -54,60 +56,22 @@
 }
 
 .issuance-card-preview__placeholder svg {
-  opacity: 0.5;
-}
-
-.issuance-card-preview__badges {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  gap: 6px;
+  width: 36px;
+  height: 36px;
+  opacity: 0.4;
 }
 
 /* Card Content */
 .issuance-card-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px;
-}
-
-.issuance-card-badges {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.issuance-type-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  background: #fef2f2;
-  color: var(--unc-primary-red);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: 4px;
-}
-
-.issuance-category-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  background: #f3f4f6;
-  color: #6b7280;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  border-radius: 4px;
+  gap: 8px;
+  padding: 14px 16px 16px;
 }
 
 /* Title */
 .issuance-title {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #1f2937;
   margin: 0;
@@ -122,16 +86,37 @@
   color: var(--unc-primary-red);
 }
 
-/* Source/Department */
-.issuance-source {
+/* Tags */
+.issuance-card-badges {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
-.issuance-source-name {
-  font-size: 0.8125rem;
+.issuance-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #fef2f2;
+  color: var(--unc-primary-red);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 4px;
+}
+
+.issuance-category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #f3f4f6;
   color: #6b7280;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  border-radius: 4px;
 }
 
 /* Meta Row */
@@ -139,50 +124,25 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
   font-size: 0.75rem;
   color: #9ca3af;
+  margin-top: auto;
+}
+
+.issuance-department {
+  font-weight: 500;
+  color: #6b7280;
 }
 
 .issuance-separator {
   color: #d1d5db;
+  font-size: 0.5rem;
 }
 
 .issuance-date,
 .issuance-issuer {
   white-space: nowrap;
-}
-
-/* Read More Button */
-.issuance-read-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-  padding: 8px 14px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--unc-primary-red);
-  background: transparent;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: fit-content;
-}
-
-.issuance-read-more:hover {
-  background: var(--unc-primary-red);
-  color: white;
-  border-color: var(--unc-primary-red);
-}
-
-.issuance-read-more svg {
-  transition: transform 0.2s ease;
-}
-
-.issuance-read-more:hover svg {
-  transform: translate(2px, -2px);
 }
 
 /* Responsive */
@@ -192,15 +152,10 @@
   }
 
   .issuance-card-content {
-    padding: 14px;
+    padding: 10px 12px 12px;
   }
 
   .issuance-title {
-    font-size: 0.875rem;
-  }
-
-  .issuance-read-more {
-    width: 100%;
-    justify-content: center;
+    font-size: 0.8125rem;
   }
 }
