@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-    AlertTriangle,
-    ArrowLeft,
-    Pencil,
-    History,
-    ArrowRight,
-} from "lucide-react";
+    LuAlertTriangle,
+    LuArrowLeft,
+    LuPencil,
+    LuHistory,
+    LuArrowRight,
+} from "react-icons/lu";
 import { Button, Card, Modal } from "../../../components";
 import AdminIssuanceForm from "./AdminIssuanceForm";
 import AdminIssuanceHistory from "./AdminIssuanceHistory";
@@ -123,7 +123,7 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                 <Card>
                     <div className="admin-editor__error-content">
                         <span className="admin-editor__error-icon">
-                            <AlertTriangle size={40} />
+                            <LuAlertTriangle size={40} />
                         </span>
                         <h3>Error Loading Issuance</h3>
                         <p>{error}</p>
@@ -151,7 +151,7 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                     <button
                         className="admin-editor__back-btn"
                         onClick={handleBack}>
-                        <ArrowLeft size={16} /> Back to List
+                        <LuArrowLeft size={16} /> Back to List
                     </button>
                     <h2 className="admin-editor__title">
                         {issuance.title || "Untitled Issuance"}
@@ -209,12 +209,12 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                 <button
                     className={`admin-editor__tab ${activeTab === "edit" ? "admin-editor__tab--active" : ""}`}
                     onClick={() => setActiveTab("edit")}>
-                    <Pencil size={16} /> Edit Details
+                    <LuPencil size={16} /> Edit Details
                 </button>
                 <button
                     className={`admin-editor__tab ${activeTab === "history" ? "admin-editor__tab--active" : ""}`}
                     onClick={() => setActiveTab("history")}>
-                    <History size={16} /> Version History
+                    <LuHistory size={16} /> Version History
                 </button>
             </div>
 
@@ -246,7 +246,7 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                             {issuance.status}
                         </span>
                         <span className="admin-editor__status-arrow">
-                            <ArrowRight size={16} />
+                            <LuArrowRight size={16} />
                         </span>
                         <span className="admin-editor__status-to">
                             {statusModal.newStatus}

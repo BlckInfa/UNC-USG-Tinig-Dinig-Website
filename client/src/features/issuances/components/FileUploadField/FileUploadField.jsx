@@ -1,25 +1,25 @@
 import { useState, useRef } from "react";
 import {
-    FileText,
-    FileSpreadsheet,
-    Image,
-    Paperclip,
-    Upload,
-    X,
-} from "lucide-react";
+    LuFileText,
+    LuSheet,
+    LuImage,
+    LuPaperclip,
+    LuUpload,
+    LuX,
+} from "react-icons/lu";
 import "./FileUploadField.css";
 
 const FILE_ICONS = {
-    pdf: FileText,
-    doc: FileText,
-    docx: FileText,
-    xls: FileSpreadsheet,
-    xlsx: FileSpreadsheet,
-    png: Image,
-    jpg: Image,
-    jpeg: Image,
-    gif: Image,
-    default: Paperclip,
+    pdf: LuFileText,
+    doc: LuFileText,
+    docx: LuFileText,
+    xls: LuSheet,
+    xlsx: LuSheet,
+    png: LuImage,
+    jpg: LuImage,
+    jpeg: LuImage,
+    gif: LuImage,
+    default: LuPaperclip,
 };
 
 const getFileIcon = (filename) => {
@@ -144,7 +144,7 @@ const FileUploadField = ({
                     disabled={disabled}
                 />
                 <div className="file-upload__content">
-                    <Upload size={24} className="file-upload__icon" />
+                    <LuUpload size={24} className="file-upload__icon" />
                     <p className="file-upload__text">
                         <strong>Click to upload</strong> or drag and drop
                     </p>
@@ -193,7 +193,7 @@ const FileUploadField = ({
                                         handleRemove(index);
                                     }}
                                     title="Remove file">
-                                    <X size={14} />
+                                    <LuX size={14} />
                                 </button>
                             )}
                         </li>

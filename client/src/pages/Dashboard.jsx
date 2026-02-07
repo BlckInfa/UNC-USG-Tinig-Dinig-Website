@@ -1,12 +1,12 @@
 import {
-    Mail,
-    CheckCircle,
-    Clock,
-    Users,
-    FilePen,
-    BarChart3,
-    Wallet,
-} from "lucide-react";
+    LuMail,
+    LuCheckCircle,
+    LuClock,
+    LuUsers,
+    LuFileSignature,
+    LuBarChart3,
+    LuWallet,
+} from "react-icons/lu";
 import { Card } from "../components";
 import "./Dashboard.css";
 
@@ -15,10 +15,10 @@ import "./Dashboard.css";
  */
 const Dashboard = () => {
     const stats = [
-        { label: "Active Tickets", value: 24, icon: Mail },
-        { label: "Resolved", value: 156, icon: CheckCircle },
-        { label: "Pending Review", value: 8, icon: Clock },
-        { label: "Total Users", value: 1250, icon: Users },
+        { label: "Active Tickets", value: 24, icon: LuMail },
+        { label: "Resolved", value: 156, icon: LuCheckCircle },
+        { label: "Pending Review", value: 8, icon: LuClock },
+        { label: "Total Users", value: 1250, icon: LuUsers },
     ];
 
     return (

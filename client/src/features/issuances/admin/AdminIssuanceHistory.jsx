@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { History, ClipboardList, FileEdit } from "lucide-react";
+import { LuHistory, LuClipboardList, LuFileEdit } from "react-icons/lu";
 import { Card } from "../../../components";
 import StatusBadge from "../components/StatusBadge";
 import { issuanceService } from "../services";
@@ -188,7 +188,7 @@ const ChangesTimeline = ({ entries, formatDate }) => {
     if (!entries || entries.length === 0) {
         return (
             <div className="admin-history__empty">
-                <FileEdit size={40} className="admin-history__empty-icon" />
+                <LuFileEdit size={40} className="admin-history__empty-icon" />
                 <p>No field changes recorded yet.</p>
             </div>
         );

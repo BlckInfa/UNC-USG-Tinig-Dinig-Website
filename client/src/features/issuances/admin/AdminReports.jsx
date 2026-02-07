@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-    BarChart3,
-    FileText,
-    FileSpreadsheet,
-    AlertTriangle,
-} from "lucide-react";
+    LuBarChart3,
+    LuFileText,
+    LuSheet,
+    LuAlertTriangle,
+} from "react-icons/lu";
 import { Button, Card, Spinner } from "../../../components";
 import { reportService } from "../services";
 import "./AdminReports.css";
@@ -33,9 +33,9 @@ const REPORT_TYPES = [
 ];
 
 const EXPORT_FORMATS = [
-    { value: "csv", label: "CSV", icon: BarChart3 },
-    { value: "pdf", label: "PDF", icon: FileText },
-    { value: "xlsx", label: "Excel", icon: FileSpreadsheet },
+    { value: "csv", label: "CSV", icon: LuBarChart3 },
+    { value: "pdf", label: "PDF", icon: LuFileText },
+    { value: "xlsx", label: "Excel", icon: LuSheet },
 ];
 
 /**
@@ -268,7 +268,7 @@ const AdminReports = () => {
                             </div>
                         : error ?
                             <div className="admin-reports__error">
-                                <AlertTriangle
+                                <LuAlertTriangle
                                     size={40}
                                     className="admin-reports__error-icon"
                                 />
@@ -282,7 +282,7 @@ const AdminReports = () => {
                             </div>
                         : !reportData ?
                             <div className="admin-reports__placeholder">
-                                <BarChart3
+                                <LuBarChart3
                                     size={48}
                                     className="admin-reports__placeholder-icon"
                                 />

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { LuSearch, LuSlidersHorizontal, LuX } from "react-icons/lu";
 import { Button } from "../../../components";
 import "./AdminIssuanceFilters.css";
 
@@ -87,7 +87,10 @@ const AdminIssuanceFilters = ({
             {/* Search + Toggle Row */}
             <div className="admin-filters__top">
                 <div className="admin-filters__search">
-                    <Search size={16} className="admin-filters__search-icon" />
+                    <LuSearch
+                        size={16}
+                        className="admin-filters__search-icon"
+                    />
                     <input
                         type="text"
                         className="admin-filters__search-input"
@@ -99,7 +102,7 @@ const AdminIssuanceFilters = ({
                         <button
                             className="admin-filters__search-clear"
                             onClick={() => updateFilter("search", "")}>
-                            <X size={14} />
+                            <LuX size={14} />
                         </button>
                     )}
                 </div>
@@ -121,7 +124,7 @@ const AdminIssuanceFilters = ({
                     <button
                         className={`admin-filters__toggle ${expanded ? "admin-filters__toggle--active" : ""}`}
                         onClick={() => setExpanded(!expanded)}>
-                        <SlidersHorizontal size={16} />
+                        <LuSlidersHorizontal size={16} />
                         Filters
                         {activeCount > 0 && (
                             <span className="admin-filters__count">

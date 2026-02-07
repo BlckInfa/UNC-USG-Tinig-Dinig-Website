@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import {
-    FileText,
-    FileSpreadsheet,
-    Presentation,
-    Image,
-    Paperclip,
-} from "lucide-react";
+    LuFileText,
+    LuSheet,
+    LuPresentation,
+    LuImage,
+    LuPaperclip,
+} from "react-icons/lu";
 import { formatDate } from "../../../../utils/dateFormatter";
 import StatusBadge from "../StatusBadge";
 import PriorityBadge from "../PriorityBadge";
@@ -30,15 +30,15 @@ const AttachmentItem = ({ attachment }) => {
 
     const getFileIcon = (type) => {
         const iconMap = {
-            pdf: FileText,
-            doc: FileText,
-            docx: FileText,
-            xls: FileSpreadsheet,
-            xlsx: FileSpreadsheet,
-            ppt: Presentation,
-            pptx: Presentation,
-            image: Image,
-            default: Paperclip,
+            pdf: LuFileText,
+            doc: LuFileText,
+            docx: LuFileText,
+            xls: LuSheet,
+            xlsx: LuSheet,
+            ppt: LuPresentation,
+            pptx: LuPresentation,
+            image: LuImage,
+            default: LuPaperclip,
         };
         if (mimeType?.startsWith("image/")) return iconMap.image;
         return iconMap[type?.toLowerCase()] || iconMap.default;

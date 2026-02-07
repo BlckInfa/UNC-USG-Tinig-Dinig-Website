@@ -1,4 +1,4 @@
-import { Circle } from "lucide-react";
+import { LuCircle } from "react-icons/lu";
 import "./PrioritySelect.css";
 
 const PRIORITY_OPTIONS = [
@@ -64,7 +64,7 @@ const PrioritySelect = ({
                         onClick={() => !disabled && onChange(opt.value)}
                         disabled={disabled}>
                         <span className="priority-select__icon">
-                            <Circle size={14} fill="currentColor" />
+                            <LuCircle size={14} fill="currentColor" />
                         </span>
                         {opt.label}
                     </button>

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { LuChevronDown } from "react-icons/lu";
 import "./StatusSelect.css";
 
 const STATUS_OPTIONS = [
@@ -101,7 +101,7 @@ const StatusSelect = ({
                         {placeholder}
                     </span>
                 }
-                <ChevronDown
+                <LuChevronDown
                     size={16}
                     className={`status-select__chevron ${isOpen ? "status-select__chevron--open" : ""}`}
                 />

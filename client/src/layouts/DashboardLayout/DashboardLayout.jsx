@@ -1,16 +1,16 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import {
-    LayoutDashboard,
-    MessageSquare,
-    Wallet,
-    Users,
-    ClipboardList,
-    FileStack,
-    TrendingUp,
-    Moon,
-    Sun,
-    LogOut,
-} from "lucide-react";
+    LuLayoutDashboard,
+    LuMessageSquare,
+    LuWallet,
+    LuUsers,
+    LuClipboardList,
+    LuFileStack,
+    LuTrendingUp,
+    LuMoon,
+    LuSun,
+    LuLogOut,
+} from "react-icons/lu";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
 import "./DashboardLayout.css";
@@ -41,31 +41,31 @@ const DashboardLayout = () => {
 
                 <nav className="sidebar-nav">
                     <Link to="/dashboard" className="nav-link">
-                        <LayoutDashboard size={18} className="nav-icon" />
+                        <LuLayoutDashboard size={18} className="nav-icon" />
                         Dashboard
                     </Link>
                     <Link to="/tinig" className="nav-link">
-                        <MessageSquare size={18} className="nav-icon" />
+                        <LuMessageSquare size={18} className="nav-icon" />
                         Tinig Dinig
                     </Link>
                     <Link to="/finance" className="nav-link">
-                        <Wallet size={18} className="nav-icon" />
+                        <LuWallet size={18} className="nav-icon" />
                         Finance
                     </Link>
                     <Link to="/organization" className="nav-link">
-                        <Users size={18} className="nav-icon" />
+                        <LuUsers size={18} className="nav-icon" />
                         Organization
                     </Link>
                     <Link to="/reports" className="nav-link">
-                        <ClipboardList size={18} className="nav-icon" />
+                        <LuClipboardList size={18} className="nav-icon" />
                         Reports
                     </Link>
                     <Link to="/admin/issuances" className="nav-link">
-                        <FileStack size={18} className="nav-icon" />
+                        <LuFileStack size={18} className="nav-icon" />
                         Issuances Admin
                     </Link>
                     <Link to="/admin/reports" className="nav-link">
-                        <TrendingUp size={18} className="nav-icon" />
+                        <LuTrendingUp size={18} className="nav-icon" />
                         Reports Admin
                     </Link>
                 </nav>
@@ -80,8 +80,8 @@ const DashboardLayout = () => {
                     <div className="header-right">
                         <button className="theme-toggle" onClick={toggleTheme}>
                             {theme === "light" ?
-                                <Moon size={18} />
-                            :   <Sun size={18} />}
+                                <LuMoon size={18} />
+                            :   <LuSun size={18} />}
                         </button>
                         <div className="user-menu">
                             <span className="user-name">
@@ -90,7 +90,7 @@ const DashboardLayout = () => {
                             <button
                                 className="logout-btn"
                                 onClick={handleLogout}>
-                                <LogOut size={16} />
+                                <LuLogOut size={16} />
                                 Logout
                             </button>
                         </div>

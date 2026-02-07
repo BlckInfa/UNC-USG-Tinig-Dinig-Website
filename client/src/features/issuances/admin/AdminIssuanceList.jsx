@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import {
-    Plus,
-    ClipboardList,
-    Pencil,
-    Trash2,
-    ChevronLeft,
-    ChevronRight,
-} from "lucide-react";
+    LuPlus,
+    LuClipboardList,
+    LuPencil,
+    LuTrash2,
+    LuChevronLeft,
+    LuChevronRight,
+} from "react-icons/lu";
 import { Button, Card, Spinner } from "../../../components";
 import StatusBadge from "../components/StatusBadge";
 import PriorityBadge from "../components/PriorityBadge";
@@ -183,7 +183,7 @@ const AdminIssuanceList = () => {
                     </p>
                 </div>
                 <Button variant="primary" onClick={() => setView("create")}>
-                    <Plus size={16} /> New Issuance
+                    <LuPlus size={16} /> New Issuance
                 </Button>
             </div>
 
@@ -317,7 +317,7 @@ const AdminIssuanceList = () => {
                                                             )
                                                         }
                                                         title="Edit">
-                                                        <Pencil size={16} />
+                                                        <LuPencil size={16} />
                                                     </button>
                                                     <button
                                                         className="admin-list-page__action-btn admin-list-page__action-btn--delete"
@@ -327,7 +327,7 @@ const AdminIssuanceList = () => {
                                                             )
                                                         }
                                                         title="Delete">
-                                                        <Trash2 size={16} />
+                                                        <LuTrash2 size={16} />
                                                     </button>
                                                 </div>
                                             </td>
@@ -347,7 +347,7 @@ const AdminIssuanceList = () => {
                                     onClick={() =>
                                         setPage((p) => Math.max(1, p - 1))
                                     }>
-                                    <ChevronLeft size={16} /> Previous
+                                    <LuChevronLeft size={16} /> Previous
                                 </Button>
                                 <span className="admin-list-page__page-info">
                                     Page {page} of {totalPages}
@@ -361,7 +361,7 @@ const AdminIssuanceList = () => {
                                             Math.min(totalPages, p + 1),
                                         )
                                     }>
-                                    Next <ChevronRight size={16} />
+                                    Next <LuChevronRight size={16} />
                                 </Button>
                             </div>
                         )}
