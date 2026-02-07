@@ -7,4 +7,8 @@ module.exports = {
     issuanceService: require("./issuance.service"),
     commentService: require("./comment.service"),
     reportService: require("./report.service"),
+    auditLogService: require("./auditLog.service"),
+    departmentService: require("./department.service"),
+    fileUploadService: require("./fileUpload.service"),
+    exportService: require("./export.service"),
 };

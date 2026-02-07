@@ -1,5 +1,7 @@
 const { Issuance } = require("../models");
 const { VALID_STATUS_TRANSITIONS } = require("../../shared/constants");
+const auditLogService = require("./auditLog.service");
+const { AUDIT_ACTIONS } = require("../../shared/constants");
 
 /**
  * Issuance Service - Business Logic Layer
@@ -108,6 +110,36 @@ class IssuanceService {
         };
 
         const issuance = await Issuance.create(data);
+
+        // Audit log: record creation
+        if (userId) {
+            await auditLogService.log({
+                performedBy: userId,
+                action: AUDIT_ACTIONS.CREATE,
+                entityType: "Issuance",
+                entityId: issuance._id,
+                description: `Created issuance: "${issuance.title}"`,
+                changes: [
+                    {
+                        field: "title",
+                        oldValue: null,
+                        newValue: issuance.title,
+                    },
+                    {
+                        field: "status",
+                        oldValue: null,
+                        newValue: issuance.status,
+                    },
+                    { field: "type", oldValue: null, newValue: issuance.type },
+                    {
+                        field: "priority",
+                        oldValue: null,
+                        newValue: issuance.priority,
+                    },
+                ],
+            });
+        }
+
         return issuance;
     }
 
@@ -181,6 +213,22 @@ class IssuanceService {
         if (versionChanges.length > 0) {
             issuance.versionHistory.push(...versionChanges);
             issuance.lastModifiedBy = userId;
+
+            // Audit log: record update
+            if (userId) {
+                await auditLogService.log({
+                    performedBy: userId,
+                    action: AUDIT_ACTIONS.UPDATE,
+                    entityType: "Issuance",
+                    entityId: issuance._id,
+                    description: `Updated issuance: "${issuance.title}" (fields: ${versionChanges.map((c) => c.field).join(", ")})`,
+                    changes: versionChanges.map((c) => ({
+                        field: c.field,
+                        oldValue: c.oldValue,
+                        newValue: c.newValue,
+                    })),
+                });
+            }
         }
 
         await issuance.save();
@@ -235,7 +283,35 @@ class IssuanceService {
         issuance.status = newStatus;
         issuance.lastModifiedBy = userId;
 
+        // Record timestamps for approved/rejected statuses
+        if (newStatus === "APPROVED") {
+            issuance.approvedAt = new Date();
+            issuance.approvedBy = userId;
+        } else if (newStatus === "REJECTED") {
+            issuance.rejectedAt = new Date();
+            issuance.rejectedBy = userId;
+        }
+
         await issuance.save();
+
+        // Audit log: record status change
+        if (userId) {
+            await auditLogService.log({
+                performedBy: userId,
+                action: AUDIT_ACTIONS.STATUS_CHANGE,
+                entityType: "Issuance",
+                entityId: issuance._id,
+                description: `Changed status of "${issuance.title}" from ${currentStatus} to ${newStatus}`,
+                changes: [
+                    {
+                        field: "status",
+                        oldValue: currentStatus,
+                        newValue: newStatus,
+                    },
+                ],
+            });
+        }
+
         return issuance;
     }
 
@@ -331,6 +407,25 @@ class IssuanceService {
 
         issuance.lastModifiedBy = userId;
         await issuance.save();
+
+        // Audit log: record attachment removal
+        if (userId) {
+            await auditLogService.log({
+                performedBy: userId,
+                action: AUDIT_ACTIONS.ATTACHMENT_REMOVE,
+                entityType: "Issuance",
+                entityId: issuance._id,
+                description: `Removed attachment "${removedAttachment.filename}" from issuance "${issuance.title}"`,
+                changes: [
+                    {
+                        field: "attachments",
+                        oldValue: removedAttachment.filename,
+                        newValue: null,
+                    },
+                ],
+            });
+        }
+
         return issuance;
     }
 
@@ -373,10 +468,12 @@ class IssuanceService {
     }
 
     /**
-     * Delete an issuance (soft delete by changing status or hard delete)
+     * Soft delete an issuance
+     * Preserves the record, its history, comments, and files.
      * @param {string} id - Issuance ID
+     * @param {string} userId - ID of the admin performing the deletion
      */
-    async delete(id) {
+    async delete(id, userId = null) {
         const issuance = await Issuance.findById(id);
 
         if (!issuance) {
@@ -385,8 +482,92 @@ class IssuanceService {
             throw error;
         }
 
-        await issuance.deleteOne();
-        return { message: "Issuance deleted successfully" };
+        // Soft delete: mark as deleted, preserve all data
+        issuance.isDeleted = true;
+        issuance.deletedAt = new Date();
+        issuance.deletedBy = userId;
+        issuance.lastModifiedBy = userId;
+
+        // Record in version history
+        issuance.versionHistory.push({
+            field: "isDeleted",
+            oldValue: false,
+            newValue: true,
+            changedBy: userId,
+            changedAt: new Date(),
+        });
+
+        await issuance.save();
+
+        // Audit log: record deletion
+        if (userId) {
+            await auditLogService.log({
+                performedBy: userId,
+                action: AUDIT_ACTIONS.DELETE,
+                entityType: "Issuance",
+                entityId: issuance._id,
+                description: `Soft-deleted issuance: "${issuance.title}"`,
+                changes: [
+                    { field: "isDeleted", oldValue: false, newValue: true },
+                ],
+            });
+        }
+
+        return { message: "Issuance soft-deleted successfully" };
+    }
+
+    /**
+     * Assign or reassign a department to an issuance
+     * @param {string} id - Issuance ID
+     * @param {string} department - Department name
+     * @param {string} userId - ID of the admin making the assignment
+     * @param {string} reason - Reason for assignment/reassignment
+     */
+    async assignDepartment(id, department, userId = null, reason = "") {
+        const issuance = await Issuance.findById(id);
+
+        if (!issuance) {
+            const error = new Error("Issuance not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const oldDepartment = issuance.department;
+
+        // Track the change in version history
+        issuance.versionHistory.push({
+            field: "department",
+            oldValue: oldDepartment || null,
+            newValue: department,
+            changedBy: userId,
+            changedAt: new Date(),
+        });
+
+        issuance.department = department;
+        issuance.lastModifiedBy = userId;
+
+        await issuance.save();
+
+        // Audit log: record department assignment
+        if (userId) {
+            const action = oldDepartment ? "Reassigned" : "Assigned";
+            await auditLogService.log({
+                performedBy: userId,
+                action: AUDIT_ACTIONS.DEPARTMENT_ASSIGN,
+                entityType: "Issuance",
+                entityId: issuance._id,
+                description: `${action} issuance "${issuance.title}" ${oldDepartment ? `from "${oldDepartment}" ` : ""}to department "${department}"${reason ? ` — ${reason}` : ""}`,
+                changes: [
+                    {
+                        field: "department",
+                        oldValue: oldDepartment || null,
+                        newValue: department,
+                    },
+                ],
+            });
+        }
+
+        return issuance;
     }
 }
 

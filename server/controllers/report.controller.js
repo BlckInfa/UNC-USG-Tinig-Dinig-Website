@@ -1,24 +1,28 @@
-const { reportService } = require("../services");
+const {
+    reportService,
+    exportService,
+    auditLogService,
+} = require("../services");
+const { AUDIT_ACTIONS } = require("../../shared/constants");
 
 /**
  * Report Controller - The "C" in MVC
  * Handles HTTP Request/Response ONLY
- * Business logic is delegated to reportService
+ * Business logic is delegated to reportService and exportService.
  *
- * NOTE: This is a SCAFFOLDED feature (Layer 2)
- * Endpoints return mock/placeholder data until fully implemented.
- *
- * @stub - Full implementation deferred
+ * All report endpoints are admin-only. Auth middleware is enforced on routes.
  */
 class ReportController {
     /**
-     * Get dashboard analytics
-     * GET /api/reports/dashboard
-     * @stub Returns partial implementation
+     * Get dashboard analytics with optional filters
+     * GET /api/admin/reports/dashboard
+     * Filters: startDate, endDate, status, priority, department, category
      */
     async getDashboard(req, res, next) {
         try {
-            const analytics = await reportService.getDashboardAnalytics();
+            const filters = this._extractFilters(req.query);
+            const analytics =
+                await reportService.getDashboardAnalytics(filters);
 
             res.json({
                 success: true,
@@ -30,12 +34,13 @@ class ReportController {
     }
 
     /**
-     * Get summary statistics
-     * GET /api/reports/summary
+     * Get summary statistics with optional filters
+     * GET /api/admin/reports/summary
      */
     async getSummary(req, res, next) {
         try {
-            const stats = await reportService.getSummaryStatistics();
+            const filters = this._extractFilters(req.query);
+            const stats = await reportService.getSummaryStatistics(filters);
 
             res.json({
                 success: true,
@@ -47,14 +52,18 @@ class ReportController {
     }
 
     /**
-     * Get trend analysis
-     * GET /api/reports/trends
-     * @stub Not implemented
+     * Get trend analysis data
+     * GET /api/admin/reports/trends
+     * Query: period (monthly|quarterly), startDate, endDate, etc.
      */
     async getTrends(req, res, next) {
         try {
             const { period = "monthly" } = req.query;
-            const trends = await reportService.getTrendAnalysis(period);
+            const filters = this._extractFilters(req.query);
+            const trends = await reportService.getTrendAnalysis(
+                period,
+                filters,
+            );
 
             res.json({
                 success: true,
@@ -67,7 +76,7 @@ class ReportController {
 
     /**
      * Search issuances
-     * GET /api/reports/search
+     * GET /api/admin/reports/search
      */
     async search(req, res, next) {
         try {
@@ -95,8 +104,8 @@ class ReportController {
     }
 
     /**
-     * Get saved reports
-     * GET /api/reports
+     * Get all saved report configurations
+     * GET /api/admin/reports
      */
     async getAll(req, res, next) {
         try {
@@ -113,9 +122,8 @@ class ReportController {
     }
 
     /**
-     * Create a custom report
-     * POST /api/reports
-     * @stub Basic implementation
+     * Create a custom report configuration
+     * POST /api/admin/reports
      */
     async create(req, res, next) {
         try {
@@ -133,9 +141,8 @@ class ReportController {
     }
 
     /**
-     * Generate report data
-     * POST /api/reports/:id/generate
-     * @stub Not fully implemented
+     * Generate report data from a saved configuration
+     * POST /api/admin/reports/:id/generate
      */
     async generate(req, res, next) {
         try {
@@ -153,22 +160,115 @@ class ReportController {
     }
 
     /**
-     * Export report
-     * GET /api/reports/:id/export
-     * @stub Not implemented
+     * Export issuances data to file (CSV, Excel, PDF, JSON)
+     * GET /api/admin/reports/export
+     * Query: format (csv|excel|pdf|json), plus all standard filters
      */
-    async export(req, res, next) {
+    async exportData(req, res, next) {
         try {
             const { format = "json" } = req.query;
-            const result = await reportService.exportReport(
-                req.params.id,
-                format,
+            const filters = this._extractFilters(req.query);
+            const userId = req.user?.id || null;
+
+            // Generate the data
+            const data = await exportService.generateReportData(filters);
+
+            // Export to the requested format
+            const exported = await exportService.exportToFormat(data, format, {
+                title: "Issuances Report",
+            });
+
+            // Audit log
+            if (userId) {
+                await auditLogService.log({
+                    performedBy: userId,
+                    action: AUDIT_ACTIONS.REPORT_EXPORT,
+                    entityType: "Report",
+                    entityId: userId, // No specific report entity for ad-hoc exports
+                    description: `Exported issuances data as ${format.toUpperCase()} (${data.length} records)`,
+                    changes: [
+                        { field: "format", oldValue: null, newValue: format },
+                        {
+                            field: "records",
+                            oldValue: null,
+                            newValue: data.length,
+                        },
+                    ],
+                });
+            }
+
+            // If JSON, return as JSON response
+            if (format === "json") {
+                return res.json({
+                    success: true,
+                    data: JSON.parse(exported.content),
+                });
+            }
+
+            // For file downloads, set appropriate headers
+            res.setHeader("Content-Type", exported.contentType);
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${exported.filename}"`,
             );
 
-            res.json({
-                success: true,
-                data: result,
-            });
+            if (Buffer.isBuffer(exported.content)) {
+                res.send(exported.content);
+            } else {
+                res.send(exported.content);
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Export a specific saved report
+     * GET /api/admin/reports/:id/export
+     */
+    async exportReport(req, res, next) {
+        try {
+            const { format = "json" } = req.query;
+            const userId = req.user?.id || null;
+
+            // Generate report data first
+            const reportData = await reportService.generateReportData(
+                req.params.id,
+            );
+
+            // For saved reports, export the generated data
+            const exported = await exportService.exportToFormat(
+                Array.isArray(reportData.data) ?
+                    reportData.data
+                :   [reportData.data],
+                format,
+                { title: reportData.name },
+            );
+
+            if (userId) {
+                await auditLogService.log({
+                    performedBy: userId,
+                    action: AUDIT_ACTIONS.REPORT_EXPORT,
+                    entityType: "Report",
+                    entityId: req.params.id,
+                    description: `Exported report "${reportData.name}" as ${format.toUpperCase()}`,
+                    changes: [],
+                });
+            }
+
+            if (format === "json") {
+                return res.json({
+                    success: true,
+                    data: reportData,
+                });
+            }
+
+            res.setHeader("Content-Type", exported.contentType);
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${exported.filename}"`,
+            );
+            res.send(exported.content);
         } catch (error) {
             next(error);
         }
@@ -176,15 +276,32 @@ class ReportController {
 
     /**
      * Schedule a report
-     * POST /api/reports/:id/schedule
-     * @stub Not implemented
+     * POST /api/admin/reports/:id/schedule
      */
     async schedule(req, res, next) {
         try {
+            const userId = req.user?.id || null;
             const result = await reportService.scheduleReport(
                 req.params.id,
                 req.body,
             );
+
+            if (userId) {
+                await auditLogService.log({
+                    performedBy: userId,
+                    action: AUDIT_ACTIONS.REPORT_SCHEDULE,
+                    entityType: "Report",
+                    entityId: req.params.id,
+                    description: `Scheduled report "${result.report.name}" (${req.body.frequency})`,
+                    changes: [
+                        {
+                            field: "schedule.frequency",
+                            oldValue: null,
+                            newValue: req.body.frequency,
+                        },
+                    ],
+                });
+            }
 
             res.json({
                 success: true,
@@ -197,11 +314,13 @@ class ReportController {
 
     /**
      * Get department breakdown
-     * GET /api/reports/departments
+     * GET /api/admin/reports/departments
      */
     async getDepartments(req, res, next) {
         try {
-            const breakdown = await reportService.getDepartmentBreakdown();
+            const filters = this._extractFilters(req.query);
+            const breakdown =
+                await reportService.getDepartmentBreakdown(filters);
 
             res.json({
                 success: true,
@@ -210,6 +329,40 @@ class ReportController {
         } catch (error) {
             next(error);
         }
+    }
+
+    /**
+     * Get category breakdown
+     * GET /api/admin/reports/categories
+     */
+    async getCategories(req, res, next) {
+        try {
+            const filters = this._extractFilters(req.query);
+            const breakdown = await reportService.getCategoryBreakdown(filters);
+
+            res.json({
+                success: true,
+                data: { categories: breakdown },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Extract standard filters from query params
+     * @private
+     */
+    _extractFilters(query) {
+        const filters = {};
+        if (query.startDate) filters.startDate = query.startDate;
+        if (query.endDate) filters.endDate = query.endDate;
+        if (query.status) filters.status = query.status;
+        if (query.priority) filters.priority = query.priority;
+        if (query.department) filters.department = query.department;
+        if (query.category) filters.category = query.category;
+        if (query.type) filters.type = query.type;
+        return filters;
     }
 }
 

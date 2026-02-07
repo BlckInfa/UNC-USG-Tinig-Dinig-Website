@@ -7,4 +7,5 @@ module.exports = {
     issuanceRoutes: require("./issuance.routes"),
     commentRoutes: require("./comment.routes"),
     reportRoutes: require("./report.routes"),
+    adminRoutes: require("./admin.routes"),
 };

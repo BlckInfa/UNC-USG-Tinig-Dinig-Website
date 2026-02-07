@@ -4,6 +4,8 @@ const { issuanceService } = require("../services");
  * Issuance Controller - The "C" in MVC
  * Handles HTTP Request/Response ONLY
  * Business logic is delegated to issuanceService
+ *
+ * Admin-only endpoints require authenticate + authorize('ADMIN', 'SUPER_ADMIN') middleware on routes.
  */
 class IssuanceController {
     /**
@@ -276,16 +278,50 @@ class IssuanceController {
     }
 
     /**
-     * Delete an issuance
+     * Soft-delete an issuance (admin only)
      * DELETE /api/issuances/:id
      */
     async delete(req, res, next) {
         try {
-            const result = await issuanceService.delete(req.params.id);
+            const userId = req.user?.id || null;
+            const result = await issuanceService.delete(req.params.id, userId);
 
             res.json({
                 success: true,
                 message: result.message,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Assign or reassign department to an issuance (admin only)
+     * PATCH /api/issuances/:id/department
+     */
+    async assignDepartment(req, res, next) {
+        try {
+            const userId = req.user?.id || null;
+            const { department, reason } = req.body;
+
+            if (!department) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Department is required",
+                });
+            }
+
+            const issuance = await issuanceService.assignDepartment(
+                req.params.id,
+                department,
+                userId,
+                reason,
+            );
+
+            res.json({
+                success: true,
+                message: `Department assigned to "${department}"`,
+                data: { issuance },
             });
         } catch (error) {
             next(error);

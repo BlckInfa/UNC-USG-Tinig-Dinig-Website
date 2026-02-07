@@ -87,7 +87,7 @@ export const issuanceService = {
     },
 
     /**
-     * Add attachment to an issuance
+     * Add attachment to an issuance (JSON metadata)
      * @param {string} id - Issuance ID
      * @param {Object} attachment - Attachment data (filename, url, fileType, mimeType, size)
      */
@@ -95,6 +95,22 @@ export const issuanceService = {
         const response = await api.post(
             ENDPOINTS.ISSUANCES.ATTACHMENTS(id),
             attachment,
+        );
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Upload a file as an attachment to an issuance (multipart)
+     * @param {string} id - Issuance ID
+     * @param {File} file - Browser File object
+     */
+    uploadAttachment: async (id, file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await api.post(
+            ENDPOINTS.ISSUANCES.ATTACHMENTS(id),
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } },
         );
         return response.data?.data?.issuance || null;
     },

@@ -23,6 +23,12 @@ const commentSchema = new mongoose.Schema(
             trim: true,
             maxlength: [2000, "Comment cannot exceed 2000 characters"],
         },
+        // Visibility: PUBLIC (visible to all) or INTERNAL (admin-only)
+        visibility: {
+            type: String,
+            enum: ["PUBLIC", "INTERNAL"],
+            default: "PUBLIC",
+        },
         // Optional: parent comment for threaded replies (future enhancement)
         parentComment: {
             type: mongoose.Schema.Types.ObjectId,

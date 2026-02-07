@@ -70,11 +70,83 @@ const ISSUANCE_TYPES = {
     CIRCULAR: "CIRCULAR",
 };
 
+// Comment visibility types
+const COMMENT_VISIBILITY = {
+    PUBLIC: "PUBLIC",
+    INTERNAL: "INTERNAL",
+};
+
 // Attachment file types
 const ATTACHMENT_TYPES = {
     DOCUMENT: "document",
     IMAGE: "image",
     OTHER: "other",
+};
+
+// Allowed file MIME types for uploads
+const ALLOWED_FILE_TYPES = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "text/plain",
+    "text/csv",
+];
+
+// Max file size in bytes (10MB)
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+// Max attachments per issuance
+const MAX_ATTACHMENTS_PER_ISSUANCE = 10;
+
+// Audit log action types
+const AUDIT_ACTIONS = {
+    CREATE: "CREATE",
+    UPDATE: "UPDATE",
+    DELETE: "DELETE",
+    STATUS_CHANGE: "STATUS_CHANGE",
+    DEPARTMENT_ASSIGN: "DEPARTMENT_ASSIGN",
+    ATTACHMENT_ADD: "ATTACHMENT_ADD",
+    ATTACHMENT_REMOVE: "ATTACHMENT_REMOVE",
+    COMMENT_CREATE: "COMMENT_CREATE",
+    COMMENT_UPDATE: "COMMENT_UPDATE",
+    COMMENT_DELETE: "COMMENT_DELETE",
+    REPORT_GENERATE: "REPORT_GENERATE",
+    REPORT_EXPORT: "REPORT_EXPORT",
+    REPORT_SCHEDULE: "REPORT_SCHEDULE",
+};
+
+// Report types
+const REPORT_TYPES = {
+    ISSUANCE_SUMMARY: "ISSUANCE_SUMMARY",
+    STATUS_BREAKDOWN: "STATUS_BREAKDOWN",
+    DEPARTMENT_ANALYSIS: "DEPARTMENT_ANALYSIS",
+    PRIORITY_DISTRIBUTION: "PRIORITY_DISTRIBUTION",
+    TREND_ANALYSIS: "TREND_ANALYSIS",
+    CUSTOM: "CUSTOM",
+};
+
+// Export formats
+const EXPORT_FORMATS = {
+    PDF: "pdf",
+    CSV: "csv",
+    EXCEL: "excel",
+    JSON: "json",
+};
+
+// Schedule frequencies
+const SCHEDULE_FREQUENCIES = {
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    MONTHLY: "monthly",
+    QUARTERLY: "quarterly",
 };
 
 // Valid status transitions for workflow
@@ -104,6 +176,14 @@ module.exports = {
     ISSUANCE_PRIORITY,
     ISSUANCE_TYPES,
     ATTACHMENT_TYPES,
+    ALLOWED_FILE_TYPES,
+    MAX_FILE_SIZE,
+    MAX_ATTACHMENTS_PER_ISSUANCE,
+    COMMENT_VISIBILITY,
+    AUDIT_ACTIONS,
+    REPORT_TYPES,
+    EXPORT_FORMATS,
+    SCHEDULE_FREQUENCIES,
     VALID_STATUS_TRANSITIONS,
     PAGINATION,
 };

@@ -4,20 +4,27 @@ const { commentService } = require("../services");
  * Comment Controller - The "C" in MVC
  * Handles HTTP Request/Response ONLY
  * Business logic is delegated to commentService
+ *
+ * Admin comments support visibility: PUBLIC (all users) or INTERNAL (admin only).
  */
 class CommentController {
     /**
      * Get all comments for an issuance
      * GET /api/issuances/:issuanceId/comments
+     * Admin users see both PUBLIC and INTERNAL comments.
+     * Non-admin users see only PUBLIC comments.
      */
     async getByIssuance(req, res, next) {
         try {
             const { page, limit, sortOrder } = req.query;
+            const isAdmin =
+                req.user?.role === "ADMIN" || req.user?.role === "SUPER_ADMIN";
 
             const options = {
                 page: parseInt(page) || 1,
                 limit: parseInt(limit) || 20,
                 sortOrder: sortOrder === "desc" ? -1 : 1,
+                includeInternal: isAdmin,
             };
 
             const result = await commentService.getByIssuance(
@@ -54,11 +61,12 @@ class CommentController {
     /**
      * Create a new comment
      * POST /api/issuances/:issuanceId/comments
+     * Supports visibility field (PUBLIC or INTERNAL) for admin comments.
      */
     async create(req, res, next) {
         try {
             const authorId = req.user?.id || null;
-            const { content, parentCommentId } = req.body;
+            const { content, parentCommentId, visibility } = req.body;
 
             if (!content) {
                 return res.status(400).json({
@@ -79,6 +87,7 @@ class CommentController {
                 authorId,
                 content,
                 parentCommentId,
+                visibility || "PUBLIC",
             );
 
             res.status(201).json({
@@ -94,10 +103,13 @@ class CommentController {
     /**
      * Update an existing comment
      * PUT /api/comments/:id
+     * Admins can edit any comment; regular users can only edit their own.
      */
     async update(req, res, next) {
         try {
             const userId = req.user?.id || null;
+            const isAdmin =
+                req.user?.role === "ADMIN" || req.user?.role === "SUPER_ADMIN";
             const { content } = req.body;
 
             if (!content) {
@@ -118,6 +130,7 @@ class CommentController {
                 req.params.id,
                 userId,
                 content,
+                isAdmin,
             );
 
             res.json({

@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const corsOptions = require("./config/cors.config");
@@ -13,14 +14,18 @@ const orgRoutes = require("./routes/org.routes");
 const issuanceRoutes = require("./routes/issuance.routes");
 const commentRoutes = require("./routes/comment.routes");
 const reportRoutes = require("./routes/report.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
 // Middleware
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(morgan("dev"));
+
+// Static file serving for uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API Routes
 app.use("/api/auth", authRoutes);
@@ -31,6 +36,7 @@ app.use("/api/org", orgRoutes);
 app.use("/api/issuances", issuanceRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

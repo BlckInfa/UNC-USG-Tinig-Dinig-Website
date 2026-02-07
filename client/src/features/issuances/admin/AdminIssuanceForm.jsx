@@ -3,7 +3,6 @@ import { Input, Button, Card } from "../../../components";
 import StatusSelect from "../components/StatusSelect";
 import PrioritySelect from "../components/PrioritySelect";
 import DepartmentSelect from "../components/DepartmentSelect";
-import FileUploadField from "../components/FileUploadField";
 import "./AdminIssuanceForm.css";
 
 const CATEGORY_OPTIONS = [
@@ -37,7 +36,7 @@ const EMPTY_FORM = {
     status: "DRAFT",
     effectiveDate: "",
     tags: "",
-    attachments: [],
+    documentUrl: "",
     internalNotes: "",
 };
 
@@ -289,14 +288,21 @@ const AdminIssuanceForm = ({
                     </div>
                 </div>
 
-                {/* Attachments */}
+                {/* Document Link */}
                 <div className="admin-issuance-form__section">
                     <h3 className="admin-issuance-form__section-title">
-                        Attachments
+                        Document Link
                     </h3>
-                    <FileUploadField
-                        files={form.attachments}
-                        onChange={(files) => updateField("attachments", files)}
+                    <Input
+                        label="Document URL"
+                        type="url"
+                        value={form.documentUrl}
+                        onChange={(e) =>
+                            updateField("documentUrl", e.target.value)
+                        }
+                        placeholder="https://drive.google.com/file/d/..."
+                        helperText="Paste a Google Drive, OneDrive, or any public link to the document"
+                        error={errors.documentUrl}
                         disabled={loading}
                     />
                 </div>

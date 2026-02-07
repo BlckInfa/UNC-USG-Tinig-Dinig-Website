@@ -27,6 +27,10 @@ const attachmentSchema = new mongoose.Schema(
         size: {
             type: Number,
         },
+        uploadedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
         uploadedAt: {
             type: Date,
             default: Date.now,
@@ -121,7 +125,6 @@ const issuanceSchema = new mongoose.Schema(
         },
         documentUrl: {
             type: String,
-            required: [true, "Document URL is required"],
             trim: true,
         },
         issuedBy: {
@@ -173,11 +176,62 @@ const issuanceSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        // Soft delete fields
+        isDeleted: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+        deletedAt: {
+            type: Date,
+            default: null,
+        },
+        deletedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
+        // Timestamps for approved/rejected actions
+        approvedAt: {
+            type: Date,
+            default: null,
+        },
+        approvedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
+        rejectedAt: {
+            type: Date,
+            default: null,
+        },
+        rejectedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
     },
     {
         timestamps: true,
     },
 );
+
+// Default query filter to exclude soft-deleted documents
+issuanceSchema.pre(/^find/, function (next) {
+    // Allow querying deleted docs when explicitly requested
+    if (this.getQuery().isDeleted === undefined) {
+        this.where({ isDeleted: { $ne: true } });
+    }
+    next();
+});
+
+// Also filter countDocuments
+issuanceSchema.pre("countDocuments", function (next) {
+    if (this.getQuery().isDeleted === undefined) {
+        this.where({ isDeleted: { $ne: true } });
+    }
+    next();
+});
 
 // Index for efficient querying
 issuanceSchema.index({ status: 1, type: 1, priority: 1 });

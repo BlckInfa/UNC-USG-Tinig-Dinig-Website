@@ -43,7 +43,7 @@ router.post("/", reportController.create);
 router.post("/:id/generate", reportController.generate);
 
 // GET /api/reports/:id/export - Export report (@stub)
-router.get("/:id/export", reportController.export);
+router.get("/:id/export", reportController.exportReport);
 
 // POST /api/reports/:id/schedule - Schedule a report (@stub)
 router.post("/:id/schedule", reportController.schedule);

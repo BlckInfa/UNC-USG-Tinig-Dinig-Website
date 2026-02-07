@@ -1,4 +1,6 @@
 const { Comment, Issuance } = require("../models");
+const auditLogService = require("./auditLog.service");
+const { AUDIT_ACTIONS } = require("../../shared/constants");
 
 /**
  * Comment Service - Business Logic Layer
@@ -8,7 +10,8 @@ class CommentService {
     /**
      * Get all comments for an issuance
      * @param {string} issuanceId - Issuance ID
-     * @param {Object} options - Pagination options
+     * @param {Object} options - Pagination options & visibility filter
+     * @param {boolean} options.includeInternal - Whether to include INTERNAL comments (admin only)
      */
     async getByIssuance(issuanceId, options = {}) {
         // Verify issuance exists
@@ -23,18 +26,25 @@ class CommentService {
             page = 1,
             limit = 20,
             sortOrder = 1, // Chronological order (oldest first)
+            includeInternal = false,
         } = options;
 
         const skip = (page - 1) * limit;
 
+        // Non-admins only see PUBLIC comments
+        const filter = { issuance: issuanceId };
+        if (!includeInternal) {
+            filter.visibility = "PUBLIC";
+        }
+
         const [comments, total] = await Promise.all([
-            Comment.find({ issuance: issuanceId })
+            Comment.find(filter)
                 .sort({ createdAt: sortOrder })
                 .skip(skip)
                 .limit(limit)
-                .populate("author", "name email profileImage")
+                .populate("author", "name email profileImage role")
                 .lean(),
-            Comment.countDocuments({ issuance: issuanceId }),
+            Comment.countDocuments(filter),
         ]);
 
         return {
@@ -72,8 +82,15 @@ class CommentService {
      * @param {string} authorId - Author user ID
      * @param {string} content - Comment content
      * @param {string} parentCommentId - Optional parent comment for replies
+     * @param {string} visibility - Comment visibility (PUBLIC or INTERNAL)
      */
-    async create(issuanceId, authorId, content, parentCommentId = null) {
+    async create(
+        issuanceId,
+        authorId,
+        content,
+        parentCommentId = null,
+        visibility = "PUBLIC",
+    ) {
         // Verify issuance exists
         const issuanceExists = await Issuance.exists({ _id: issuanceId });
         if (!issuanceExists) {
@@ -97,10 +114,24 @@ class CommentService {
             author: authorId,
             content,
             parentComment: parentCommentId,
+            visibility,
         });
 
         // Populate author before returning
-        await comment.populate("author", "name email profileImage");
+        await comment.populate("author", "name email profileImage role");
+
+        // Audit log: record comment creation
+        await auditLogService.log({
+            performedBy: authorId,
+            action: AUDIT_ACTIONS.COMMENT_CREATE,
+            entityType: "Comment",
+            entityId: comment._id,
+            description: `Added ${visibility.toLowerCase()} comment on issuance ${issuanceId}`,
+            changes: [
+                { field: "content", oldValue: null, newValue: content },
+                { field: "visibility", oldValue: null, newValue: visibility },
+            ],
+        });
 
         return comment;
     }
@@ -110,8 +141,9 @@ class CommentService {
      * @param {string} id - Comment ID
      * @param {string} userId - User ID making the update
      * @param {string} content - New content
+     * @param {boolean} isAdmin - Whether user is admin (admins can edit any admin comment)
      */
-    async update(id, userId, content) {
+    async update(id, userId, content, isAdmin = false) {
         const comment = await Comment.findById(id);
 
         if (!comment) {
@@ -120,19 +152,32 @@ class CommentService {
             throw error;
         }
 
-        // Check if user is the author
-        if (comment.author.toString() !== userId) {
+        // Check if user is the author OR an admin
+        if (!isAdmin && comment.author.toString() !== userId) {
             const error = new Error("Not authorized to edit this comment");
             error.statusCode = 403;
             throw error;
         }
 
+        const oldContent = comment.content;
         comment.content = content;
         comment.isEdited = true;
         comment.editedAt = new Date();
 
         await comment.save();
-        await comment.populate("author", "name email profileImage");
+        await comment.populate("author", "name email profileImage role");
+
+        // Audit log: record comment update
+        await auditLogService.log({
+            performedBy: userId,
+            action: AUDIT_ACTIONS.COMMENT_UPDATE,
+            entityType: "Comment",
+            entityId: comment._id,
+            description: `Updated comment on issuance ${comment.issuance}`,
+            changes: [
+                { field: "content", oldValue: oldContent, newValue: content },
+            ],
+        });
 
         return comment;
     }
@@ -159,7 +204,30 @@ class CommentService {
             throw error;
         }
 
+        const commentData = {
+            issuanceId: comment.issuance,
+            content: comment.content,
+            visibility: comment.visibility,
+        };
+
         await comment.deleteOne();
+
+        // Audit log: record comment deletion
+        await auditLogService.log({
+            performedBy: userId,
+            action: AUDIT_ACTIONS.COMMENT_DELETE,
+            entityType: "Comment",
+            entityId: id,
+            description: `Deleted comment on issuance ${commentData.issuanceId}`,
+            changes: [
+                {
+                    field: "content",
+                    oldValue: commentData.content,
+                    newValue: null,
+                },
+            ],
+        });
+
         return { message: "Comment deleted successfully" };
     }
 
