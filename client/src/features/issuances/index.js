@@ -24,8 +24,7 @@ export {
     AdminIssuanceEditor,
     AdminIssuanceFilters,
     AdminIssuanceHistory,
-    AdminReports,
 } from "./admin";
 
 // Services
-export { issuanceService, commentService, reportService } from "./services";
+export { issuanceService, commentService } from "./services";

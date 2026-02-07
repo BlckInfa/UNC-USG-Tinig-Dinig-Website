@@ -65,19 +65,6 @@ export const ENDPOINTS = {
         BASE: "/comments",
         BY_ID: (id) => `/comments/${id}`,
     },
-
-    // Reports (Layer 2 - Scaffolded)
-    REPORTS: {
-        BASE: "/reports",
-        DASHBOARD: "/reports/dashboard",
-        SUMMARY: "/reports/summary",
-        TRENDS: "/reports/trends",
-        DEPARTMENTS: "/reports/departments",
-        SEARCH: "/reports/search",
-        GENERATE: (id) => `/reports/${id}/generate`,
-        EXPORT: (id) => `/reports/${id}/export`,
-        SCHEDULE: (id) => `/reports/${id}/schedule`,
-    },
 };
 
 export default {

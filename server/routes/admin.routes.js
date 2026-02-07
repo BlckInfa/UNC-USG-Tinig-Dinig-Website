@@ -4,7 +4,6 @@ const { authenticate, authorize } = require("../middlewares/auth.middleware");
 const {
     issuanceValidation,
     commentValidation,
-    reportValidation,
     departmentValidation,
     auditLogValidation,
     validate,
@@ -12,7 +11,6 @@ const {
 const {
     issuanceController,
     commentController,
-    reportController,
     auditLogController,
     departmentController,
 } = require("../controllers");
@@ -201,120 +199,6 @@ router.put(
  * Delete a comment
  */
 router.delete("/comments/:id", commentController.delete);
-
-// ============================================================
-// REPORTS & ANALYTICS
-// ============================================================
-
-// --- Dashboard & Analytics ---
-
-/**
- * GET /api/admin/reports/dashboard
- * Get dashboard analytics (totals, by status, by priority, resolution time)
- * Query: startDate, endDate, department, category, priority
- */
-router.get("/reports/dashboard", reportController.getDashboard);
-
-/**
- * GET /api/admin/reports/summary
- * Get summary statistics with full aggregation
- * Query: startDate, endDate, department, category, priority
- */
-router.get("/reports/summary", reportController.getSummary);
-
-/**
- * GET /api/admin/reports/trends
- * Get trend analysis (monthly/quarterly)
- * Query: period, startDate, endDate, department, category
- */
-router.get("/reports/trends", reportController.getTrends);
-
-/**
- * GET /api/admin/reports/departments
- * Get department breakdown
- * Query: startDate, endDate
- */
-router.get("/reports/departments", reportController.getDepartments);
-
-/**
- * GET /api/admin/reports/categories
- * Get category breakdown
- * Query: startDate, endDate, department
- */
-router.get("/reports/categories", reportController.getCategories);
-
-// --- Search ---
-
-/**
- * GET /api/admin/reports/search
- * Search issuances with filters
- * Query: q, status, priority, department, category, page, limit
- */
-router.get("/reports/search", reportController.search);
-
-// --- Export ---
-
-/**
- * GET /api/admin/reports/export
- * Export issuance data (ad-hoc)
- * Query: format (csv|excel|pdf|json), plus all filter params
- */
-router.get(
-    "/reports/export",
-    reportValidation.export,
-    validate,
-    reportController.exportData,
-);
-
-// --- Saved Reports ---
-
-/**
- * GET /api/admin/reports
- * Get all saved reports
- */
-router.get("/reports", reportController.getAll);
-
-/**
- * POST /api/admin/reports
- * Create a custom saved report
- * Body: { name, description?, type, filters? }
- */
-router.post(
-    "/reports",
-    reportValidation.create,
-    validate,
-    reportController.create,
-);
-
-/**
- * POST /api/admin/reports/:id/generate
- * Generate/refresh a saved report
- */
-router.post("/reports/:id/generate", reportController.generate);
-
-/**
- * GET /api/admin/reports/:id/export
- * Export a saved report
- * Query: format (csv|excel|pdf|json)
- */
-router.get(
-    "/reports/:id/export",
-    reportValidation.export,
-    validate,
-    reportController.exportReport,
-);
-
-/**
- * POST /api/admin/reports/:id/schedule
- * Schedule a report for periodic generation
- * Body: { frequency, exportFormat, recipients[] }
- */
-router.post(
-    "/reports/:id/schedule",
-    reportValidation.schedule,
-    validate,
-    reportController.schedule,
-);
 
 // ============================================================
 // AUDIT LOGS (read-only)

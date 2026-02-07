@@ -4,9 +4,7 @@ import {
     LuMessageSquare,
     LuWallet,
     LuUsers,
-    LuClipboardList,
     LuFileStack,
-    LuTrendingUp,
     LuMoon,
     LuSun,
     LuLogOut,
@@ -56,17 +54,9 @@ const DashboardLayout = () => {
                         <LuUsers size={18} className="nav-icon" />
                         Organization
                     </Link>
-                    <Link to="/reports" className="nav-link">
-                        <LuClipboardList size={18} className="nav-icon" />
-                        Reports
-                    </Link>
                     <Link to="/admin/issuances" className="nav-link">
                         <LuFileStack size={18} className="nav-icon" />
-                        Issuances Admin
-                    </Link>
-                    <Link to="/admin/reports" className="nav-link">
-                        <LuTrendingUp size={18} className="nav-icon" />
-                        Reports Admin
+                        Issuances & Reports
                     </Link>
                 </nav>
             </aside>

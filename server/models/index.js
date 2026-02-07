@@ -5,8 +5,6 @@ module.exports = {
     OrgMember: require("./OrgMember.model"),
     Issuance: require("./Issuance.model"),
     Comment: require("./Comment.model"),
-    Report: require("./Report.model"),
     AuditLog: require("./AuditLog.model"),
     Department: require("./Department.model"),
-    ScheduledReport: require("./ScheduledReport.model"),
 };

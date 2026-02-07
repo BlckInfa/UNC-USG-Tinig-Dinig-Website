@@ -31,9 +31,6 @@ const auditLogSchema = new mongoose.Schema(
                 "COMMENT_CREATE",
                 "COMMENT_UPDATE",
                 "COMMENT_DELETE",
-                "REPORT_GENERATE",
-                "REPORT_EXPORT",
-                "REPORT_SCHEDULE",
             ],
             index: true,
         },
@@ -41,7 +38,7 @@ const auditLogSchema = new mongoose.Schema(
         entityType: {
             type: String,
             required: true,
-            enum: ["Issuance", "Comment", "Report", "Attachment"],
+            enum: ["Issuance", "Comment", "Attachment"],
             index: true,
         },
         // The ID of the entity being acted upon

@@ -7,7 +7,6 @@ import DashboardLayout from "./layouts/DashboardLayout";
 // Pages
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 
 // Feature Pages
@@ -16,11 +15,7 @@ import Register from "./features/auth/pages/Register";
 import FinanceDashboard from "./features/finance/pages/FinanceDashboard";
 import TinigDashboard from "./features/tinig/pages/TinigDashboard";
 import OrgChart from "./features/org/pages/OrgChart";
-import {
-    IssuanceListPage,
-    AdminIssuanceList,
-    AdminReports,
-} from "./features/issuances";
+import { IssuanceListPage, AdminIssuanceList } from "./features/issuances";
 
 // Hooks
 import { useAuth } from "./hooks/useAuth";
@@ -41,7 +36,6 @@ function App() {
             {/* Protected Routes */}
             <Route element={<DashboardLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/reports" element={<Reports />} />
                 <Route path="/finance" element={<FinanceDashboard />} />
                 <Route path="/tinig" element={<TinigDashboard />} />
                 <Route path="/organization" element={<OrgChart />} />
@@ -49,7 +43,6 @@ function App() {
                     path="/admin/issuances"
                     element={<AdminIssuanceList />}
                 />
-                <Route path="/admin/reports" element={<AdminReports />} />
             </Route>
 
             {/* 404 */}

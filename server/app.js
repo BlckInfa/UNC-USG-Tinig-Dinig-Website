@@ -13,7 +13,6 @@ const financeRoutes = require("./routes/finance.routes");
 const orgRoutes = require("./routes/org.routes");
 const issuanceRoutes = require("./routes/issuance.routes");
 const commentRoutes = require("./routes/comment.routes");
-const reportRoutes = require("./routes/report.routes");
 const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
@@ -35,7 +34,6 @@ app.use("/api/finance", financeRoutes);
 app.use("/api/org", orgRoutes);
 app.use("/api/issuances", issuanceRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Health check

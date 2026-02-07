@@ -6,7 +6,6 @@ module.exports = {
     orgController: require("./org.controller"),
     issuanceController: require("./issuance.controller"),
     commentController: require("./comment.controller"),
-    reportController: require("./report.controller"),
     auditLogController: require("./auditLog.controller"),
     departmentController: require("./department.controller"),
 };

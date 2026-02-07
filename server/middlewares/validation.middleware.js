@@ -4,8 +4,6 @@ const {
     ISSUANCE_PRIORITY,
     ISSUANCE_TYPES,
     COMMENT_VISIBILITY,
-    EXPORT_FORMATS,
-    SCHEDULE_FREQUENCIES,
 } = require("../../shared/constants");
 
 /**
@@ -288,98 +286,6 @@ const commentValidation = {
 };
 
 /**
- * Admin Report Validation Rules
- */
-const reportValidation = {
-    create: [
-        body("name")
-            .trim()
-            .notEmpty()
-            .withMessage("Report name is required")
-            .isLength({ max: 200 })
-            .withMessage("Report name cannot exceed 200 characters"),
-        body("type")
-            .notEmpty()
-            .withMessage("Report type is required")
-            .isIn([
-                "ISSUANCE_SUMMARY",
-                "STATUS_BREAKDOWN",
-                "DEPARTMENT_ANALYSIS",
-                "PRIORITY_DISTRIBUTION",
-                "TREND_ANALYSIS",
-                "CUSTOM",
-            ])
-            .withMessage("Invalid report type"),
-        body("description")
-            .optional()
-            .trim()
-            .isLength({ max: 500 })
-            .withMessage("Description cannot exceed 500 characters"),
-        body("exportFormat")
-            .optional()
-            .isIn(Object.values(EXPORT_FORMATS))
-            .withMessage(
-                `Invalid format. Must be one of: ${Object.values(EXPORT_FORMATS).join(", ")}`,
-            ),
-        validate,
-    ],
-    export: [
-        query("format")
-            .optional()
-            .isIn(Object.values(EXPORT_FORMATS))
-            .withMessage(
-                `Invalid format. Must be one of: ${Object.values(EXPORT_FORMATS).join(", ")}`,
-            ),
-        validate,
-    ],
-    schedule: [
-        body("frequency")
-            .notEmpty()
-            .withMessage("Frequency is required")
-            .isIn(Object.values(SCHEDULE_FREQUENCIES))
-            .withMessage(
-                `Invalid frequency. Must be one of: ${Object.values(SCHEDULE_FREQUENCIES).join(", ")}`,
-            ),
-        body("recipients")
-            .optional()
-            .isArray()
-            .withMessage("Recipients must be an array"),
-        body("recipients.*.email")
-            .optional()
-            .isEmail()
-            .withMessage("Invalid recipient email"),
-        body("exportFormat")
-            .optional()
-            .isIn(Object.values(EXPORT_FORMATS))
-            .withMessage(
-                `Invalid format. Must be one of: ${Object.values(EXPORT_FORMATS).join(", ")}`,
-            ),
-        validate,
-    ],
-    filters: [
-        query("startDate")
-            .optional()
-            .isISO8601()
-            .withMessage("startDate must be a valid ISO date"),
-        query("endDate")
-            .optional()
-            .isISO8601()
-            .withMessage("endDate must be a valid ISO date"),
-        query("status")
-            .optional()
-            .isIn(Object.values(ISSUANCE_STATUS))
-            .withMessage("Invalid status filter"),
-        query("priority")
-            .optional()
-            .isIn(Object.values(ISSUANCE_PRIORITY))
-            .withMessage("Invalid priority filter"),
-        query("department").optional().trim(),
-        query("category").optional().trim(),
-        validate,
-    ],
-};
-
-/**
  * Department Validation Rules
  */
 const departmentValidation = {
@@ -436,7 +342,7 @@ const auditLogValidation = {
     query: [
         query("entityType")
             .optional()
-            .isIn(["Issuance", "Comment", "Report", "Attachment"])
+            .isIn(["Issuance", "Comment", "Attachment"])
             .withMessage("Invalid entity type"),
         query("action")
             .optional()
@@ -469,7 +375,6 @@ module.exports = {
     financeValidation,
     issuanceValidation,
     commentValidation,
-    reportValidation,
     departmentValidation,
     auditLogValidation,
     validateMongoId,
