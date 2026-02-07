@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { issuanceController, commentController } = require("../controllers");
+const { authenticate } = require("../middlewares/auth.middleware");
 
 /**
  * Issuance Routes
@@ -61,8 +62,8 @@ router.get("/:id/version-history", issuanceController.getVersionHistory);
 // GET /api/issuances/:issuanceId/comments - Get comments for issuance
 router.get("/:issuanceId/comments", commentController.getByIssuance);
 
-// POST /api/issuances/:issuanceId/comments - Add comment to issuance
-router.post("/:issuanceId/comments", commentController.create);
+// POST /api/issuances/:issuanceId/comments - Add comment to issuance (requires auth)
+router.post("/:issuanceId/comments", authenticate, commentController.create);
 
 // GET /api/issuances/:issuanceId/comments/count - Get comment count
 router.get("/:issuanceId/comments/count", commentController.getCount);

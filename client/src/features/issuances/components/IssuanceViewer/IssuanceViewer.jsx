@@ -246,10 +246,15 @@ const IssuanceViewer = ({
     isOpen,
     onClose,
     comments = [],
+    commentsLoading = false,
     statusHistory = [],
     versionHistory = [],
     showWorkflowInfo = false,
     onAddComment,
+    onEditComment,
+    onDeleteComment,
+    currentUser,
+    isAuthenticated = false,
 }) => {
     const [activeTab, setActiveTab] = useState("preview");
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -303,8 +308,6 @@ const IssuanceViewer = ({
             t.id === "attachments" &&
             (!attachments || attachments.length === 0)
         )
-            return false;
-        if (t.id === "comments" && !comments?.length && !onAddComment)
             return false;
         if (t.id === "history" && !showWorkflowInfo) return false;
         return true;
@@ -497,8 +500,12 @@ const IssuanceViewer = ({
                         <div className="viewer-tab-panel">
                             <CommentList
                                 comments={comments}
+                                loading={commentsLoading}
                                 onAddComment={onAddComment}
-                                showAddForm={!!onAddComment}
+                                onEditComment={onEditComment}
+                                onDeleteComment={onDeleteComment}
+                                currentUser={currentUser}
+                                isAuthenticated={isAuthenticated}
                             />
                         </div>
                     )}

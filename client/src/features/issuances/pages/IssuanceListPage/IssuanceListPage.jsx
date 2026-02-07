@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     IssuanceFilters,
     IssuanceList,
     IssuanceViewer,
 } from "../../components";
-import { issuanceService } from "../../services/issuance.service";
+import {
+    issuanceService,
+    commentService,
+} from "../../services/issuance.service";
+import { useAuth } from "../../../../hooks/useAuth";
 import "./IssuanceListPage.css";
 
 /**
@@ -15,26 +19,6 @@ const DEPARTMENTS = [
     { value: "USG Legislative Assembly", label: "Legislative Assembly" },
     { value: "USG Finance Committee", label: "Finance Committee" },
     { value: "USG COMELEC", label: "COMELEC" },
-];
-
-/**
- * Mock comments data for demo purposes
- */
-const generateMockComments = (issuanceId) => [
-    {
-        _id: `comment-1-${issuanceId}`,
-        author: { name: "Juan Dela Cruz", role: "USG Secretary" },
-        content:
-            "This document has been reviewed and approved by the executive committee.",
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-        _id: `comment-2-${issuanceId}`,
-        author: { name: "Maria Santos", role: "Finance Officer" },
-        content:
-            "Budget allocation has been verified. All figures are correct.",
-        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
 ];
 
 /**
@@ -89,6 +73,7 @@ const generateMockVersionHistory = (issuanceId) => [
  * Uses IssuanceFilters and IssuanceList components
  */
 const IssuanceListPage = () => {
+    const { user, isAuthenticated } = useAuth();
     const [issuances, setIssuances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -96,6 +81,7 @@ const IssuanceListPage = () => {
     const [selectedIssuance, setSelectedIssuance] = useState(null);
     const [viewerOpen, setViewerOpen] = useState(false);
     const [comments, setComments] = useState([]);
+    const [commentsLoading, setCommentsLoading] = useState(false);
     const [statusHistory, setStatusHistory] = useState([]);
     const [versionHistory, setVersionHistory] = useState([]);
 
@@ -133,12 +119,33 @@ const IssuanceListPage = () => {
         setFilters(newFilters);
     };
 
+    /**
+     * Fetch comments for a given issuance from the API
+     */
+    const fetchComments = useCallback(async (issuanceId) => {
+        setCommentsLoading(true);
+        try {
+            const data = await issuanceService.getComments(issuanceId, {
+                sortOrder: "asc",
+            });
+            setComments(data.comments || []);
+        } catch (err) {
+            console.error("Error fetching comments:", err);
+            setComments([]);
+        } finally {
+            setCommentsLoading(false);
+        }
+    }, []);
+
     const handleIssuanceClick = async (issuance) => {
         try {
             const fullIssuance = await issuanceService.getById(issuance._id);
             setSelectedIssuance(fullIssuance);
-            // Load mock data for comments and history
-            setComments(generateMockComments(issuance._id));
+
+            // Fetch real comments from the API
+            fetchComments(issuance._id);
+
+            // Load mock data for history (these can be wired up later)
             setStatusHistory(generateMockStatusHistory(issuance._id));
             setVersionHistory(generateMockVersionHistory(issuance._id));
             setViewerOpen(true);
@@ -155,14 +162,34 @@ const IssuanceListPage = () => {
         setVersionHistory([]);
     };
 
-    const handleAddComment = (commentText) => {
-        const newComment = {
-            _id: `comment-new-${Date.now()}`,
-            author: { name: "Current User", role: "Member" },
-            content: commentText,
-            createdAt: new Date().toISOString(),
-        };
-        setComments([newComment, ...comments]);
+    const handleAddComment = async (commentText) => {
+        if (!selectedIssuance) return;
+        try {
+            const newComment = await issuanceService.addComment(
+                selectedIssuance._id,
+                commentText,
+            );
+            if (newComment) {
+                setComments((prev) => [...prev, newComment]);
+            }
+        } catch (err) {
+            console.error("Error adding comment:", err);
+            throw err;
+        }
+    };
+
+    const handleEditComment = async (commentId, newContent) => {
+        const updated = await commentService.update(commentId, newContent);
+        if (updated) {
+            setComments((prev) =>
+                prev.map((c) => (c._id === commentId ? updated : c)),
+            );
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        await commentService.delete(commentId);
+        setComments((prev) => prev.filter((c) => c._id !== commentId));
     };
 
     return (
@@ -197,9 +224,14 @@ const IssuanceListPage = () => {
                 isOpen={viewerOpen}
                 onClose={handleCloseViewer}
                 comments={comments}
+                commentsLoading={commentsLoading}
                 statusHistory={statusHistory}
                 versionHistory={versionHistory}
                 onAddComment={handleAddComment}
+                onEditComment={handleEditComment}
+                onDeleteComment={handleDeleteComment}
+                currentUser={user}
+                isAuthenticated={isAuthenticated}
                 showWorkflowInfo
             />
         </div>
