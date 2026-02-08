@@ -71,15 +71,15 @@ const Dashboard = () => {
                 <Card title="Quick Actions" className="actions-card">
                     <div className="quick-actions">
                         <button className="quick-action-btn">
-                            <FilePen size={18} />
+                            <LuFileSignature size={18} />
                             New Ticket
                         </button>
                         <button className="quick-action-btn">
-                            <BarChart3 size={18} />
+                            <LuBarChart3 size={18} />
                             View Reports
                         </button>
                         <button className="quick-action-btn">
-                            <Wallet size={18} />
+                            <LuWallet size={18} />
                             Finance
                         </button>
                     </div>

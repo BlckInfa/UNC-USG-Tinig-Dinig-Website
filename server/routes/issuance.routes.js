@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { issuanceController, commentController } = require("../controllers");
-const { authenticate } = require("../middlewares/auth.middleware");
 
 /**
  * Issuance Routes
@@ -13,13 +12,14 @@ const { authenticate } = require("../middlewares/auth.middleware");
 // GET /api/issuances - Get all published issuances
 router.get("/", issuanceController.getAll);
 
-// GET /api/issuances/:id - Get a single issuance by ID
-router.get("/:id", issuanceController.getById);
-
 // Admin Endpoints (No auth logic required yet)
+// NOTE: Must be before /:id to avoid Express matching "admin" as an ID
 
 // GET /api/issuances/admin/all - Get all issuances with filters
 router.get("/admin/all", issuanceController.getAllAdmin);
+
+// GET /api/issuances/:id - Get a single issuance by ID
+router.get("/:id", issuanceController.getById);
 
 // POST /api/issuances - Create a new issuance
 router.post("/", issuanceController.create);
@@ -62,8 +62,8 @@ router.get("/:id/version-history", issuanceController.getVersionHistory);
 // GET /api/issuances/:issuanceId/comments - Get comments for issuance
 router.get("/:issuanceId/comments", commentController.getByIssuance);
 
-// POST /api/issuances/:issuanceId/comments - Add comment to issuance (requires auth)
-router.post("/:issuanceId/comments", authenticate, commentController.create);
+// POST /api/issuances/:issuanceId/comments - Add comment to issuance
+router.post("/:issuanceId/comments", commentController.create);
 
 // GET /api/issuances/:issuanceId/comments/count - Get comment count
 router.get("/:issuanceId/comments/count", commentController.getCount);

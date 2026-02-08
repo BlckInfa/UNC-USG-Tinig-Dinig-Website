@@ -52,12 +52,20 @@ const statusHistorySchema = new mongoose.Schema(
                 "UNDER_REVIEW",
                 "APPROVED",
                 "REJECTED",
+                "PUBLISHED",
                 null,
             ],
         },
         toStatus: {
             type: String,
-            enum: ["DRAFT", "PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"],
+            enum: [
+                "DRAFT",
+                "PENDING",
+                "UNDER_REVIEW",
+                "APPROVED",
+                "REJECTED",
+                "PUBLISHED",
+            ],
             required: true,
         },
         changedBy: {
@@ -157,6 +165,14 @@ const issuanceSchema = new mongoose.Schema(
             default: "MEDIUM",
         },
         department: {
+            type: String,
+            trim: true,
+        },
+        tags: {
+            type: [String],
+            default: [],
+        },
+        internalNotes: {
             type: String,
             trim: true,
         },

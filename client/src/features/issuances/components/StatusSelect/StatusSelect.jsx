@@ -33,6 +33,12 @@ const STATUS_OPTIONS = [
         color: "var(--status-rejected)",
         bg: "var(--status-rejected-bg)",
     },
+    {
+        value: "PUBLISHED",
+        label: "Published",
+        color: "var(--status-published, #059669)",
+        bg: "var(--status-published-bg, #ecfdf5)",
+    },
 ];
 
 /**

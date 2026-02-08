@@ -170,6 +170,8 @@ class IssuanceService {
             "category",
             "priority",
             "department",
+            "tags",
+            "internalNotes",
         ];
 
         allowedFields.forEach((field) => {

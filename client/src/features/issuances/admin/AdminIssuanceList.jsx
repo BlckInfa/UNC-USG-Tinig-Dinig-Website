@@ -55,7 +55,7 @@ const AdminIssuanceList = () => {
                 page,
                 limit: PAGE_SIZE,
                 sortBy: sortField,
-                order: sortOrder,
+                sortOrder: sortOrder,
             };
 
             if (filters.search) params.search = filters.search;
@@ -66,18 +66,19 @@ const AdminIssuanceList = () => {
             if (filters.dateTo) params.dateTo = filters.dateTo;
 
             const response = await issuanceService.getAllAdmin(params);
-            const data = response?.data || response;
 
-            if (Array.isArray(data)) {
-                setIssuances(data);
-                setTotalCount(data.length);
+            if (Array.isArray(response)) {
+                setIssuances(response);
+                setTotalCount(response.length);
                 setTotalPages(1);
             } else {
-                setIssuances(data?.issuances || data?.items || []);
-                setTotalCount(data?.total || data?.totalCount || 0);
+                setIssuances(response?.issuances || []);
+                setTotalCount(response?.pagination?.total || 0);
                 setTotalPages(
-                    data?.totalPages ||
-                        Math.ceil((data?.total || 0) / PAGE_SIZE) ||
+                    response?.pagination?.totalPages ||
+                        Math.ceil(
+                            (response?.pagination?.total || 0) / PAGE_SIZE,
+                        ) ||
                         1,
                 );
             }
@@ -211,7 +212,7 @@ const AdminIssuanceList = () => {
                     </div>
                 : issuances.length === 0 ?
                     <div className="admin-list-page__empty">
-                        <ClipboardList
+                        <LuClipboardList
                             size={48}
                             className="admin-list-page__empty-icon"
                         />

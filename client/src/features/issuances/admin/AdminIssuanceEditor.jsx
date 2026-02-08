@@ -13,6 +13,56 @@ import StatusSelect from "../components/StatusSelect";
 import { issuanceService } from "../services";
 import "./AdminIssuanceEditor.css";
 
+// All possible status options with their display config
+const ALL_STATUS_OPTIONS = [
+    {
+        value: "DRAFT",
+        label: "Draft",
+        color: "var(--status-draft)",
+        bg: "var(--status-draft-bg)",
+    },
+    {
+        value: "PENDING",
+        label: "Pending",
+        color: "var(--status-pending)",
+        bg: "var(--status-pending-bg)",
+    },
+    {
+        value: "UNDER_REVIEW",
+        label: "Under Review",
+        color: "var(--status-under-review)",
+        bg: "var(--status-under-review-bg)",
+    },
+    {
+        value: "APPROVED",
+        label: "Approved",
+        color: "var(--status-approved)",
+        bg: "var(--status-approved-bg)",
+    },
+    {
+        value: "REJECTED",
+        label: "Rejected",
+        color: "var(--status-rejected)",
+        bg: "var(--status-rejected-bg)",
+    },
+    {
+        value: "PUBLISHED",
+        label: "Published",
+        color: "var(--status-published, #059669)",
+        bg: "var(--status-published-bg, #ecfdf5)",
+    },
+];
+
+// Valid status transitions (must match server-side VALID_STATUS_TRANSITIONS)
+const VALID_STATUS_TRANSITIONS = {
+    DRAFT: ["PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED", "PUBLISHED"],
+    PENDING: ["DRAFT", "UNDER_REVIEW", "APPROVED", "REJECTED", "PUBLISHED"],
+    UNDER_REVIEW: ["DRAFT", "PENDING", "APPROVED", "REJECTED", "PUBLISHED"],
+    APPROVED: ["DRAFT", "PENDING", "UNDER_REVIEW", "REJECTED", "PUBLISHED"],
+    REJECTED: ["DRAFT", "PENDING", "UNDER_REVIEW", "APPROVED", "PUBLISHED"],
+    PUBLISHED: ["DRAFT", "PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"],
+};
+
 const STATUS_CONFIRM_MESSAGES = {
     DRAFT: "This will revert the issuance to draft status. It will be editable but not visible to reviewers.",
     PENDING:
@@ -47,13 +97,17 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
     const [hasUnsaved, setHasUnsaved] = useState(false);
     const [confirmLeaveModal, setConfirmLeaveModal] = useState(false);
 
+    // Get valid next statuses from local transition map
+    const validNextStatuses =
+        issuance ? VALID_STATUS_TRANSITIONS[issuance.status] || [] : [];
+
     const fetchIssuance = useCallback(async () => {
         if (!issuanceId) return;
         setLoading(true);
         setError(null);
         try {
             const data = await issuanceService.getById(issuanceId);
-            setIssuance(data.data || data);
+            setIssuance(data);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to load issuance");
         } finally {
@@ -80,6 +134,8 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
     };
 
     const handleStatusChange = (newStatus) => {
+        // Don't open modal if selecting the current status
+        if (newStatus === issuance.status) return;
         setStatusModal({ open: true, newStatus });
     };
 
@@ -181,6 +237,11 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                         <StatusSelect
                             value={issuance.status}
                             onChange={handleStatusChange}
+                            options={ALL_STATUS_OPTIONS.filter(
+                                (opt) =>
+                                    opt.value === issuance.status ||
+                                    validNextStatuses.includes(opt.value),
+                            )}
                         />
                     </div>
                     <div className="admin-editor__status-meta">

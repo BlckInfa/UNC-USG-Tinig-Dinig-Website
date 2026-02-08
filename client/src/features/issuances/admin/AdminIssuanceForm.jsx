@@ -56,13 +56,18 @@ const AdminIssuanceForm = ({
             return {
                 ...EMPTY_FORM,
                 ...initialData,
+                // Map model field "type" back to form field "category"
+                category: initialData.category || initialData.type || "",
                 tags:
                     Array.isArray(initialData.tags) ?
                         initialData.tags.join(", ")
                     :   initialData.tags || "",
+                // Map model field "issuedDate" back to form field "effectiveDate"
                 effectiveDate:
-                    initialData.effectiveDate ?
-                        new Date(initialData.effectiveDate)
+                    initialData.effectiveDate || initialData.issuedDate ?
+                        new Date(
+                            initialData.effectiveDate || initialData.issuedDate,
+                        )
                             .toISOString()
                             .split("T")[0]
                     :   "",
@@ -107,6 +112,10 @@ const AdminIssuanceForm = ({
 
         const payload = {
             ...form,
+            // Map form field "category" to model field "type"
+            type: form.category,
+            // Map form field "effectiveDate" to model field "issuedDate"
+            issuedDate: form.effectiveDate || null,
             tags:
                 form.tags ?
                     form.tags
@@ -114,16 +123,33 @@ const AdminIssuanceForm = ({
                         .map((t) => t.trim())
                         .filter(Boolean)
                 :   [],
-            effectiveDate: form.effectiveDate || null,
         };
 
         onSubmit?.(payload);
     };
 
     const handleReset = () => {
-        setForm(
-            initialData ? { ...EMPTY_FORM, ...initialData } : { ...EMPTY_FORM },
-        );
+        if (initialData) {
+            setForm({
+                ...EMPTY_FORM,
+                ...initialData,
+                category: initialData.category || initialData.type || "",
+                tags:
+                    Array.isArray(initialData.tags) ?
+                        initialData.tags.join(", ")
+                    :   initialData.tags || "",
+                effectiveDate:
+                    initialData.effectiveDate || initialData.issuedDate ?
+                        new Date(
+                            initialData.effectiveDate || initialData.issuedDate,
+                        )
+                            .toISOString()
+                            .split("T")[0]
+                    :   "",
+            });
+        } else {
+            setForm({ ...EMPTY_FORM });
+        }
         setErrors({});
         setIsDirty(false);
     };

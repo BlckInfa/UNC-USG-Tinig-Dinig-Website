@@ -76,7 +76,7 @@ const AdminIssuanceHistory = ({ issuanceId }) => {
         <Card className="admin-history">
             <div className="admin-history__header">
                 <h3 className="admin-history__title">
-                    <History size={20} /> History
+                    <LuHistory size={20} /> History
                 </h3>
                 <div className="admin-history__tabs">
                     <button
@@ -128,7 +128,7 @@ const StatusTimeline = ({ entries, formatDate }) => {
     if (!entries || entries.length === 0) {
         return (
             <div className="admin-history__empty">
-                <ClipboardList
+                <LuClipboardList
                     size={40}
                     className="admin-history__empty-icon"
                 />

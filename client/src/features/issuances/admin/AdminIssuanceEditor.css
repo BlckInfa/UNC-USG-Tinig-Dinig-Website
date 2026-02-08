@@ -141,6 +141,7 @@
 /* Status Bar */
 .admin-editor__status-bar {
   margin-bottom: var(--spacing-md);
+  overflow: visible;
 }
 
 .admin-editor__status-row {
