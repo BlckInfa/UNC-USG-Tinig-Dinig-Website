@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
     LuFileText,
     LuSheet,
@@ -14,6 +14,13 @@ import {
     LuMaximize2,
     LuMinimize2,
     LuChevronLeft,
+    LuCalendar,
+    LuUser,
+    LuBuilding2,
+    LuTag,
+    LuDownload,
+    LuEye,
+    LuFolderOpen,
 } from "react-icons/lu";
 import { formatDate } from "../../../../utils/dateFormatter";
 import StatusBadge from "../StatusBadge";
@@ -22,7 +29,9 @@ import CommentList from "../CommentList";
 import HistoryViewer from "../HistoryViewer";
 import "./IssuanceViewer.css";
 
-/* ─────────────── helpers ─────────────── */
+/* ═══════════════════════════════════════════════
+   Helpers
+   ═══════════════════════════════════════════════ */
 
 const formatFileSize = (bytes) => {
     if (!bytes) return "Unknown size";
@@ -48,10 +57,7 @@ const getFileIcon = (fileType, mimeType) => {
     return FILE_ICON_MAP[fileType?.toLowerCase()] || FILE_ICON_MAP.default;
 };
 
-/**
- * Detect whether a URL points to something we can embed inline.
- * Returns "pdf" | "image" | "iframe" | "unsupported"
- */
+/** Returns "pdf" | "image" | "iframe" | "unsupported" */
 const detectPreviewType = (url, mimeType) => {
     if (!url) return "unsupported";
     const lower = url.toLowerCase();
@@ -67,9 +73,7 @@ const detectPreviewType = (url, mimeType) => {
     return "unsupported";
 };
 
-/**
- * Convert a raw Google Drive share link into an embeddable preview URL.
- */
+/** Convert raw Google Drive share links into embeddable preview URLs */
 const toEmbedUrl = (url) => {
     if (!url) return url;
     const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
@@ -82,12 +86,66 @@ const toEmbedUrl = (url) => {
     return url;
 };
 
-/* ─────────────── sub-components ─────────────── */
+/* ═══════════════════════════════════════════════
+   Skeleton Loaders — shimmer placeholders for
+   perceived performance while data loads
+   ═══════════════════════════════════════════════ */
 
-/** Embedded document preview */
+const SkeletonLine = ({ width = "100%", height = "14px" }) => (
+    <div
+        className="skeleton-line"
+        style={{ width, height }}
+        aria-hidden="true"
+    />
+);
+
+const SkeletonBlock = ({ lines = 3 }) => (
+    <div className="skeleton-block" aria-label="Loading content">
+        {Array.from({ length: lines }, (_, i) => (
+            <SkeletonLine
+                key={i}
+                width={i === lines - 1 ? "60%" : "100%"}
+                height="12px"
+            />
+        ))}
+    </div>
+);
+
+const DetailSkeleton = () => (
+    <div className="detail-grid" aria-label="Loading details">
+        {Array.from({ length: 5 }, (_, i) => (
+            <div className="detail-row" key={i}>
+                <SkeletonLine width="80px" height="12px" />
+                <SkeletonLine width="120px" height="12px" />
+            </div>
+        ))}
+    </div>
+);
+
+/* ═══════════════════════════════════════════════
+   Empty State — friendly illustration placeholder
+   used when no data is available
+   ═══════════════════════════════════════════════ */
+
+const EmptyState = ({ icon: Icon, title, subtitle }) => (
+    <div className="viewer-empty-state">
+        <div className="viewer-empty-state__icon">
+            <Icon size={32} />
+        </div>
+        <p className="viewer-empty-state__title">{title}</p>
+        {subtitle && <p className="viewer-empty-state__subtitle">{subtitle}</p>}
+    </div>
+);
+
+/* ═══════════════════════════════════════════════
+   DocumentPreview — embedded document viewer with
+   expand/collapse and graceful error fallback
+   ═══════════════════════════════════════════════ */
+
 const DocumentPreview = ({ url, title, mimeType }) => {
     const [previewError, setPreviewError] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const previewType = useMemo(
         () => detectPreviewType(url, mimeType),
@@ -95,25 +153,33 @@ const DocumentPreview = ({ url, title, mimeType }) => {
     );
     const embedUrl = useMemo(() => toEmbedUrl(url), [url]);
 
-    // Reset error state when URL changes
     useEffect(() => {
         setPreviewError(false);
+        setLoading(true);
     }, [url]);
 
     if (!url) {
         return (
-            <div className="doc-preview doc-preview--empty">
-                <LuFile size={48} />
-                <p>No document attached</p>
-            </div>
+            <EmptyState
+                icon={LuFile}
+                title="No document attached"
+                subtitle="This issuance doesn't have a linked document yet."
+            />
         );
     }
 
     if (previewError || previewType === "unsupported") {
         return (
             <div className="doc-preview doc-preview--fallback">
-                <LuFileText size={48} />
-                <p>Preview not available for this file type</p>
+                <div className="doc-preview--fallback__icon-wrap">
+                    <LuFileText size={36} />
+                </div>
+                <p className="doc-preview--fallback__heading">
+                    Preview not available
+                </p>
+                <p className="doc-preview--fallback__sub">
+                    This file type can't be previewed inline.
+                </p>
                 <a
                     href={url}
                     target="_blank"
@@ -129,9 +195,10 @@ const DocumentPreview = ({ url, title, mimeType }) => {
     return (
         <div
             className={`doc-preview ${expanded ? "doc-preview--expanded" : ""}`}>
+            {/* Toolbar with expand & external-link controls */}
             <div className="doc-preview__toolbar">
                 <span className="doc-preview__toolbar-label">
-                    <LuFileText size={14} />
+                    <LuEye size={14} />
                     Document Preview
                 </span>
                 <div className="doc-preview__toolbar-actions">
@@ -139,6 +206,9 @@ const DocumentPreview = ({ url, title, mimeType }) => {
                         type="button"
                         className="doc-preview__toolbar-btn"
                         onClick={() => setExpanded(!expanded)}
+                        aria-label={
+                            expanded ? "Collapse preview" : "Expand preview"
+                        }
                         title={expanded ? "Collapse" : "Expand"}>
                         {expanded ?
                             <LuMinimize2 size={16} />
@@ -149,6 +219,7 @@ const DocumentPreview = ({ url, title, mimeType }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="doc-preview__toolbar-btn"
+                        aria-label="Open in new tab"
                         title="Open in new tab">
                         <LuExternalLink size={16} />
                     </a>
@@ -156,18 +227,35 @@ const DocumentPreview = ({ url, title, mimeType }) => {
             </div>
 
             <div className="doc-preview__content">
+                {/* Inline shimmer while iframe / image loads */}
+                {loading && (
+                    <div
+                        className="doc-preview__loading"
+                        aria-label="Loading preview">
+                        <div className="doc-preview__loading-spinner" />
+                        <span>Loading preview…</span>
+                    </div>
+                )}
                 {previewType === "image" ?
                     <img
                         src={url}
                         alt={title || "Document preview"}
                         className="doc-preview__image"
-                        onError={() => setPreviewError(true)}
+                        onLoad={() => setLoading(false)}
+                        onError={() => {
+                            setPreviewError(true);
+                            setLoading(false);
+                        }}
                     />
                 :   <iframe
                         src={embedUrl}
                         title={title || "Document preview"}
                         className="doc-preview__iframe"
-                        onError={() => setPreviewError(true)}
+                        onLoad={() => setLoading(false)}
+                        onError={() => {
+                            setPreviewError(true);
+                            setLoading(false);
+                        }}
                         allow="autoplay"
                         sandbox="allow-scripts allow-same-origin allow-popups"
                     />
@@ -177,7 +265,11 @@ const DocumentPreview = ({ url, title, mimeType }) => {
     );
 };
 
-/** Single attachment row */
+/* ═══════════════════════════════════════════════
+   AttachmentItem — single file row with icon,
+   metadata, and preview / download actions
+   ═══════════════════════════════════════════════ */
+
 const AttachmentItem = ({ attachment, onPreview }) => {
     const { filename, url, fileType, mimeType, size } = attachment;
     const displayName = filename || "Untitled File";
@@ -185,16 +277,16 @@ const AttachmentItem = ({ attachment, onPreview }) => {
     const canPreview = detectPreviewType(url, mimeType) !== "unsupported";
 
     return (
-        <div className="attachment-item">
+        <div className="attachment-item" tabIndex={0}>
             <span className="attachment-item__icon">
-                <IconComponent size={18} />
+                <IconComponent size={20} />
             </span>
             <div className="attachment-item__info">
                 <span className="attachment-item__name">{displayName}</span>
                 <span className="attachment-item__meta">
                     {fileType && (
                         <span className="attachment-item__type">
-                            {fileType}
+                            {fileType.toUpperCase()}
                         </span>
                     )}
                     {size && (
@@ -210,8 +302,10 @@ const AttachmentItem = ({ attachment, onPreview }) => {
                         type="button"
                         className="attachment-item__btn attachment-item__btn--preview"
                         onClick={() => onPreview?.(attachment)}
-                        title="Preview">
-                        Preview
+                        aria-label={`Preview ${displayName}`}
+                        title="Preview file">
+                        <LuEye size={14} />
+                        <span>Preview</span>
                     </button>
                 )}
                 {url && (
@@ -220,8 +314,9 @@ const AttachmentItem = ({ attachment, onPreview }) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="attachment-item__btn"
+                        aria-label={`Open ${displayName} in new tab`}
                         title="Open in new tab">
-                        <LuExternalLink size={14} />
+                        <LuDownload size={14} />
                     </a>
                 )}
             </div>
@@ -229,7 +324,29 @@ const AttachmentItem = ({ attachment, onPreview }) => {
     );
 };
 
-/* ─────────────── tabs config ─────────────── */
+/* ═══════════════════════════════════════════════
+   MetadataCard — labelled key/value row in the
+   Details tab with an optional leading icon
+   ═══════════════════════════════════════════════ */
+
+const MetadataCard = ({ icon: Icon, label, value }) => {
+    if (!value) return null;
+    return (
+        <div className="detail-row">
+            {Icon && (
+                <span className="detail-row__icon">
+                    <Icon size={15} />
+                </span>
+            )}
+            <span className="detail-row__label">{label}</span>
+            <span className="detail-row__value">{value}</span>
+        </div>
+    );
+};
+
+/* ═══════════════════════════════════════════════
+   Tabs configuration
+   ═══════════════════════════════════════════════ */
 
 const TABS = [
     { id: "preview", label: "Preview", icon: LuFile },
@@ -239,7 +356,9 @@ const TABS = [
     { id: "history", label: "History", icon: LuHistory },
 ];
 
-/* ─────────────── main component ─────────────── */
+/* ═══════════════════════════════════════════════
+   IssuanceViewer — main slide-over panel
+   ═══════════════════════════════════════════════ */
 
 const IssuanceViewer = ({
     issuance,
@@ -260,7 +379,7 @@ const IssuanceViewer = ({
     const [previewUrl, setPreviewUrl] = useState(null);
     const [previewMime, setPreviewMime] = useState(null);
 
-    // Reset tab & preview when issuance changes
+    // Reset tab & preview whenever the issuance changes
     useEffect(() => {
         if (issuance) {
             setActiveTab("preview");
@@ -269,7 +388,7 @@ const IssuanceViewer = ({
         }
     }, [issuance]);
 
-    // Lock body scroll
+    // Lock body scroll while the panel is open
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
         return () => {
@@ -277,7 +396,7 @@ const IssuanceViewer = ({
         };
     }, [isOpen]);
 
-    // Escape key
+    // Close on Escape key
     useEffect(() => {
         const handler = (e) => {
             if (e.key === "Escape" && isOpen) onClose();
@@ -285,6 +404,17 @@ const IssuanceViewer = ({
         document.addEventListener("keydown", handler);
         return () => document.removeEventListener("keydown", handler);
     }, [isOpen, onClose]);
+
+    const handleAttachmentPreview = useCallback((att) => {
+        setPreviewUrl(att.url);
+        setPreviewMime(att.mimeType || null);
+        setActiveTab("preview");
+    }, []);
+
+    const handleResetPreview = useCallback(() => {
+        setPreviewUrl(issuance?.documentUrl || null);
+        setPreviewMime(null);
+    }, [issuance?.documentUrl]);
 
     if (!issuance) return null;
 
@@ -302,7 +432,7 @@ const IssuanceViewer = ({
         attachments = [],
     } = issuance;
 
-    // Figure out which tabs to show
+    /* Determine which tabs are visible based on available data */
     const visibleTabs = TABS.filter((t) => {
         if (
             t.id === "attachments" &&
@@ -313,54 +443,37 @@ const IssuanceViewer = ({
         return true;
     });
 
-    const handleAttachmentPreview = (att) => {
-        setPreviewUrl(att.url);
-        setPreviewMime(att.mimeType || null);
-        setActiveTab("preview");
-    };
-
-    const handleResetPreview = () => {
-        setPreviewUrl(documentUrl || null);
-        setPreviewMime(null);
-    };
-
     return (
         <>
-            {/* Backdrop */}
+            {/* ── Backdrop overlay ── */}
             <div
                 className={`viewer-backdrop ${isOpen ? "viewer-backdrop--open" : ""}`}
                 onClick={onClose}
                 aria-hidden="true"
             />
 
-            {/* Panel */}
+            {/* ── Slide-over panel ── */}
             <div
                 className={`viewer-panel ${isOpen ? "viewer-panel--open" : ""}`}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="viewer-title">
-                {/* ── Header ── */}
+                {/* ═══════ HEADER ═══════
+                    Strong visual hierarchy — type badge, status/priority,
+                    large title, and compact meta row for quick scanning. */}
                 <header className="viewer-header">
-                    <div className="viewer-header__top">
+                    <div className="viewer-header__top-row">
+                        {/* Type pill — always visible, left-aligned */}
+                        <span className="viewer-header__type-badge">
+                            {type || "Document"}
+                        </span>
                         <button
                             type="button"
                             className="viewer-header__close"
                             onClick={onClose}
                             aria-label="Close viewer">
-                            <LuX size={20} />
+                            <LuX size={18} />
                         </button>
-                    </div>
-
-                    <div className="viewer-header__meta">
-                        <span className="viewer-header__type">
-                            {type || "Document"}
-                        </span>
-                        {showWorkflowInfo && status && (
-                            <StatusBadge status={status} />
-                        )}
-                        {showWorkflowInfo && priority && (
-                            <PriorityBadge priority={priority} />
-                        )}
                     </div>
 
                     <h2 id="viewer-title" className="viewer-header__title">
@@ -371,16 +484,34 @@ const IssuanceViewer = ({
                         <p className="viewer-header__desc">{description}</p>
                     )}
 
-                    {/* Quick meta row */}
-                    <div className="viewer-header__quick-meta">
-                        {department && <span>{department}</span>}
-                        {issuedDate && <span>{formatDate(issuedDate)}</span>}
-                        {issuedBy && <span>by {issuedBy}</span>}
+                    {/* Compact meta chips — department · date · author */}
+                    <div className="viewer-header__meta-row">
+                        {department && (
+                            <span className="viewer-header__meta-chip">
+                                <LuBuilding2 size={13} />
+                                {department}
+                            </span>
+                        )}
+                        {issuedDate && (
+                            <span className="viewer-header__meta-chip">
+                                <LuCalendar size={13} />
+                                {formatDate(issuedDate)}
+                            </span>
+                        )}
+                        {issuedBy && (
+                            <span className="viewer-header__meta-chip">
+                                <LuUser size={13} />
+                                {issuedBy}
+                            </span>
+                        )}
                     </div>
                 </header>
 
-                {/* ── Tab bar ── */}
-                <nav className="viewer-tabs" role="tablist">
+                {/* ═══════ TAB BAR ═══════ */}
+                <nav
+                    className="viewer-tabs"
+                    role="tablist"
+                    aria-label="Issuance sections">
                     {visibleTabs.map((tab) => {
                         const Icon = tab.icon;
                         const count =
@@ -396,10 +527,13 @@ const IssuanceViewer = ({
                                 type="button"
                                 role="tab"
                                 aria-selected={activeTab === tab.id}
+                                aria-controls={`panel-${tab.id}`}
                                 className={`viewer-tabs__btn ${activeTab === tab.id ? "viewer-tabs__btn--active" : ""}`}
                                 onClick={() => setActiveTab(tab.id)}>
                                 <Icon size={16} />
-                                <span>{tab.label}</span>
+                                <span className="viewer-tabs__label">
+                                    {tab.label}
+                                </span>
                                 {count != null && count > 0 && (
                                     <span className="viewer-tabs__count">
                                         {count}
@@ -410,11 +544,14 @@ const IssuanceViewer = ({
                     })}
                 </nav>
 
-                {/* ── Tab content ── */}
+                {/* ═══════ TAB CONTENT ═══════ */}
                 <div className="viewer-body">
-                    {/* Preview tab */}
+                    {/* ── Preview tab ── */}
                     {activeTab === "preview" && (
-                        <div className="viewer-tab-panel">
+                        <div
+                            className="viewer-tab-panel"
+                            id="panel-preview"
+                            role="tabpanel">
                             {previewUrl !== documentUrl && (
                                 <button
                                     type="button"
@@ -432,17 +569,33 @@ const IssuanceViewer = ({
                         </div>
                     )}
 
-                    {/* Details tab */}
+                    {/* ── Details tab ── */}
                     {activeTab === "details" && (
-                        <div className="viewer-tab-panel">
+                        <div
+                            className="viewer-tab-panel"
+                            id="panel-details"
+                            role="tabpanel">
+                            <h3 className="viewer-section-title">
+                                Issuance Details
+                            </h3>
                             <div className="detail-grid">
-                                <DetailRow label="Type" value={type} />
-                                <DetailRow label="Category" value={category} />
-                                <DetailRow
+                                <MetadataCard
+                                    icon={LuTag}
+                                    label="Type"
+                                    value={type}
+                                />
+                                <MetadataCard
+                                    icon={LuFolderOpen}
+                                    label="Category"
+                                    value={category}
+                                />
+                                <MetadataCard
+                                    icon={LuBuilding2}
                                     label="Department"
                                     value={department}
                                 />
-                                <DetailRow
+                                <MetadataCard
+                                    icon={LuCalendar}
                                     label="Date Issued"
                                     value={
                                         issuedDate ?
@@ -450,16 +603,11 @@ const IssuanceViewer = ({
                                         :   null
                                     }
                                 />
-                                <DetailRow label="Issued By" value={issuedBy} />
-                                {showWorkflowInfo && (
-                                    <DetailRow label="Status" value={status} />
-                                )}
-                                {showWorkflowInfo && (
-                                    <DetailRow
-                                        label="Priority"
-                                        value={priority}
-                                    />
-                                )}
+                                <MetadataCard
+                                    icon={LuUser}
+                                    label="Issued By"
+                                    value={issuedBy}
+                                />
                             </div>
 
                             {documentUrl && (
@@ -477,11 +625,24 @@ const IssuanceViewer = ({
                         </div>
                     )}
 
-                    {/* Attachments tab */}
+                    {/* ── Attachments tab ── */}
                     {activeTab === "attachments" && (
-                        <div className="viewer-tab-panel">
+                        <div
+                            className="viewer-tab-panel"
+                            id="panel-attachments"
+                            role="tabpanel">
+                            <h3 className="viewer-section-title">
+                                Attached Files
+                                <span className="viewer-section-title__count">
+                                    {attachments.length}
+                                </span>
+                            </h3>
                             {attachments.length === 0 ?
-                                <p className="viewer-empty">No attachments.</p>
+                                <EmptyState
+                                    icon={LuPaperclip}
+                                    title="No attachments uploaded"
+                                    subtitle="Files attached to this issuance will appear here."
+                                />
                             :   <div className="attachment-list">
                                     {attachments.map((att, i) => (
                                         <AttachmentItem
@@ -495,9 +656,12 @@ const IssuanceViewer = ({
                         </div>
                     )}
 
-                    {/* Comments tab */}
+                    {/* ── Comments tab ── */}
                     {activeTab === "comments" && (
-                        <div className="viewer-tab-panel">
+                        <div
+                            className="viewer-tab-panel"
+                            id="panel-comments"
+                            role="tabpanel">
                             <CommentList
                                 comments={comments}
                                 loading={commentsLoading}
@@ -510,9 +674,12 @@ const IssuanceViewer = ({
                         </div>
                     )}
 
-                    {/* History tab */}
+                    {/* ── History tab ── */}
                     {activeTab === "history" && (
-                        <div className="viewer-tab-panel">
+                        <div
+                            className="viewer-tab-panel"
+                            id="panel-history"
+                            role="tabpanel">
                             <HistoryViewer
                                 statusHistory={statusHistory}
                                 versionHistory={versionHistory}
@@ -522,17 +689,6 @@ const IssuanceViewer = ({
                 </div>
             </div>
         </>
-    );
-};
-
-/** Small helper for the details grid */
-const DetailRow = ({ label, value }) => {
-    if (!value) return null;
-    return (
-        <div className="detail-row">
-            <span className="detail-row__label">{label}</span>
-            <span className="detail-row__value">{value}</span>
-        </div>
     );
 };
 
