@@ -79,12 +79,32 @@ class IssuanceController {
     }
 
     /**
-     * Get a single issuance by ID
-     * GET /api/issuances/:id
+     * Get a single issuance by ID (admin — any status)
+     * GET /api/admin/issuances/:id
      */
     async getById(req, res, next) {
         try {
             const issuance = await issuanceService.getById(req.params.id);
+
+            res.json({
+                success: true,
+                data: { issuance },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    /**
+     * Get a single PUBLISHED issuance by ID (public endpoint)
+     * GET /api/issuances/:id
+     * Only returns issuances with status PUBLISHED.
+     */
+    async getByIdPublic(req, res, next) {
+        try {
+            const issuance = await issuanceService.getPublishedById(
+                req.params.id,
+            );
 
             res.json({
                 success: true,

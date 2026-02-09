@@ -1,71 +1,76 @@
 const express = require("express");
 const router = express.Router();
 const { issuanceController, commentController } = require("../controllers");
+const { authenticate } = require("../middlewares/auth.middleware");
+const {
+    commentValidation,
+    validate,
+} = require("../middlewares/validation.middleware");
 
 /**
- * Issuance Routes
+ * Public Issuance Routes
  * /api/issuances
+ *
+ * READ-ONLY access to published issuances.
+ * All mutations (create, update, delete, status changes, attachments)
+ * are handled exclusively via /api/admin/issuances/* which requires
+ * ADMIN or SUPER_ADMIN role.
+ *
+ * The only write operation allowed here is posting comments,
+ * which requires JWT authentication.
  */
 
-// Public Endpoints
+// ============================================================
+// PUBLIC READ-ONLY ENDPOINTS (no auth required)
+// ============================================================
 
 // GET /api/issuances - Get all published issuances
 router.get("/", issuanceController.getAll);
 
-// Admin Endpoints (No auth logic required yet)
-// NOTE: Must be before /:id to avoid Express matching "admin" as an ID
+// GET /api/issuances/:id - Get a single published issuance by ID
+router.get("/:id", issuanceController.getByIdPublic);
 
-// GET /api/issuances/admin/all - Get all issuances with filters
-router.get("/admin/all", issuanceController.getAllAdmin);
+// ============================================================
+// PUBLIC COMMENT ENDPOINTS
+// ============================================================
 
-// GET /api/issuances/:id - Get a single issuance by ID
-router.get("/:id", issuanceController.getById);
-
-// POST /api/issuances - Create a new issuance
-router.post("/", issuanceController.create);
-
-// PUT /api/issuances/:id - Update an existing issuance
-router.put("/:id", issuanceController.update);
-
-// DELETE /api/issuances/:id - Delete an issuance
-router.delete("/:id", issuanceController.delete);
-
-// Workflow Endpoints
-
-// PATCH /api/issuances/:id/status - Update issuance status
-router.patch("/:id/status", issuanceController.updateStatus);
-
-// GET /api/issuances/:id/valid-statuses - Get valid next statuses
-router.get("/:id/valid-statuses", issuanceController.getValidStatuses);
-
-// Attachment Endpoints
-
-// POST /api/issuances/:id/attachments - Add attachment
-router.post("/:id/attachments", issuanceController.addAttachment);
-
-// DELETE /api/issuances/:id/attachments/:attachmentId - Remove attachment
-router.delete(
-    "/:id/attachments/:attachmentId",
-    issuanceController.removeAttachment,
-);
-
-// History Endpoints
-
-// GET /api/issuances/:id/status-history - Get status history
-router.get("/:id/status-history", issuanceController.getStatusHistory);
-
-// GET /api/issuances/:id/version-history - Get version history
-router.get("/:id/version-history", issuanceController.getVersionHistory);
-
-// Comment Endpoints (nested under issuances)
-
-// GET /api/issuances/:issuanceId/comments - Get comments for issuance
+// GET /api/issuances/:issuanceId/comments - Get public comments for issuance
 router.get("/:issuanceId/comments", commentController.getByIssuance);
-
-// POST /api/issuances/:issuanceId/comments - Add comment to issuance
-router.post("/:issuanceId/comments", commentController.create);
 
 // GET /api/issuances/:issuanceId/comments/count - Get comment count
 router.get("/:issuanceId/comments/count", commentController.getCount);
+
+// POST /api/issuances/:issuanceId/comments - Add comment (requires auth)
+router.post(
+    "/:issuanceId/comments",
+    authenticate,
+    commentValidation.create,
+    validate,
+    commentController.create,
+);
+
+// ============================================================
+// DENY ALL OTHER MUTATIONS ON PUBLIC ROUTES
+// Returns 403 for any POST, PUT, PATCH, DELETE attempts that
+// are not explicitly defined above.
+// ============================================================
+router.all("/", denyMutation);
+router.all("/:id", denyMutation);
+router.all("/:id/*", denyMutation);
+
+/**
+ * Middleware to reject non-GET requests with 403.
+ * GET requests pass through to Express's default 404 handler.
+ */
+function denyMutation(req, res, next) {
+    if (req.method !== "GET") {
+        return res.status(403).json({
+            success: false,
+            message:
+                "Forbidden. Mutations are only allowed through /api/admin/issuances.",
+        });
+    }
+    next();
+}
 
 module.exports = router;

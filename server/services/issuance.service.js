@@ -68,7 +68,7 @@ class IssuanceService {
     }
 
     /**
-     * Get a single issuance by ID
+     * Get a single issuance by ID (admin — returns any status)
      */
     async getById(id) {
         const issuance = await Issuance.findById(id)
@@ -76,6 +76,28 @@ class IssuanceService {
             .populate("lastModifiedBy", "name email")
             .populate("statusHistory.changedBy", "name email")
             .populate("versionHistory.changedBy", "name email")
+            .lean();
+
+        if (!issuance) {
+            const error = new Error("Issuance not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        return issuance;
+    }
+
+    /**
+     * Get a single PUBLISHED issuance by ID (public-safe)
+     * Returns 404 for non-published issuances to prevent data leaks.
+     */
+    async getPublishedById(id) {
+        const issuance = await Issuance.findOne({
+            _id: id,
+            status: "PUBLISHED",
+            isDeleted: { $ne: true },
+        })
+            .populate("createdBy", "name email")
             .lean();
 
         if (!issuance) {
