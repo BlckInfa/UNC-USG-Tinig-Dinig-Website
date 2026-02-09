@@ -4,6 +4,7 @@ const {
     ISSUANCE_PRIORITY,
     ISSUANCE_TYPES,
     COMMENT_VISIBILITY,
+    ATTACHMENT_TYPES,
 } = require("../../shared/constants");
 
 /**
@@ -247,6 +248,36 @@ const issuanceValidation = {
             .trim()
             .isLength({ max: 500 })
             .withMessage("Reason cannot exceed 500 characters"),
+        validate,
+    ],
+    addAttachment: [
+        body("filename")
+            .trim()
+            .notEmpty()
+            .withMessage("Filename is required")
+            .isLength({ max: 255 })
+            .withMessage("Filename cannot exceed 255 characters"),
+        body("url")
+            .trim()
+            .notEmpty()
+            .withMessage("URL is required")
+            .isURL()
+            .withMessage("Must be a valid URL"),
+        body("fileType")
+            .optional()
+            .isIn(Object.values(ATTACHMENT_TYPES))
+            .withMessage(
+                `Invalid file type. Must be one of: ${Object.values(ATTACHMENT_TYPES).join(", ")}`,
+            ),
+        body("mimeType")
+            .optional()
+            .trim()
+            .isLength({ max: 100 })
+            .withMessage("MIME type cannot exceed 100 characters"),
+        body("size")
+            .optional()
+            .isInt({ min: 0 })
+            .withMessage("Size must be a non-negative integer"),
         validate,
     ],
 };

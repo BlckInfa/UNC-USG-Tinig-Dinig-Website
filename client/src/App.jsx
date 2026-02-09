@@ -17,12 +17,10 @@ import TinigDashboard from "./features/tinig/pages/TinigDashboard";
 import OrgChart from "./features/org/pages/OrgChart";
 import { IssuanceListPage, AdminIssuanceList } from "./features/issuances";
 
-// Hooks
-import { useAuth } from "./hooks/useAuth";
+// Route Guards
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-    const { isAuthenticated } = useAuth();
-
     return (
         <Routes>
             {/* Public Routes */}
@@ -33,16 +31,23 @@ function App() {
                 <Route path="/issuances" element={<IssuanceListPage />} />
             </Route>
 
-            {/* Protected Routes */}
+            {/* Dashboard Routes — open to all users */}
             <Route element={<DashboardLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/finance" element={<FinanceDashboard />} />
                 <Route path="/tinig" element={<TinigDashboard />} />
                 <Route path="/organization" element={<OrgChart />} />
+
+                {/* Admin-only — requires login + ADMIN or SUPER_ADMIN role */}
                 <Route
-                    path="/admin/issuances"
-                    element={<AdminIssuanceList />}
-                />
+                    element={
+                        <ProtectedRoute roles={["ADMIN", "SUPER_ADMIN"]} />
+                    }>
+                    <Route
+                        path="/admin/issuances"
+                        element={<AdminIssuanceList />}
+                    />
+                </Route>
             </Route>
 
             {/* 404 */}

@@ -3,12 +3,19 @@ import { ENDPOINTS } from "../../../config";
 
 /**
  * Issuance Service
- * Handles all issuance-related API calls
+ * Handles all issuance-related API calls.
+ *
+ * PUBLIC endpoints  → ENDPOINTS.ISSUANCES.*       (read-only, published data)
+ * ADMIN  endpoints  → ENDPOINTS.ADMIN_ISSUANCES.* (mutations, full access, requires JWT)
  */
 export const issuanceService = {
+    // ================================================================
+    // PUBLIC — read-only, no auth required
+    // ================================================================
+
     /**
      * Get all published issuances (public)
-     * @param {Object} params - Query parameters (e.g., type filter)
+     * GET /api/issuances
      */
     getAll: async (params = {}) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.BASE, { params });
@@ -16,139 +23,17 @@ export const issuanceService = {
     },
 
     /**
-     * Get all issuances with filters (admin)
-     * @param {Object} params - Query parameters (status, type, priority, department, category, page, limit)
+     * Get a single published issuance (public)
+     * GET /api/issuances/:id
      */
-    getAllAdmin: async (params = {}) => {
-        const response = await api.get(ENDPOINTS.ISSUANCES.ADMIN, { params });
-        return response.data?.data || { issuances: [], pagination: {} };
-    },
-
-    /**
-     * Get issuance by ID
-     * @param {string} id - Issuance ID
-     */
-    getById: async (id) => {
+    getPublicById: async (id) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.BY_ID(id));
         return response.data?.data?.issuance || null;
     },
 
     /**
-     * Create a new issuance
-     * @param {Object} data - Issuance data
-     */
-    create: async (data) => {
-        const response = await api.post(ENDPOINTS.ISSUANCES.BASE, data);
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Update an issuance
-     * @param {string} id - Issuance ID
-     * @param {Object} data - Update data
-     */
-    update: async (id, data) => {
-        const response = await api.put(ENDPOINTS.ISSUANCES.BY_ID(id), data);
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Delete an issuance
-     * @param {string} id - Issuance ID
-     */
-    delete: async (id) => {
-        const response = await api.delete(ENDPOINTS.ISSUANCES.BY_ID(id));
-        return response.data;
-    },
-
-    /**
-     * Update issuance status (workflow transition)
-     * @param {string} id - Issuance ID
-     * @param {string} status - New status
-     * @param {string} reason - Reason for status change
-     */
-    updateStatus: async (id, status, reason = "") => {
-        const response = await api.patch(ENDPOINTS.ISSUANCES.STATUS(id), {
-            status,
-            reason,
-        });
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Get valid next statuses for an issuance
-     * @param {string} id - Issuance ID
-     */
-    getValidStatuses: async (id) => {
-        const response = await api.get(ENDPOINTS.ISSUANCES.VALID_STATUSES(id));
-        return (
-            response.data?.data || { currentStatus: "", validNextStatuses: [] }
-        );
-    },
-
-    /**
-     * Add attachment to an issuance (JSON metadata)
-     * @param {string} id - Issuance ID
-     * @param {Object} attachment - Attachment data (filename, url, fileType, mimeType, size)
-     */
-    addAttachment: async (id, attachment) => {
-        const response = await api.post(
-            ENDPOINTS.ISSUANCES.ATTACHMENTS(id),
-            attachment,
-        );
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Upload a file as an attachment to an issuance (multipart)
-     * @param {string} id - Issuance ID
-     * @param {File} file - Browser File object
-     */
-    uploadAttachment: async (id, file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        const response = await api.post(
-            ENDPOINTS.ISSUANCES.ATTACHMENTS(id),
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } },
-        );
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Remove attachment from an issuance
-     * @param {string} id - Issuance ID
-     * @param {string} attachmentId - Attachment ID
-     */
-    removeAttachment: async (id, attachmentId) => {
-        const response = await api.delete(
-            ENDPOINTS.ISSUANCES.ATTACHMENT_BY_ID(id, attachmentId),
-        );
-        return response.data?.data?.issuance || null;
-    },
-
-    /**
-     * Get status history for an issuance
-     * @param {string} id - Issuance ID
-     */
-    getStatusHistory: async (id) => {
-        const response = await api.get(ENDPOINTS.ISSUANCES.STATUS_HISTORY(id));
-        return response.data?.data?.history || [];
-    },
-
-    /**
-     * Get version history for an issuance
-     * @param {string} id - Issuance ID
-     */
-    getVersionHistory: async (id) => {
-        const response = await api.get(ENDPOINTS.ISSUANCES.VERSION_HISTORY(id));
-        return response.data?.data?.history || [];
-    },
-
-    /**
-     * Get comments for an issuance
-     * @param {string} id - Issuance ID
-     * @param {Object} params - Pagination params
+     * Get comments for an issuance (public)
+     * GET /api/issuances/:id/comments
      */
     getComments: async (id, params = {}) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.COMMENTS(id), {
@@ -158,10 +43,8 @@ export const issuanceService = {
     },
 
     /**
-     * Add comment to an issuance
-     * @param {string} id - Issuance ID
-     * @param {string} content - Comment content
-     * @param {string} parentCommentId - Optional parent comment for replies
+     * Add comment to an issuance (requires auth, public route)
+     * POST /api/issuances/:id/comments
      */
     addComment: async (id, content, parentCommentId = null) => {
         const response = await api.post(ENDPOINTS.ISSUANCES.COMMENTS(id), {
@@ -172,23 +55,162 @@ export const issuanceService = {
     },
 
     /**
-     * Get comment count for an issuance
-     * @param {string} id - Issuance ID
+     * Get comment count for an issuance (public)
+     * GET /api/issuances/:id/comments/count
      */
     getCommentCount: async (id) => {
         const response = await api.get(ENDPOINTS.ISSUANCES.COMMENTS_COUNT(id));
         return response.data?.data?.count || 0;
     },
+
+    // ================================================================
+    // ADMIN — requires authenticate + authorize(ADMIN, SUPER_ADMIN)
+    // All calls go through /api/admin/issuances/*
+    // ================================================================
+
+    /**
+     * Get all issuances with filters (admin)
+     * GET /api/admin/issuances
+     */
+    getAllAdmin: async (params = {}) => {
+        const response = await api.get(ENDPOINTS.ADMIN_ISSUANCES.BASE, {
+            params,
+        });
+        return response.data?.data || { issuances: [], pagination: {} };
+    },
+
+    /**
+     * Get issuance by ID (admin — any status)
+     * GET /api/admin/issuances/:id
+     */
+    getById: async (id) => {
+        const response = await api.get(ENDPOINTS.ADMIN_ISSUANCES.BY_ID(id));
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Create a new issuance (admin)
+     * POST /api/admin/issuances
+     */
+    create: async (data) => {
+        const response = await api.post(ENDPOINTS.ADMIN_ISSUANCES.BASE, data);
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Update an issuance (admin)
+     * PUT /api/admin/issuances/:id
+     */
+    update: async (id, data) => {
+        const response = await api.put(
+            ENDPOINTS.ADMIN_ISSUANCES.BY_ID(id),
+            data,
+        );
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Delete an issuance (admin)
+     * DELETE /api/admin/issuances/:id
+     */
+    delete: async (id) => {
+        const response = await api.delete(ENDPOINTS.ADMIN_ISSUANCES.BY_ID(id));
+        return response.data;
+    },
+
+    /**
+     * Update issuance status — workflow transition (admin)
+     * PATCH /api/admin/issuances/:id/status
+     */
+    updateStatus: async (id, status, reason = "") => {
+        const response = await api.patch(ENDPOINTS.ADMIN_ISSUANCES.STATUS(id), {
+            status,
+            reason,
+        });
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Get valid next statuses for an issuance (admin)
+     * GET /api/admin/issuances/:id/valid-statuses
+     */
+    getValidStatuses: async (id) => {
+        const response = await api.get(
+            ENDPOINTS.ADMIN_ISSUANCES.VALID_STATUSES(id),
+        );
+        return (
+            response.data?.data || { currentStatus: "", validNextStatuses: [] }
+        );
+    },
+
+    /**
+     * Add attachment to an issuance — JSON metadata (admin)
+     * POST /api/admin/issuances/:id/attachments
+     */
+    addAttachment: async (id, attachment) => {
+        const response = await api.post(
+            ENDPOINTS.ADMIN_ISSUANCES.ATTACHMENTS(id),
+            attachment,
+        );
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Upload a file as an attachment to an issuance — multipart (admin)
+     * POST /api/admin/issuances/:id/attachments
+     */
+    uploadAttachment: async (id, file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const response = await api.post(
+            ENDPOINTS.ADMIN_ISSUANCES.ATTACHMENTS(id),
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } },
+        );
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Remove attachment from an issuance (admin)
+     * DELETE /api/admin/issuances/:id/attachments/:attachmentId
+     */
+    removeAttachment: async (id, attachmentId) => {
+        const response = await api.delete(
+            ENDPOINTS.ADMIN_ISSUANCES.ATTACHMENT_BY_ID(id, attachmentId),
+        );
+        return response.data?.data?.issuance || null;
+    },
+
+    /**
+     * Get status history for an issuance (admin)
+     * GET /api/admin/issuances/:id/status-history
+     */
+    getStatusHistory: async (id) => {
+        const response = await api.get(
+            ENDPOINTS.ADMIN_ISSUANCES.STATUS_HISTORY(id),
+        );
+        return response.data?.data?.history || [];
+    },
+
+    /**
+     * Get version history for an issuance (admin)
+     * GET /api/admin/issuances/:id/version-history
+     */
+    getVersionHistory: async (id) => {
+        const response = await api.get(
+            ENDPOINTS.ADMIN_ISSUANCES.VERSION_HISTORY(id),
+        );
+        return response.data?.data?.history || [];
+    },
 };
 
 /**
- * Comment Service (standalone operations)
+ * Comment Service (standalone operations — requires auth)
  */
 export const commentService = {
     /**
      * Update a comment
-     * @param {string} id - Comment ID
-     * @param {string} content - New content
+     * PUT /api/comments/:id
      */
     update: async (id, content) => {
         const response = await api.put(ENDPOINTS.COMMENTS.BY_ID(id), {
@@ -199,7 +221,7 @@ export const commentService = {
 
     /**
      * Delete a comment
-     * @param {string} id - Comment ID
+     * DELETE /api/comments/:id
      */
     delete: async (id) => {
         const response = await api.delete(ENDPOINTS.COMMENTS.BY_ID(id));

@@ -56,8 +56,9 @@ const AdminIssuanceForm = ({
             return {
                 ...EMPTY_FORM,
                 ...initialData,
-                // Map model field "type" back to form field "category"
-                category: initialData.category || initialData.type || "",
+                // Map model field "type" back to form field "category" dropdown
+                // "type" is the enum (RESOLUTION, etc.), "category" is free-text
+                category: initialData.type || "",
                 tags:
                     Array.isArray(initialData.tags) ?
                         initialData.tags.join(", ")
@@ -125,6 +126,10 @@ const AdminIssuanceForm = ({
                 :   [],
         };
 
+        // Remove form-only fields that don't map to model fields
+        delete payload.category;
+        delete payload.effectiveDate;
+
         onSubmit?.(payload);
     };
 
@@ -133,7 +138,7 @@ const AdminIssuanceForm = ({
             setForm({
                 ...EMPTY_FORM,
                 ...initialData,
-                category: initialData.category || initialData.type || "",
+                category: initialData.type || "",
                 tags:
                     Array.isArray(initialData.tags) ?
                         initialData.tags.join(", ")

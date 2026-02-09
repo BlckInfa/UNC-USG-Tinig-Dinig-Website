@@ -114,8 +114,14 @@ router.patch(
 /**
  * POST /api/admin/issuances/:id/attachments
  * Add attachment metadata (link) to an issuance
+ * Validates filename and url are present and well-formed
  */
-router.post("/issuances/:id/attachments", issuanceController.addAttachment);
+router.post(
+    "/issuances/:id/attachments",
+    issuanceValidation.addAttachment,
+    validate,
+    issuanceController.addAttachment,
+);
 
 /**
  * DELETE /api/admin/issuances/:id/attachments/:attachmentId

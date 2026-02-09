@@ -44,20 +44,27 @@ export const ENDPOINTS = {
         STRUCTURE: "/org/structure",
     },
 
-    // Issuances
+    // Issuances — Public (read-only, published data)
     ISSUANCES: {
         BASE: "/issuances",
         BY_ID: (id) => `/issuances/${id}`,
-        ADMIN: "/issuances/admin/all",
-        STATUS: (id) => `/issuances/${id}/status`,
-        VALID_STATUSES: (id) => `/issuances/${id}/valid-statuses`,
-        ATTACHMENTS: (id) => `/issuances/${id}/attachments`,
-        ATTACHMENT_BY_ID: (id, attachmentId) =>
-            `/issuances/${id}/attachments/${attachmentId}`,
-        STATUS_HISTORY: (id) => `/issuances/${id}/status-history`,
-        VERSION_HISTORY: (id) => `/issuances/${id}/version-history`,
         COMMENTS: (id) => `/issuances/${id}/comments`,
         COMMENTS_COUNT: (id) => `/issuances/${id}/comments/count`,
+    },
+
+    // Issuances — Admin (requires authenticate + authorize)
+    ADMIN_ISSUANCES: {
+        BASE: "/admin/issuances",
+        BY_ID: (id) => `/admin/issuances/${id}`,
+        STATUS: (id) => `/admin/issuances/${id}/status`,
+        VALID_STATUSES: (id) => `/admin/issuances/${id}/valid-statuses`,
+        ATTACHMENTS: (id) => `/admin/issuances/${id}/attachments`,
+        ATTACHMENT_BY_ID: (id, attachmentId) =>
+            `/admin/issuances/${id}/attachments/${attachmentId}`,
+        STATUS_HISTORY: (id) => `/admin/issuances/${id}/status-history`,
+        VERSION_HISTORY: (id) => `/admin/issuances/${id}/version-history`,
+        COMMENTS: (id) => `/admin/issuances/${id}/comments`,
+        COMMENTS_COUNT: (id) => `/admin/issuances/${id}/comments/count`,
     },
 
     // Comments

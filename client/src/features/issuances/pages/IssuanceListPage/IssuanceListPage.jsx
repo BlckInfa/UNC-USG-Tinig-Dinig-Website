@@ -139,7 +139,9 @@ const IssuanceListPage = () => {
 
     const handleIssuanceClick = async (issuance) => {
         try {
-            const fullIssuance = await issuanceService.getById(issuance._id);
+            const fullIssuance = await issuanceService.getPublicById(
+                issuance._id,
+            );
             setSelectedIssuance(fullIssuance);
 
             // Fetch real comments from the API

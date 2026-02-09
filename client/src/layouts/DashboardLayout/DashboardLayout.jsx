@@ -8,6 +8,7 @@ import {
     LuMoon,
     LuSun,
     LuLogOut,
+    LuLogIn,
 } from "react-icons/lu";
 import { useAuth } from "../../hooks/useAuth";
 import { useTheme } from "../../context/ThemeContext";
@@ -17,7 +18,7 @@ import "./DashboardLayout.css";
  * Dashboard Layout - For authenticated users
  */
 const DashboardLayout = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, isAuthenticated } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
@@ -74,15 +75,23 @@ const DashboardLayout = () => {
                             :   <LuSun size={18} />}
                         </button>
                         <div className="user-menu">
-                            <span className="user-name">
-                                {user?.name || "User"}
-                            </span>
-                            <button
-                                className="logout-btn"
-                                onClick={handleLogout}>
-                                <LuLogOut size={16} />
-                                Logout
-                            </button>
+                            {isAuthenticated ?
+                                <>
+                                    <span className="user-name">
+                                        {user?.name || "User"}
+                                    </span>
+                                    <button
+                                        className="logout-btn"
+                                        onClick={handleLogout}>
+                                        <LuLogOut size={16} />
+                                        Logout
+                                    </button>
+                                </>
+                            :   <Link to="/login" className="logout-btn">
+                                    <LuLogIn size={16} />
+                                    Login
+                                </Link>
+                            }
                         </div>
                     </div>
                 </header>
