@@ -1,0 +1,140 @@
+[
+    {
+        "_id": "iso-001",
+        "title": "Resolution No. 2025-001: Allocation of Student Activity Fund",
+        "type": "RESOLUTION",
+        "description": "A resolution allocating the Student Activity Fund for the Academic Year 2025–2026, covering cultural events, sports competitions, and academic outreach programs.",
+        "documentUrl": "/documents/resolution-2025-001.pdf",
+        "issuedBy": "University Student Government",
+        "issuedDate": "2025-08-15T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Finance",
+        "priority": "HIGH",
+        "department": "Executive",
+        "tags": ["budget", "student-activity-fund", "AY-2025-2026"],
+        "attachments": [],
+        "commentCount": 3,
+        "createdAt": "2025-08-10T08:30:00.000Z",
+        "updatedAt": "2025-08-15T14:00:00.000Z"
+    },
+    {
+        "_id": "iso-002",
+        "title": "Memorandum No. 2025-004: Campus Clean-Up Drive Guidelines",
+        "type": "MEMORANDUM",
+        "description": "Official guidelines for the university-wide campus clean-up drive scheduled for September 2025, including volunteer sign-up procedures and waste segregation protocols.",
+        "documentUrl": "/documents/memo-2025-004.pdf",
+        "issuedBy": "Committee on Environment",
+        "issuedDate": "2025-09-01T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Environment",
+        "priority": "MEDIUM",
+        "department": "Committee on Environment",
+        "tags": ["clean-up", "environment", "volunteer"],
+        "attachments": [
+            {
+                "_id": "att-001",
+                "filename": "cleanup-schedule.pdf",
+                "url": "/uploads/cleanup-schedule.pdf",
+                "fileType": "document",
+                "mimeType": "application/pdf",
+                "size": 204800,
+                "uploadedAt": "2025-08-28T10:00:00.000Z"
+            }
+        ],
+        "commentCount": 1,
+        "createdAt": "2025-08-28T09:00:00.000Z",
+        "updatedAt": "2025-09-01T12:00:00.000Z"
+    },
+    {
+        "_id": "iso-003",
+        "title": "Resolution No. 2025-007: Recognition of Outstanding Student Organizations",
+        "type": "RESOLUTION",
+        "description": "A resolution recognizing student organizations that demonstrated exemplary performance and community impact during Academic Year 2024–2025.",
+        "documentUrl": "/documents/resolution-2025-007.pdf",
+        "issuedBy": "Legislative Assembly",
+        "issuedDate": "2025-10-05T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Recognition",
+        "priority": "LOW",
+        "department": "Legislative",
+        "tags": ["recognition", "student-orgs", "awards"],
+        "attachments": [],
+        "commentCount": 5,
+        "createdAt": "2025-09-20T07:00:00.000Z",
+        "updatedAt": "2025-10-05T16:00:00.000Z"
+    },
+    {
+        "_id": "iso-004",
+        "title": "Circular No. 2025-002: Updated Election Code for USG Officers",
+        "type": "CIRCULAR",
+        "description": "Amendments to the USG Election Code, including revised filing of candidacy requirements, campaign spending limits, and digital campaigning rules.",
+        "documentUrl": "/documents/circular-2025-002.pdf",
+        "issuedBy": "Commission on Elections",
+        "issuedDate": "2025-11-10T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Governance",
+        "priority": "HIGH",
+        "department": "COMELEC",
+        "tags": ["election", "governance", "election-code"],
+        "attachments": [
+            {
+                "_id": "att-002",
+                "filename": "election-code-amendments.pdf",
+                "url": "/uploads/election-code-amendments.pdf",
+                "fileType": "document",
+                "mimeType": "application/pdf",
+                "size": 512000,
+                "uploadedAt": "2025-11-08T09:30:00.000Z"
+            }
+        ],
+        "commentCount": 8,
+        "createdAt": "2025-11-01T06:00:00.000Z",
+        "updatedAt": "2025-11-10T15:30:00.000Z"
+    },
+    {
+        "_id": "iso-005",
+        "title": "Report: Mid-Year Financial Audit Summary AY 2025–2026",
+        "type": "REPORT",
+        "description": "Summary of the mid-year financial audit covering all USG-funded projects, expenditures, and remaining budget for the second semester.",
+        "documentUrl": "/documents/report-midyear-audit-2025.pdf",
+        "issuedBy": "Committee on Finance and Audit",
+        "issuedDate": "2026-01-20T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Finance",
+        "priority": "HIGH",
+        "department": "Finance",
+        "tags": ["audit", "finance", "mid-year", "report"],
+        "attachments": [
+            {
+                "_id": "att-003",
+                "filename": "audit-details-spreadsheet.xlsx",
+                "url": "/uploads/audit-details-spreadsheet.xlsx",
+                "fileType": "document",
+                "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "size": 1048576,
+                "uploadedAt": "2026-01-18T11:00:00.000Z"
+            }
+        ],
+        "commentCount": 2,
+        "createdAt": "2026-01-15T08:00:00.000Z",
+        "updatedAt": "2026-01-20T13:00:00.000Z"
+    },
+    {
+        "_id": "iso-006",
+        "title": "Memorandum No. 2026-001: Guidelines for Student Organization Accreditation",
+        "type": "MEMORANDUM",
+        "description": "Updated accreditation guidelines for student organizations applying for recognition and renewal for AY 2026–2027, including new requirements for community engagement.",
+        "documentUrl": "/documents/memo-2026-001.pdf",
+        "issuedBy": "Office of Student Affairs",
+        "issuedDate": "2026-02-01T00:00:00.000Z",
+        "status": "PUBLISHED",
+        "category": "Accreditation",
+        "priority": "MEDIUM",
+        "department": "Student Affairs",
+        "tags": ["accreditation", "student-orgs", "guidelines"],
+        "attachments": [],
+        "commentCount": 0,
+        "createdAt": "2026-01-25T07:30:00.000Z",
+        "updatedAt": "2026-02-01T10:00:00.000Z"
+    }
+]
