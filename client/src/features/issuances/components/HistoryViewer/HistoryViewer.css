@@ -42,17 +42,17 @@
 }
 
 .history-viewer__tab:hover {
-    color: var(--unc-primary-red);
+    color: var(--primary-color);
 }
 
 .history-viewer__tab--active {
     background-color: var(--white);
-    color: var(--unc-primary-red);
+    color: var(--primary-color);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .history-viewer__tab--active:hover {
-    color: var(--unc-primary-red);
+    color: var(--primary-color);
 }
 
 .history-viewer__empty {
@@ -97,12 +97,12 @@
 }
 
 .history-item:hover::before {
-    border-color: var(--unc-primary-red);
+    border-color: var(--primary-color);
 }
 
 .history-item--status::before {
-    background-color: var(--unc-primary-red);
-    border-color: var(--unc-primary-red);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .history-item__header {

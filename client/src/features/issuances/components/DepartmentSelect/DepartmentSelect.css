@@ -39,8 +39,8 @@
 
 .department-select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.15);
+  border-color: var(--gray-400);
+  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.15);
 }
 
 .department-select--error {

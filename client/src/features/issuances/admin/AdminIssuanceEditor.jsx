@@ -327,7 +327,7 @@ const AdminIssuanceEditor = ({ issuanceId, onBack, onSaved }) => {
                             Cancel
                         </Button>
                         <Button
-                            variant="primary"
+                            variant="success"
                             onClick={confirmStatusChange}
                             loading={statusChanging}>
                             Confirm Change

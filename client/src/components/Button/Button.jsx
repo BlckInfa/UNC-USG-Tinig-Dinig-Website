@@ -1,48 +1,47 @@
-import './Button.css';
+import "./Button.css";
 
 /**
  * Reusable Button Component
  * @param {Object} props
- * @param {'primary' | 'secondary' | 'outline' | 'danger'} props.variant
+ * @param {'primary' | 'secondary' | 'outline' | 'danger' | 'success'} props.variant
  * @param {'sm' | 'md' | 'lg'} props.size
  * @param {boolean} props.disabled
  * @param {boolean} props.loading
  * @param {string} props.className
  */
 const Button = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  loading = false,
-  className = '',
-  type = 'button',
-  onClick,
-  ...props
+    children,
+    variant = "primary",
+    size = "md",
+    disabled = false,
+    loading = false,
+    className = "",
+    type = "button",
+    onClick,
+    ...props
 }) => {
-  const classes = [
-    'btn',
-    `btn-${variant}`,
-    `btn-${size}`,
-    loading && 'btn-loading',
-    className,
-  ].filter(Boolean).join(' ');
+    const classes = [
+        "btn",
+        `btn-${variant}`,
+        `btn-${size}`,
+        loading && "btn-loading",
+        className,
+    ]
+        .filter(Boolean)
+        .join(" ");
 
-  return (
-    <button
-      type={type}
-      className={classes}
-      disabled={disabled || loading}
-      onClick={onClick}
-      {...props}
-    >
-      {loading ? (
-        <span className="btn-spinner" />
-      ) : (
-        children
-      )}
-    </button>
-  );
+    return (
+        <button
+            type={type}
+            className={classes}
+            disabled={disabled || loading}
+            onClick={onClick}
+            {...props}>
+            {loading ?
+                <span className="btn-spinner" />
+            :   children}
+        </button>
+    );
 };
 
 export default Button;

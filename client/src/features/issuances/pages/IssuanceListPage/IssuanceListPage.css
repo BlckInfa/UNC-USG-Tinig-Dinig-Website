@@ -38,7 +38,7 @@
   display: inline-block;
   width: 4px;
   height: 28px;
-  background: var(--unc-primary-red);
+  background: var(--primary-color);
   border-radius: 2px;
   flex-shrink: 0;
 }

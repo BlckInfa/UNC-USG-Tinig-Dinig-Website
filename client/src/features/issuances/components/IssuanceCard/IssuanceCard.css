@@ -144,7 +144,7 @@
 }
 
 .issuance-card:hover .issuance-title {
-  color: var(--unc-primary-red);
+  color: var(--primary-color);
 }
 
 /* Tags */
@@ -160,7 +160,7 @@
   align-items: center;
   padding: 2px 8px;
   background: #fef2f2;
-  color: var(--unc-primary-red);
+  color: var(--primary-color);
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;

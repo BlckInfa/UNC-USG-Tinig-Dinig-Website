@@ -46,9 +46,9 @@
 
 .admin-filters__search-input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: var(--gray-400);
   background: var(--white);
-  box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
+  box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.1);
 }
 
 .admin-filters__search-input::placeholder {

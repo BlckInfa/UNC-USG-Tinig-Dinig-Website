@@ -46,7 +46,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid var(--gray-300);
-    border-top-color: var(--unc-primary-red);
+    border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: comment-spin 0.6s linear infinite;
 }
@@ -78,7 +78,7 @@
     width: 40px;
     height: 40px;
     border-radius: var(--radius-full);
-    background-color: var(--unc-primary-red);
+    background-color: var(--primary-color);
     color: var(--white);
     display: flex;
     align-items: center;
@@ -243,7 +243,7 @@
     width: 100%;
     min-height: 80px;
     padding: var(--spacing-sm);
-    border: 1px solid var(--unc-primary-red);
+    border: 1px solid var(--gray-400);
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-family: inherit;
@@ -253,7 +253,7 @@
 
 .comment-item__edit-input:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.15);
+    box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.15);
 }
 
 .comment-item__edit-actions {
@@ -293,14 +293,14 @@
 }
 
 .comment-item__edit-btn--save {
-    background-color: var(--unc-primary-red);
+    background-color: var(--success);
     color: var(--white);
-    border-color: var(--unc-primary-red);
+    border-color: var(--success);
 }
 
 .comment-item__edit-btn--save:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
+    background-color: var(--success-dark, #218838);
+    border-color: var(--success-dark, #218838);
 }
 
 .comment-item__edit-btn--cancel {
@@ -365,8 +365,8 @@
 
 .comment-form__input:focus {
     outline: none;
-    border-color: var(--unc-primary-red);
-    box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
+    border-color: var(--gray-400);
+    box-shadow: 0 0 0 2px rgba(107, 114, 128, 0.1);
 }
 
 .comment-form__footer {
@@ -382,7 +382,7 @@
 
 .comment-form__submit {
     padding: var(--spacing-sm) var(--spacing-md);
-    background-color: var(--unc-primary-red);
+    background-color: var(--success);
     color: var(--white);
     border: none;
     border-radius: var(--radius-md);
@@ -393,7 +393,7 @@
 }
 
 .comment-form__submit:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--success-dark, #218838);
 }
 
 .comment-form__submit:disabled {

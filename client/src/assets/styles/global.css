@@ -25,6 +25,7 @@
   --primary-color: #C8102E;
   --primary-light: #E01933;
   --primary-dark: #A00D24;
+  --success-dark: #218838;
   --secondary-color: #4A4A4A;
   --accent-color: #FFC107;
   
@@ -66,8 +67,8 @@
   --status-approved-bg: #E8F5E9;
   --status-rejected: #DC3545;
   --status-rejected-bg: #FDEAEA;
-  --status-published: #C8102E;
-  --status-published-bg: #FDEAED;
+  --status-published: #1a73e8;
+  --status-published-bg: #e8f0fe;
   
   /* Spacing */
   --spacing-xs: 0.25rem;

@@ -375,7 +375,7 @@ const AdminIssuanceForm = ({
                         Reset
                     </Button>
                     <Button
-                        variant="primary"
+                        variant="success"
                         type="submit"
                         loading={loading}
                         disabled={loading}>

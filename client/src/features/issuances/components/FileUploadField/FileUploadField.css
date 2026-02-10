@@ -27,13 +27,13 @@
 }
 
 .file-upload__zone:hover {
-  border-color: var(--primary-color);
-  background-color: rgba(200, 16, 46, 0.02);
+  border-color: var(--gray-400);
+  background-color: rgba(107, 114, 128, 0.02);
 }
 
 .file-upload__zone--active {
-  border-color: var(--primary-color);
-  background-color: rgba(200, 16, 46, 0.05);
+  border-color: var(--gray-400);
+  background-color: rgba(107, 114, 128, 0.05);
 }
 
 .file-upload__zone--disabled {

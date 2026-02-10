@@ -36,6 +36,6 @@
 }
 
 .status-badge--published {
-    color: var(--unc-primary-red);
+    color: var(--status-published);
     background-color: var(--status-published-bg);
 }
