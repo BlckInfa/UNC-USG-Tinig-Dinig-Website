@@ -1,7 +1,11 @@
 module.exports = {
-  authController: require('./auth.controller'),
-  userController: require('./user.controller'),
-  ticketController: require('./ticket.controller'),
-  financeController: require('./finance.controller'),
-  orgController: require('./org.controller'),
+    authController: require("./auth.controller"),
+    userController: require("./user.controller"),
+    ticketController: require("./ticket.controller"),
+    financeController: require("./finance.controller"),
+    orgController: require("./org.controller"),
+    issuanceController: require("./issuance.controller"),
+    commentController: require("./comment.controller"),
+    auditLogController: require("./auditLog.controller"),
+    departmentController: require("./department.controller"),
 };

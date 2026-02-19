@@ -8,12 +8,26 @@
 }
 
 :root {
-  /* Colors */
-  --primary-color: #1e40af;
-  --primary-light: #3b82f6;
-  --primary-dark: #1e3a8a;
-  --secondary-color: #059669;
-  --accent-color: #f59e0b;
+  /* UNC Official Color Scheme */
+  --unc-primary-red: #C8102E;
+  --unc-secondary-gray: #8B8B8B;
+  --unc-secondary-gray-dark: #4A4A4A;
+  --unc-accent-white: #FFFFFF;
+  --unc-text-dark: #2C2C2C;
+  --unc-text-light: #666666;
+  --unc-background: #F5F5F5;
+  --unc-success: #28A745;
+  --unc-warning: #FFC107;
+  --unc-error: #DC3545;
+  --unc-info: #17A2B8;
+  
+  /* Legacy Colors (keeping for backward compatibility) */
+  --primary-color: #C8102E;
+  --primary-light: #E01933;
+  --primary-dark: #A00D24;
+  --success-dark: #218838;
+  --secondary-color: #4A4A4A;
+  --accent-color: #FFC107;
   
   /* Neutrals */
   --white: #ffffff;
@@ -28,11 +42,33 @@
   --gray-800: #1f2937;
   --gray-900: #111827;
   
-  /* Status Colors */
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
+  /* Status Colors (UNC Design System) */
+  --success: #28A745;
+  --warning: #FFC107;
+  --error: #DC3545;
+  --info: #17A2B8;
+  
+  /* Priority Colors */
+  --priority-high: #DC3545;
+  --priority-high-bg: #FDEAEA;
+  --priority-medium: #FFC107;
+  --priority-medium-bg: #FFF8E1;
+  --priority-low: #28A745;
+  --priority-low-bg: #E8F5E9;
+  
+  /* Workflow Status Colors */
+  --status-draft: #6b7280;
+  --status-draft-bg: #f3f4f6;
+  --status-pending: #FFC107;
+  --status-pending-bg: #FFF8E1;
+  --status-under-review: #17A2B8;
+  --status-under-review-bg: #E3F2FD;
+  --status-approved: #28A745;
+  --status-approved-bg: #E8F5E9;
+  --status-rejected: #DC3545;
+  --status-rejected-bg: #FDEAEA;
+  --status-published: #1a73e8;
+  --status-published-bg: #e8f0fe;
   
   /* Spacing */
   --spacing-xs: 0.25rem;
