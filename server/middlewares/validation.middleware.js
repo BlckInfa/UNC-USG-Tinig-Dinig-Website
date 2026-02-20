@@ -399,6 +399,106 @@ const auditLogValidation = {
     ],
 };
 
+/**
+ * Survey Validation Rules
+ */
+const surveyValidation = {
+    submit: [
+        body("studentNumber")
+            .trim()
+            .notEmpty()
+            .withMessage("Student Number is required"),
+        body("collegeDepartment")
+            .trim()
+            .notEmpty()
+            .withMessage("College Department is required"),
+        body("yearLevel")
+            .trim()
+            .notEmpty()
+            .withMessage("Year Level is required"),
+        body("aimingForLatinHonors")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("awareOfNewIRR")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("understandingLevel")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("familiarAspects")
+            .isArray({ min: 1 })
+            .withMessage("Select at least one aspect"),
+        body("gwaRangesFair")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("noFailingGradeEncourages")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("minimumUnitLoadReasonable")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("irrCausesStress")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("newCriteriaDifficulty")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("favorRetainingPreviousGWA")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("favorAcademicDistinction")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("preferMoreCategories")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("criteriaReflectExcellence")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("gradingVsTeaching")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("strengths")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("concerns")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("suggestions")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("importanceOfPrestige")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("mainFactor")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        body("shareYourVoice")
+            .trim()
+            .notEmpty()
+            .withMessage("This field is required"),
+        validate,
+    ],
+};
+
 module.exports = {
     validate,
     authValidation,
@@ -408,5 +508,6 @@ module.exports = {
     commentValidation,
     departmentValidation,
     auditLogValidation,
+    surveyValidation,
     validateMongoId,
 };

@@ -14,6 +14,7 @@ import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
 import FinanceDashboard from "./features/finance/pages/FinanceDashboard";
 import TinigDashboard from "./features/tinig/pages/TinigDashboard";
+import TinigSurveyForm from "./features/tinig/pages/TinigSurveyForm";
 import OrgChart from "./features/org/pages/OrgChart";
 import { IssuanceListPage, AdminIssuanceList } from "./features/issuances";
 
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/finance" element={<FinanceDashboard />} />
                 <Route path="/tinig" element={<TinigDashboard />} />
+                <Route path="/tinig/survey" element={<TinigSurveyForm />} />
                 <Route path="/organization" element={<OrgChart />} />
 
                 {/* Admin-only — requires login + ADMIN or SUPER_ADMIN role */}

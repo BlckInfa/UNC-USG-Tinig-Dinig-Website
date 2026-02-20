@@ -8,4 +8,5 @@ module.exports = {
     commentController: require("./comment.controller"),
     auditLogController: require("./auditLog.controller"),
     departmentController: require("./department.controller"),
+    surveyController: require("./survey.controller"),
 };

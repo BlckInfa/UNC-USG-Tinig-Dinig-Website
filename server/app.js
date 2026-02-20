@@ -14,6 +14,7 @@ const orgRoutes = require("./routes/org.routes");
 const issuanceRoutes = require("./routes/issuance.routes");
 const commentRoutes = require("./routes/comment.routes");
 const adminRoutes = require("./routes/admin.routes");
+const surveyRoutes = require("./routes/survey.routes");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/org", orgRoutes);
 app.use("/api/issuances", issuanceRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/survey", surveyRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
