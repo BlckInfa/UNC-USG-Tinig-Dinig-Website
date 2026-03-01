@@ -54,6 +54,7 @@ const PublicLayout = () => {
             <Link to="/">Home</Link>
             <a href="#tinig-dinig">Tinig Dinig</a>
             <Link to="/issuances">Issuances</Link>
+            <Link to="/organization">Organization</Link>
             <Link to="/login" className="nav-btn nav-btn-outline">Sign In</Link>
             <Link to="/register" className="nav-btn nav-btn-primary">Register</Link>
           </nav>

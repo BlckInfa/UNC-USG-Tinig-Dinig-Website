@@ -11,17 +11,17 @@ import UNESCO_IMG from '../assets/UNESCO.jpg';
 import GREYHOUND from '../assets/GREYHOUND.png';
 
 /* Department logos */
-import CEA from '../assets/DEPARTMENT LOGO\'s/CEA.png';
-import CJE from '../assets/DEPARTMENT LOGO\'s/CJE.png';
-import ELEM from '../assets/DEPARTMENT LOGO\'s/ELEM.png';
-import HS from '../assets/DEPARTMENT LOGO\'s/HS.png';
-import LAW from '../assets/DEPARTMENT LOGO\'s/LAW.png';
-import SBA from '../assets/DEPARTMENT LOGO\'s/SBA.png';
-import SCIS from '../assets/DEPARTMENT LOGO\'s/SCIS.png';
-import SHS from '../assets/DEPARTMENT LOGO\'s/SHS.png';
-import SNAHS from '../assets/DEPARTMENT LOGO\'s/SNAHS.png';
-import SSNS from '../assets/DEPARTMENT LOGO\'s/SSNS.png';
-import STEd from '../assets/DEPARTMENT LOGO\'s/STEd.png';
+import CEA from '../assets/department_logo/CEA.png';
+import CJE from '../assets/department_logo/CJE.png';
+import ELEM from '../assets/department_logo/ELEM.png';
+import HS from '../assets/department_logo/HS.png';
+import LAW from '../assets/department_logo/LAW.png';
+import SBA from '../assets/department_logo/SBA.png';
+import SCIS from '../assets/department_logo/SCIS.png';
+import SHS from '../assets/department_logo/SHS.png';
+import SNAHS from '../assets/department_logo/SNAHS.png';
+import SSNS from '../assets/department_logo/SSNS.png';
+import STEd from '../assets/department_logo/STEd.png';
 
 
 /* ═══════════ SVG ICONS ═══════════ */
