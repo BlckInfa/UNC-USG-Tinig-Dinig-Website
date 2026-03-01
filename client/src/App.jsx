@@ -29,6 +29,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/issuances" element={<IssuanceListPage />} />
+                <Route path="/organization" element={<OrgChart />} />
             </Route>
 
             {/* Dashboard Routes — open to all users */}
@@ -36,7 +37,6 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/finance" element={<FinanceDashboard />} />
                 <Route path="/tinig" element={<TinigDashboard />} />
-                <Route path="/organization" element={<OrgChart />} />
 
                 {/* Admin-only — requires login + ADMIN or SUPER_ADMIN role */}
                 <Route
