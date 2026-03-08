@@ -31,7 +31,6 @@ import STEd_LOGO from '../../../assets/department_logo/STEd.png';
 import SNAHS_LOGO from '../../../assets/department_logo/SNAHS.png';
 import SSNS_LOGO from '../../../assets/department_logo/SSNS.png';
 import CJE_LOGO from '../../../assets/department_logo/CJE.png';
-import LAW_LOGO from '../../../assets/department_logo/LAW.png';
 
 /* ═══════════════════════════════════════════════════════════
    USG President (main head of all organizations)
@@ -47,6 +46,43 @@ export const USG_HEAD = {
   description:
     'The University Student Government serves as the central student body representing every Greyhound across all colleges. It spearheads campus-wide programs, advocates for student welfare, and bridges the student voice to the university administration.',
 };
+
+export const USG_OFFICERS = [
+  {
+    id: 'vp',
+    abbreviation: 'USG',
+    fullName: 'University Student Government',
+    councilName: 'Executive Officers',
+    councilAbbr: 'USG',
+    logo: null,
+    brandColor: '#C8102E',
+    description:
+      'The Vice President supports the USG President in overseeing university-wide initiatives, coordinating executive programs, and ensuring continuity in student governance operations.',
+    leader: {
+      name: 'Kim Fabregas',
+      position: 'Vice President',
+      imageNoBg: null,
+      imageBg: null,
+    },
+  },
+  {
+    id: 'chief-of-staff',
+    abbreviation: 'USG',
+    fullName: 'University Student Government',
+    councilName: 'Executive Officers',
+    councilAbbr: 'USG',
+    logo: null,
+    brandColor: '#C8102E',
+    description:
+      'The Chief of Staff coordinates the executive office, supports inter-unit communication, and helps keep student-government priorities and internal operations aligned.',
+    leader: {
+      name: 'Eumella Robin',
+      position: 'Chief of Staff',
+      imageNoBg: null,
+      imageBg: null,
+    },
+  },
+];
 
 /* ═══════════════════════════════════════════════════════════
    College Departments
@@ -64,7 +100,7 @@ export const COLLEGE_DEPARTMENTS = [
       'The BACC fosters excellence in business education, equipping future accountants, entrepreneurs, and financial leaders through student-led seminars, competitions, and community outreach programs.',
     leader: {
       name: 'Osher San Agustin',
-      position: 'BACC Chairperson',
+      position: 'Chairperson, BACC',
       imageNoBg: BACC_CHAIR_NB,
       imageBg: BACC_CHAIR_BG,
     },
@@ -73,15 +109,15 @@ export const COLLEGE_DEPARTMENTS = [
     id: 'scis',
     abbreviation: 'SCIS',
     fullName: 'School of Computer and Information Sciences',
-    councilName: 'Computer Science College Council',
-    councilAbbr: 'CS',
+    councilName: 'School of Computer and Information Sciences Council',
+    councilAbbr: 'SCIS',
     logo: SCIS_LOGO,
     brandColor: '#F0A868',
     description:
       'The CS Council empowers the next generation of technologists. It organizes hackathons, tech talks, and digital literacy drives, building a community of innovative problem-solvers.',
     leader: {
       name: 'Bryann Joshua Francisco',
-      position: 'CS Chairperson',
+      position: 'Chairperson, SCIS',
       imageNoBg: CS_CHAIR_NB,
       imageBg: CS_CHAIR_BG,
     },
@@ -97,8 +133,8 @@ export const COLLEGE_DEPARTMENTS = [
     description:
       'The EACC champions engineering and architectural excellence, hosting design workshops, site visits, and inter-school competitions that sharpen both technical and creative skills.',
     leader: {
-      name: 'Charles Emil Carillo',
-      position: 'EACC Chairperson',
+      name: 'Charles Emill Carillo',
+      position: 'Chairperson, EACC',
       imageNoBg: EACC_CHAIR_NB,
       imageBg: EACC_CHAIR_BG,
     },
@@ -115,7 +151,7 @@ export const COLLEGE_DEPARTMENTS = [
       'The ECC nurtures aspiring educators through practice-teaching immersions, literacy campaigns, and pedagogical symposiums that develop well-rounded and compassionate teachers.',
     leader: {
       name: 'Hannah Beatrice Reginaldo',
-      position: 'ECC Chairperson',
+      position: 'Chairperson, ECC',
       imageNoBg: ECC_CHAIR_NB,
       imageBg: ECC_CHAIR_BG,
     },
@@ -131,8 +167,8 @@ export const COLLEGE_DEPARTMENTS = [
     description:
       'The NCC is committed to shaping compassionate healthcare professionals. It organizes medical missions, first-aid trainings, and wellness programs for the campus and surrounding communities.',
     leader: {
-      name: 'Mary Claire Razon',
-      position: 'NCC Chairperson',
+      name: 'Mary Claire Bustamante',
+      position: 'Chairperson, NCC',
       imageNoBg: NCC_CHAIR_NB,
       imageBg: NCC_CHAIR_BG,
     },
@@ -149,7 +185,7 @@ export const COLLEGE_DEPARTMENTS = [
       'The SSNSCC cultivates scientific curiosity and research-driven thinking. It leads science fairs, research colloquia, and environmental awareness campaigns across the university.',
     leader: {
       name: 'Princess Jean Madera',
-      position: 'SSNSCC Chairperson',
+      position: 'Chairperson, SSNSCC',
       imageNoBg: SSNSCC_CHAIR_NB,
       imageBg: SSNSCC_CHAIR_BG,
     },
@@ -159,35 +195,19 @@ export const COLLEGE_DEPARTMENTS = [
     abbreviation: 'CJE',
     fullName: 'College of Justice Education',
     councilName: 'Criminal Justice Education College Council',
-    councilAbbr: 'CCJE',
+    councilAbbr: 'CJECC',
     logo: CJE_LOGO,
     brandColor: '#B0B0B0',
     description:
       'The CCJE advocates for justice education and public service. Through moot courts, legal aid forums, and civic awareness drives, it molds principled future law enforcers and public servants.',
     leader: {
-      name: 'Maria Krisha Robles',
-      position: 'CCJE Chairperson',
+      name: 'Mary Rose Casilao',
+      position: 'Chairperson, CJECC',
       imageNoBg: null,
       imageBg: null,
     },
   },
-  {
-    id: 'law',
-    abbreviation: 'LAW',
-    fullName: 'College of Law',
-    councilName: 'Law Student Council',
-    councilAbbr: 'LSC',
-    logo: LAW_LOGO,
-    brandColor: '#5C4033',
-    description:
-      'The Law Student Council cultivates future legal professionals through moot court competitions, legal research symposia, and community legal-aid initiatives that uphold the rule of law.',
-    leader: {
-      name: 'TBA',
-      position: 'LSC Representative',
-      imageNoBg: null,
-      imageBg: null,
-    },
-  },
+  // LAW intentionally excluded until its participation is formally clarified.
 ];
 
 /* ═══════════════════════════════════════════════════════════

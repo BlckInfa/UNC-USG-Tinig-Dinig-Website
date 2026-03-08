@@ -1,66 +1,188 @@
-import { useState } from 'react';
-import { USG_HEAD, COLLEGE_DEPARTMENTS, ORGANIZATIONS } from '../data/orgData';
+import { useMemo, useState } from 'react';
+import {
+  COLLEGE_DEPARTMENTS,
+  ORGANIZATIONS,
+  USG_HEAD,
+  USG_OFFICERS,
+} from '../data/orgData';
 import './OrgChart.css';
 
-/* ── SVG Icons ── */
 const CloseIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
-/* ═══════════════════════════════════════════════════════════
-   Leader Card — image-highlight with hover logo overlay
-   ═══════════════════════════════════════════════════════════ */
-const LeaderCard = ({ item, onClick }) => {
-  const img = item.leader.imageBg || item.leader.imageNoBg;
-  const color = item.brandColor || '#C8102E';
+const DEPARTMENT_OFFICER_ROLES = [
+  'Vice Chairperson',
+  'Secretary',
+  'Treasurer',
+  'Auditor',
+  'Public Information Officer',
+];
+
+const ProfileCard = ({ item, className = '' }) => {
+  const image = item.leader?.imageBg || item.leader?.imageNoBg;
 
   return (
-    <article className="ldr-card" onClick={() => onClick(item)}>
-      <div className="ldr-card-visual">
-        {img ? (
-          <img src={img} alt={item.leader.name} className="ldr-card-photo" />
+    <article className={`profile-card ${className}`.trim()}>
+      <div className="profile-card-media">
+        {image ? (
+          <img src={image} alt={item.leader.name} className="profile-card-image" />
         ) : (
-          <div className="ldr-card-ph">{item.leader.name.charAt(0)}</div>
+          <div className="profile-card-image-ph">{item.leader.name.charAt(0)}</div>
         )}
-
-        {/* Default gradient overlay */}
-        <div className="ldr-card-overlay" />
-
-        {/* Hover overlay — brand color + centred logo */}
-        <div
-          className="ldr-card-hover"
-          style={{ backgroundColor: color }}
-        >
-          {item.logo && (
-            <img src={item.logo} alt={item.abbreviation} className="ldr-card-hover-logo" />
-          )}
-        </div>
-
-        {/* Caption always visible */}
-        <div className="ldr-card-caption">
-          <h3 className="ldr-card-name">{item.leader.name}</h3>
-          <p className="ldr-card-dept">{item.abbreviation}</p>
+        <div className="profile-card-overlay" />
+        <div className="profile-card-body">
+          <p className="profile-card-role">{item.leader.position}</p>
+          <h3 className="profile-card-name">{item.leader.name}</h3>
+          <p className="profile-card-label">{item.fullName}</p>
         </div>
       </div>
     </article>
   );
 };
 
-/* ═══════════════════════════════════════════════════════════
-   OrgChart Page
-   ═══════════════════════════════════════════════════════════ */
+const OrganizationCard = ({ item, onClick }) => {
+  const image = item.leader.imageBg || item.leader.imageNoBg;
+
+  return (
+    <button
+      type="button"
+      className="organization-card"
+      onClick={() => onClick(item)}
+    >
+      <div className="organization-card-media">
+        {image ? (
+          <img src={image} alt={item.leader.name} className="organization-card-image" />
+        ) : (
+          <div className="organization-card-image-ph">{item.leader.name.charAt(0)}</div>
+        )}
+      </div>
+      <div className="organization-card-body">
+        <p className="organization-card-role">{item.leader.position}</p>
+        <h3 className="organization-card-name">{item.leader.name}</h3>
+        <p className="organization-card-org">{item.fullName}</p>
+      </div>
+    </button>
+  );
+};
+
+const TarotCard = ({ item, onSelect, index }) => {
+  const image = item.leader.imageBg || item.leader.imageNoBg;
+
+  return (
+    <button
+      type="button"
+      className="tarot-card"
+      style={{ '--card-accent': item.brandColor || '#C8102E', zIndex: index + 1 }}
+      onClick={() => onSelect(item.id)}
+    >
+      <div className="tarot-card-inner">
+        <div className="tarot-card-face tarot-card-face--front">
+          <span className="tarot-card-mark">{item.councilAbbr || item.abbreviation}</span>
+          <div className="tarot-card-front-center">
+            {item.logo ? (
+              <img src={item.logo} alt={item.abbreviation} className="tarot-card-logo" />
+            ) : (
+              <div className="tarot-card-logo-ph">{item.abbreviation}</div>
+            )}
+          </div>
+          <div className="tarot-card-front-copy">
+            <h3 className="tarot-card-front-title">{item.abbreviation}</h3>
+          </div>
+        </div>
+
+        <div className="tarot-card-face tarot-card-face--back">
+          {image ? (
+            <img src={image} alt={item.leader.name} className="tarot-card-photo" />
+          ) : (
+            <div className="tarot-card-photo-ph">{item.leader.name.charAt(0)}</div>
+          )}
+          <div className="tarot-card-photo-overlay" />
+          <div className="tarot-card-logo-watermark-wrap">
+            {item.logo ? (
+              <img src={item.logo} alt="" className="tarot-card-logo-watermark" />
+            ) : null}
+          </div>
+          <div className="tarot-card-caption">
+            <p className="tarot-card-role">{item.leader.position}</p>
+            <h3 className="tarot-card-name">{item.leader.name}</h3>
+            <p className="tarot-card-label">{item.fullName}</p>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+};
+
 const OrgChart = () => {
   const [activeTab, setActiveTab] = useState('departments');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
 
-  const data = activeTab === 'departments' ? COLLEGE_DEPARTMENTS : ORGANIZATIONS;
-  const usgImg = USG_HEAD.imageBg || USG_HEAD.imageNoBg;
+  const executiveHead = useMemo(
+    () => ({
+      id: USG_HEAD.id,
+      abbreviation: USG_HEAD.abbreviation,
+      fullName: USG_HEAD.organization,
+      councilName: 'Executive Officers',
+      councilAbbr: USG_HEAD.abbreviation,
+      logo: null,
+      brandColor: '#C8102E',
+      description: USG_HEAD.description,
+      leader: {
+        name: USG_HEAD.name,
+        position: USG_HEAD.position,
+        imageNoBg: USG_HEAD.imageNoBg,
+        imageBg: USG_HEAD.imageBg,
+      },
+    }),
+    []
+  );
+
+  const vicePresident = useMemo(
+    () => USG_OFFICERS.find((officer) => officer.id === 'vp') ?? null,
+    []
+  );
+
+  const chiefOfStaff = useMemo(
+    () => USG_OFFICERS.find((officer) => officer.id === 'chief-of-staff') ?? null,
+    []
+  );
+
+  const selectedDepartment = useMemo(
+    () => COLLEGE_DEPARTMENTS.find((item) => item.id === selectedDepartmentId) ?? null,
+    [selectedDepartmentId]
+  );
+
+  const visibleDepartmentCards = useMemo(
+    () => COLLEGE_DEPARTMENTS.filter((item) => item.id !== selectedDepartmentId),
+    [selectedDepartmentId]
+  );
+
+  const selectedDepartmentOfficers = useMemo(() => {
+    if (!selectedDepartment) {
+      return [];
+    }
+
+    return DEPARTMENT_OFFICER_ROLES.map((role, index) => ({
+      id: `${selectedDepartment.id}-${role.toLowerCase().replace(/\s+/g, '-')}`,
+      fullName: selectedDepartment.fullName,
+      councilName: selectedDepartment.councilName,
+      councilAbbr: selectedDepartment.councilAbbr,
+      leader: {
+        name: `Officer ${index + 1}`,
+        position: role,
+        imageNoBg: null,
+        imageBg: null,
+      },
+    }));
+  }, [selectedDepartment]);
 
   return (
     <div className="org-landing">
-      {/* ── Hero ── */}
       <section className="org-hero">
         <div className="org-hero-inner">
           <span className="org-hero-tag">
@@ -71,115 +193,142 @@ const OrgChart = () => {
             Organizational <span className="org-hero-em">Chart</span>
           </h1>
           <p className="org-hero-desc">
-            Meet the leaders who serve the University of Nueva Caceres student body —
-            your voice, your government.
+            Explore the executive leadership and council chairpersons of the University of Nueva Caceres in a more visual, card-based chart.
           </p>
         </div>
       </section>
 
-      {/* ── USG President — same card style as departments ── */}
-      <section className="org-president-section">
+      <section className="org-structure-section">
         <div className="org-container">
-          <article
-            className="ldr-card ldr-card--president"
-            onClick={() => setSelectedItem({
-              ...USG_HEAD,
-              id: 'usg',
-              fullName: USG_HEAD.organization,
-              councilName: USG_HEAD.organization,
-              councilAbbr: USG_HEAD.abbreviation,
-              logo: null,
-              leader: {
-                name: USG_HEAD.name,
-                position: USG_HEAD.position,
-                imageNoBg: USG_HEAD.imageNoBg,
-                imageBg: USG_HEAD.imageBg,
-              },
-            })}
-          >
-            <div className="ldr-card-visual">
-              {usgImg ? (
-                <img src={usgImg} alt={USG_HEAD.name} className="ldr-card-photo" />
-              ) : (
-                <div className="ldr-card-ph">{USG_HEAD.name.charAt(0)}</div>
-              )}
-              <div className="ldr-card-overlay" />
-              <div className="ldr-card-caption">
-                <h3 className="ldr-card-name">{USG_HEAD.name}</h3>
-                <p className="ldr-card-dept">{USG_HEAD.position}</p>
+          <div className="org-executive-tree">
+            <ProfileCard item={executiveHead} className="profile-card--executive profile-card--president" />
+
+            <div className="org-heads-layout">
+              <div className="org-heads-mainline">
+                <div className="org-heads-mainline-vertical" />
+                {vicePresident ? (
+                  <ProfileCard item={vicePresident} className="profile-card--executive profile-card--vice" />
+                ) : null}
               </div>
+
+              {chiefOfStaff ? (
+                <div className="org-heads-chiefside">
+                  <div className="org-heads-chief-joint" />
+                  <ProfileCard item={chiefOfStaff} className="profile-card--executive profile-card--chief" />
+                </div>
+              ) : null}
             </div>
-          </article>
-          <div className="org-connector" />
+
+            <div className="org-tabs-root-line" />
+          </div>
         </div>
       </section>
 
-      {/* ── Two Tabs ── */}
       <section className="org-tabs-section">
         <div className="org-container">
           <div className="org-tabs-wrap">
             <button
+              type="button"
               className={`org-tab-btn ${activeTab === 'departments' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('departments'); setSelectedItem(null); }}
+              onClick={() => {
+                setActiveTab('departments');
+                setSelectedOrganization(null);
+              }}
             >
               College Departments
             </button>
             <button
+              type="button"
               className={`org-tab-btn ${activeTab === 'organizations' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('organizations'); setSelectedItem(null); }}
+              onClick={() => {
+                setActiveTab('organizations');
+                setSelectedDepartmentId(null);
+              }}
             >
-              Organizations
+              Organization
             </button>
           </div>
         </div>
       </section>
 
-      {/* ── Cards Grid ── */}
-      <section className="org-grid-section">
+      <section className="org-card-section">
         <div className="org-container">
-          <div className={`org-grid ${data.length <= 2 ? 'org-grid--few' : ''}`}>
-            {data.map((item) => (
-              <LeaderCard key={item.id} item={item} onClick={setSelectedItem} />
-            ))}
-          </div>
+          {activeTab === 'departments' ? (
+            <>
+              <div className="org-card-stack" aria-label="Department chairpersons">
+                {visibleDepartmentCards.map((item, index) => (
+                  <TarotCard
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    onSelect={(departmentId) => {
+                      setSelectedDepartmentId((current) => (current === departmentId ? null : departmentId));
+                    }}
+                  />
+                ))}
+              </div>
+
+              {selectedDepartment ? (
+                <div className="department-tree-section">
+                  <div className="department-tree-root">
+                    <ProfileCard item={selectedDepartment} className="profile-card--department" />
+                  </div>
+                  <div className="department-tree-spine" />
+                  <div className="department-tree-branch-line" />
+                  <div className="department-tree-officers">
+                    {selectedDepartmentOfficers.map((officer) => (
+                      <div key={officer.id} className="department-tree-node">
+                        <div className="department-tree-node-line" />
+                        <ProfileCard item={officer} className="profile-card--officer" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <div className="organization-list" aria-label="Organizations">
+              {ORGANIZATIONS.map((item) => (
+                <OrganizationCard key={item.id} item={item} onClick={setSelectedOrganization} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ── Detail Modal ── */}
-      {selectedItem && (
-        <div className="org-modal-backdrop" onClick={() => setSelectedItem(null)}>
-          <div className="org-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="org-modal-close" onClick={() => setSelectedItem(null)} aria-label="Close">
+      {selectedOrganization && (
+        <div className="org-modal-backdrop" onClick={() => setSelectedOrganization(null)}>
+          <div className="org-modal" onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="org-modal-close" onClick={() => setSelectedOrganization(null)} aria-label="Close">
               <CloseIcon />
             </button>
 
-            {/* Top: no-bg image on clean background */}
             <div className="org-modal-top">
-              {selectedItem.leader.imageNoBg ? (
-                <img src={selectedItem.leader.imageNoBg} alt={selectedItem.leader.name} className="org-modal-avatar" />
-              ) : selectedItem.leader.imageBg ? (
-                <img src={selectedItem.leader.imageBg} alt={selectedItem.leader.name} className="org-modal-avatar" />
+              {selectedOrganization.leader.imageNoBg ? (
+                <img src={selectedOrganization.leader.imageNoBg} alt={selectedOrganization.leader.name} className="org-modal-avatar" />
+              ) : selectedOrganization.leader.imageBg ? (
+                <img src={selectedOrganization.leader.imageBg} alt={selectedOrganization.leader.name} className="org-modal-avatar" />
               ) : (
-                <div className="org-modal-avatar-ph">{selectedItem.leader.name.charAt(0)}</div>
+                <div className="org-modal-avatar-ph">{selectedOrganization.leader.name.charAt(0)}</div>
               )}
             </div>
 
             <div className="org-modal-body">
-              <h3 className="org-modal-name">{selectedItem.leader.name}</h3>
-              <span className="org-modal-position">{selectedItem.leader.position}</span>
+              <h3 className="org-modal-name">{selectedOrganization.leader.name}</h3>
+              <span className="org-modal-position">{selectedOrganization.leader.position}</span>
 
-              {selectedItem.logo && (
-                <img src={selectedItem.logo} alt="" className="org-modal-logo" />
-              )}
+              {selectedOrganization.logo ? (
+                <img src={selectedOrganization.logo} alt="" className="org-modal-logo" />
+              ) : null}
 
               <hr className="org-modal-divider" />
 
-              <h4 className="org-modal-org-name">{selectedItem.fullName}</h4>
+              <h4 className="org-modal-org-name">{selectedOrganization.fullName}</h4>
               <p className="org-modal-council">
-                {selectedItem.councilName} ({selectedItem.councilAbbr})
+                {selectedOrganization.councilName} ({selectedOrganization.councilAbbr})
               </p>
 
-              <p className="org-modal-desc">{selectedItem.description}</p>
+              <p className="org-modal-desc">{selectedOrganization.description}</p>
             </div>
           </div>
         </div>
