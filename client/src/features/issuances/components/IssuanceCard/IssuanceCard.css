@@ -1,0 +1,222 @@
+/* ============================================
+   Issuance Card — GDrive-style document preview
+   ============================================ */
+
+.issuance-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.issuance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border-color: transparent;
+}
+
+/* ── Preview area ── */
+.issuance-card-preview {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+/* Live preview (image / gdrive thumbnail) */
+.issuance-card-preview--live {
+  background: #fafafa;
+}
+
+.issuance-card-preview__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.3s ease;
+}
+
+.issuance-card:hover .issuance-card-preview__image {
+  transform: scale(1.03);
+}
+
+/* File-type overlay badge (bottom-left) */
+.issuance-card-preview__overlay {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.issuance-card-preview__overlay--pdf {
+  background: rgba(139, 0, 0, 0.75);
+}
+
+/* PDF iframe preview — scaled-down render */
+.issuance-card-preview--pdf {
+  background: #fff;
+}
+
+.issuance-card-preview__pdf-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  transform: scale(0.5);
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+.issuance-card-preview__pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: none;
+}
+
+/* Click-through shield so card onClick fires instead of iframe */
+.issuance-card-preview__click-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Placeholder fallback */
+.issuance-card-preview--placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: #b0b7c3;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.issuance-card-preview--placeholder svg {
+  opacity: 0.35;
+}
+
+/* ── Card content ── */
+.issuance-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  flex: 1;
+}
+
+/* Title */
+.issuance-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.issuance-card:hover .issuance-title {
+  color: var(--primary-color);
+}
+
+/* Tags */
+.issuance-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.issuance-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #fef2f2;
+  color: var(--primary-color);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 4px;
+}
+
+.issuance-category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  border-radius: 4px;
+}
+
+/* Meta Row */
+.issuance-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: auto;
+}
+
+.issuance-department {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.issuance-separator {
+  color: #d1d5db;
+  font-size: 0.625rem;
+}
+
+.issuance-date,
+.issuance-issuer {
+  white-space: nowrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .issuance-card-preview {
+    height: 140px;
+  }
+
+  .issuance-card-content {
+    padding: 10px 12px 12px;
+  }
+
+  .issuance-title {
+    font-size: 0.8125rem;
+  }
+}

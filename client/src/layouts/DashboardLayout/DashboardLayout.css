@@ -72,7 +72,13 @@
 }
 
 .nav-icon {
-  font-size: 1.25rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.nav-link:hover .nav-icon,
+.nav-link.active .nav-icon {
+  opacity: 1;
 }
 
 /* Dashboard Content */
@@ -115,15 +121,21 @@
 
 .theme-toggle {
   background: none;
-  border: none;
+  border: 1px solid var(--gray-200);
   font-size: 1.25rem;
   cursor: pointer;
   padding: var(--spacing-sm);
   border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-600);
+  transition: all var(--transition-fast);
 }
 
 .theme-toggle:hover {
   background-color: var(--gray-100);
+  color: var(--gray-800);
 }
 
 .user-menu {
@@ -145,6 +157,10 @@
   color: var(--gray-600);
   font-size: 0.875rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: all var(--transition-fast);
 }
 
 .logout-btn:hover {

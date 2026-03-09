@@ -1,0 +1,79 @@
+/* ============================================
+   Issuance List Page - Clean Modern Design
+   ============================================ */
+
+/* Page Container */
+.issuance-list-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* Header Section - title & filters on same row */
+.issuance-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+/* Page Title */
+.issuance-list-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.issuance-list-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 28px;
+  background: var(--primary-color);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .issuance-list-container {
+    padding: 24px 16px 40px;
+  }
+
+  .issuance-list-header {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .issuance-list-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .issuance-list-container {
+    padding: 20px 16px 32px;
+  }
+
+  .issuance-list-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .issuance-list-title {
+    font-size: 1.25rem;
+  }
+
+  .issuance-list-title::before {
+    height: 22px;
+  }
+}

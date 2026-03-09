@@ -1,0 +1,44 @@
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    border-radius: var(--radius-sm);
+}
+
+.priority-badge--high {
+    color: #DC3545;
+    background-color: #FDEAEA;
+}
+
+.priority-badge--medium {
+    color: #856404;
+    background-color: #FFF8E1;
+}
+
+.priority-badge--low {
+    color: #6b7280;
+    background-color: #f3f4f6;
+}
+
+.priority-badge__indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.priority-badge--high .priority-badge__indicator {
+    background-color: #DC3545;
+}
+
+.priority-badge--medium .priority-badge__indicator {
+    background-color: #FFC107;
+}
+
+.priority-badge--low .priority-badge__indicator {
+    background-color: #6b7280;
+}
