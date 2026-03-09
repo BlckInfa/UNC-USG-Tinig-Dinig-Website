@@ -14,14 +14,14 @@ import SSNSCC_CHAIR_NB from '../../../assets/department_leader/no_bg/SSNSCC_CHAI
 import FSOFS_PRES_NB from '../../../assets/department_leader/no_bg/FSOFS_PRESIDENT_Felicity Marcaida.png';
 
 /* ── Leader Images (with background JPGs) ── */
-import USG_PRESIDENT_BG from '../../../assets/department_leader/USG PRESIDENT_Jan Marill Dominguez_.jpg';
-import BACC_CHAIR_BG from '../../../assets/department_leader/BACC CHAIRPERSON_Osher San Agustin.jpg';
-import CS_CHAIR_BG from '../../../assets/department_leader/CS CHAIRPERSON_Bryann Joshua Francisco.jpg';
-import EACC_CHAIR_BG from '../../../assets/department_leader/EACC CHAIRPERSON_Charles Emil Carillo.jpg';
-import ECC_CHAIR_BG from '../../../assets/department_leader/ECC CHAIRPERSON_Hannah Beatrice Reginaldo.jpg';
-import NCC_CHAIR_BG from '../../../assets/department_leader/NCC CHAIRPERSON_Mary Claire Razon.jpg';
-import SSNSCC_CHAIR_BG from '../../../assets/department_leader/SSNSCC CHAIRPERSON_Princess Jean Madera.jpg';
-import FSOFS_PRES_BG from '../../../assets/department_leader/FSOFS PRESIDENT_Felicity Marcaida.jpg';
+import USG_PRESIDENT_BG from '../../../assets/department_leader/optimized/USG PRESIDENT_Jan Marill Dominguez_.webp';
+import BACC_CHAIR_BG from '../../../assets/department_leader/optimized/BACC CHAIRPERSON_Osher San Agustin.webp';
+import CS_CHAIR_BG from '../../../assets/department_leader/optimized/CS CHAIRPERSON_Bryann Joshua Francisco.webp';
+import EACC_CHAIR_BG from '../../../assets/department_leader/optimized/EACC CHAIRPERSON_Charles Emil Carillo.webp';
+import ECC_CHAIR_BG from '../../../assets/department_leader/optimized/ECC CHAIRPERSON_Hannah Beatrice Reginaldo.webp';
+import NCC_CHAIR_BG from '../../../assets/department_leader/optimized/NCC CHAIRPERSON_Mary Claire Razon.webp';
+import SSNSCC_CHAIR_BG from '../../../assets/department_leader/optimized/SSNSCC CHAIRPERSON_Princess Jean Madera.webp';
+import FSOFS_PRES_BG from '../../../assets/department_leader/optimized/FSOFS PRESIDENT_Felicity Marcaida.webp';
 
 /* ── Department Logos ── */
 import SBA_LOGO from '../../../assets/department_logo/SBA.png';
