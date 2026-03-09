@@ -7,13 +7,6 @@ import {
 } from '../data/orgData';
 import './OrgChart.css';
 
-const CloseIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-
 const DEPARTMENT_OFFICER_ROLES = [
   'Vice Chairperson',
   'Secretary',
@@ -44,47 +37,32 @@ const ProfileCard = ({ item, className = '' }) => {
   );
 };
 
-const OrganizationCard = ({ item, onClick }) => {
+const TarotCard = ({
+  item,
+  isActive,
+  isHovered,
+  onHoverChange,
+  onSelect,
+}) => {
   const image = item.leader.imageBg || item.leader.imageNoBg;
 
   return (
     <button
       type="button"
-      className="organization-card"
-      onClick={() => onClick(item)}
-    >
-      <div className="organization-card-media">
-        {image ? (
-          <img src={image} alt={item.leader.name} className="organization-card-image" />
-        ) : (
-          <div className="organization-card-image-ph">{item.leader.name.charAt(0)}</div>
-        )}
-      </div>
-      <div className="organization-card-body">
-        <p className="organization-card-role">{item.leader.position}</p>
-        <h3 className="organization-card-name">{item.leader.name}</h3>
-        <p className="organization-card-org">{item.fullName}</p>
-      </div>
-    </button>
-  );
-};
-
-const TarotCard = ({ item, onSelect, index }) => {
-  const image = item.leader.imageBg || item.leader.imageNoBg;
-
-  return (
-    <button
-      type="button"
-      className="tarot-card"
-      style={{ '--card-accent': item.brandColor || '#C8102E', zIndex: index + 1 }}
+      className={`tarot-card ${isActive ? 'is-active' : ''} ${isHovered ? 'is-hovered' : ''}`.trim()}
+      style={{ '--card-accent': item.brandColor || '#C8102E' }}
       onClick={() => onSelect(item.id)}
+      onMouseEnter={() => onHoverChange(item.id)}
+      onMouseLeave={() => onHoverChange(null)}
+      onFocus={() => onHoverChange(item.id)}
+      onBlur={() => onHoverChange(null)}
     >
       <div className="tarot-card-inner">
         <div className="tarot-card-face tarot-card-face--front">
           <span className="tarot-card-mark">{item.councilAbbr || item.abbreviation}</span>
           <div className="tarot-card-front-center">
             {item.logo ? (
-              <img src={item.logo} alt={item.abbreviation} className="tarot-card-logo" />
+              <img src={item.logo} alt={item.abbreviation} className="tarot-card-logo" loading="lazy" decoding="async" />
             ) : (
               <div className="tarot-card-logo-ph">{item.abbreviation}</div>
             )}
@@ -96,7 +74,7 @@ const TarotCard = ({ item, onSelect, index }) => {
 
         <div className="tarot-card-face tarot-card-face--back">
           {image ? (
-            <img src={image} alt={item.leader.name} className="tarot-card-photo" />
+            <img src={image} alt={item.leader.name} className="tarot-card-photo" loading="lazy" decoding="async" />
           ) : (
             <div className="tarot-card-photo-ph">{item.leader.name.charAt(0)}</div>
           )}
@@ -120,7 +98,7 @@ const TarotCard = ({ item, onSelect, index }) => {
 const OrgChart = () => {
   const [activeTab, setActiveTab] = useState('departments');
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
-  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [hoveredDepartmentId, setHoveredDepartmentId] = useState(null);
 
   const executiveHead = useMemo(
     () => ({
@@ -149,6 +127,11 @@ const OrgChart = () => {
 
   const chiefOfStaff = useMemo(
     () => USG_OFFICERS.find((officer) => officer.id === 'chief-of-staff') ?? null,
+    []
+  );
+
+  const fsofsPresident = useMemo(
+    () => ORGANIZATIONS.find((item) => item.id === 'fsofs') ?? null,
     []
   );
 
@@ -232,7 +215,6 @@ const OrgChart = () => {
               className={`org-tab-btn ${activeTab === 'departments' ? 'active' : ''}`}
               onClick={() => {
                 setActiveTab('departments');
-                setSelectedOrganization(null);
               }}
             >
               College Departments
@@ -243,9 +225,10 @@ const OrgChart = () => {
               onClick={() => {
                 setActiveTab('organizations');
                 setSelectedDepartmentId(null);
+                setHoveredDepartmentId(null);
               }}
             >
-              Organization
+              FSOFS
             </button>
           </div>
         </div>
@@ -255,12 +238,14 @@ const OrgChart = () => {
         <div className="org-container">
           {activeTab === 'departments' ? (
             <>
-              <div className="org-card-stack" aria-label="Department chairpersons">
-                {visibleDepartmentCards.map((item, index) => (
+              <div className="org-card-fan" aria-label="Department chairpersons">
+                {visibleDepartmentCards.map((item) => (
                   <TarotCard
                     key={item.id}
                     item={item}
-                    index={index}
+                    isActive={selectedDepartmentId === item.id}
+                    isHovered={hoveredDepartmentId === item.id}
+                    onHoverChange={setHoveredDepartmentId}
                     onSelect={(departmentId) => {
                       setSelectedDepartmentId((current) => (current === departmentId ? null : departmentId));
                     }}
@@ -287,52 +272,16 @@ const OrgChart = () => {
               ) : null}
             </>
           ) : (
-            <div className="organization-list" aria-label="Organizations">
-              {ORGANIZATIONS.map((item) => (
-                <OrganizationCard key={item.id} item={item} onClick={setSelectedOrganization} />
-              ))}
-            </div>
+            fsofsPresident ? (
+              <div className="fsofs-spotlight" aria-label="FSOFS President">
+                <div className="fsofs-spotlight-card">
+                  <ProfileCard item={fsofsPresident} className="profile-card--executive profile-card--fsofs" />
+                </div>
+              </div>
+            ) : null
           )}
         </div>
       </section>
-
-      {selectedOrganization && (
-        <div className="org-modal-backdrop" onClick={() => setSelectedOrganization(null)}>
-          <div className="org-modal" onClick={(event) => event.stopPropagation()}>
-            <button type="button" className="org-modal-close" onClick={() => setSelectedOrganization(null)} aria-label="Close">
-              <CloseIcon />
-            </button>
-
-            <div className="org-modal-top">
-              {selectedOrganization.leader.imageNoBg ? (
-                <img src={selectedOrganization.leader.imageNoBg} alt={selectedOrganization.leader.name} className="org-modal-avatar" />
-              ) : selectedOrganization.leader.imageBg ? (
-                <img src={selectedOrganization.leader.imageBg} alt={selectedOrganization.leader.name} className="org-modal-avatar" />
-              ) : (
-                <div className="org-modal-avatar-ph">{selectedOrganization.leader.name.charAt(0)}</div>
-              )}
-            </div>
-
-            <div className="org-modal-body">
-              <h3 className="org-modal-name">{selectedOrganization.leader.name}</h3>
-              <span className="org-modal-position">{selectedOrganization.leader.position}</span>
-
-              {selectedOrganization.logo ? (
-                <img src={selectedOrganization.logo} alt="" className="org-modal-logo" />
-              ) : null}
-
-              <hr className="org-modal-divider" />
-
-              <h4 className="org-modal-org-name">{selectedOrganization.fullName}</h4>
-              <p className="org-modal-council">
-                {selectedOrganization.councilName} ({selectedOrganization.councilAbbr})
-              </p>
-
-              <p className="org-modal-desc">{selectedOrganization.description}</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

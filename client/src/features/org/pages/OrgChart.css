@@ -105,6 +105,7 @@
   overflow: hidden;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: var(--shadow-sm);
+  contain: layout paint;
 }
 
 .profile-card-media {
@@ -184,7 +185,7 @@
 .org-heads-layout {
   position: relative;
   width: min(100%, 880px);
-  min-height: 420px;
+  min-height: 360px;
 }
 
 .org-heads-mainline {
@@ -208,22 +209,38 @@
 
 .org-heads-chiefside {
   position: absolute;
-  top: -78px;
-  left: calc(50% + 188px);
+  top: -22px;
+  left: calc(50% + 160px);
 }
 
 .org-heads-chief-joint {
   position: absolute;
-  left: -188px;
-  top: 149px;
-  width: 188px;
+  left: -160px;
+  top: 120px;
+  width: 160px;
   height: 2px;
   background: rgba(226, 171, 181, 0.95);
   border-radius: 999px;
 }
 
 .profile-card--chief {
-  width: 220px;
+  width: 176px;
+}
+
+.profile-card--chief .profile-card-body {
+  padding: 0.9rem 0.85rem 0.95rem;
+}
+
+.profile-card--chief .profile-card-role {
+  font-size: 0.64rem;
+}
+
+.profile-card--chief .profile-card-name {
+  font-size: 1rem;
+}
+
+.profile-card--chief .profile-card-label {
+  font-size: 0.7rem;
 }
 
 .org-tabs-root-line {
@@ -267,35 +284,37 @@
   padding: 0 0 5rem;
 }
 
-.org-card-stack {
+.org-card-fan {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  padding: 0.5rem 0 1rem;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 0.65rem;
+  padding: 0.5rem 0 1.2rem;
 }
 
 .tarot-card {
   position: relative;
-  width: 182px;
-  min-width: 182px;
-  height: 330px;
+  flex: 1 1 0;
+  width: auto;
+  max-width: 160px;
+  min-width: 0;
+  height: 306px;
   padding: 0;
   border: 0;
   border-radius: 24px;
   background: transparent;
   cursor: pointer;
   text-align: left;
-  perspective: 1200px;
-  margin-left: -46px;
-  transition: transform 0.25s var(--ease);
-}
-
-.tarot-card:first-child {
-  margin-left: 0;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.22s var(--ease), filter 0.22s var(--ease), opacity 0.22s var(--ease);
+  will-change: transform;
+  isolation: isolate;
+  outline: none;
 }
 
 .tarot-card.is-active {
-  transform: translateY(10px);
+  transform: translate3d(0, -6px, 0);
 }
 
 .tarot-card-inner {
@@ -304,24 +323,34 @@
   height: 100%;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  background: color-mix(in srgb, var(--card-accent) 10%, white);
+  box-shadow: 0 4px 12px rgba(56, 50, 46, 0.03);
+  transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), opacity 0.22s var(--ease);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .tarot-card:hover .tarot-card-inner,
+.tarot-card.is-hovered .tarot-card-inner,
 .tarot-card.is-active .tarot-card-inner {
-  transform: translateY(-10px) scale(1.04);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-12px) scale(1.04);
+  box-shadow: 0 14px 28px rgba(56, 50, 46, 0.1);
 }
 
 .tarot-card:hover,
+.tarot-card.is-hovered,
 .tarot-card.is-active {
   z-index: 30 !important;
+}
+
+.org-card-fan:hover .tarot-card:not(:hover):not(.is-active) {
+  opacity: 0.96;
 }
 
 .tarot-card-face {
   position: absolute;
   inset: 0;
+  backface-visibility: hidden;
 }
 
 .tarot-card-face--front {
@@ -331,16 +360,20 @@
   justify-content: space-between;
   padding: 1rem;
   background:
-    linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 22%, white), color-mix(in srgb, var(--card-accent) 8%, white)),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 245, 241, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--card-accent) 22%, white) 0%,
+      color-mix(in srgb, var(--card-accent) 18%, white) 34%,
+      color-mix(in srgb, var(--card-accent) 14%, white) 68%,
+      color-mix(in srgb, var(--card-accent) 10%, white) 100%);
+  border: 0;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
 }
 
 .tarot-card:hover .tarot-card-face--front,
+.tarot-card.is-hovered .tarot-card-face--front,
 .tarot-card.is-active .tarot-card-face--front {
   opacity: 0;
-  transform: translateY(-10px) scale(0.98);
+  transform: translateY(-8px) scale(0.985);
 }
 
 .tarot-card-mark {
@@ -355,12 +388,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 150px;
+  min-height: 132px;
 }
 
 .tarot-card-logo {
-  width: 94px;
-  height: 94px;
+  width: 82px;
+  height: 82px;
   object-fit: contain;
   filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.08));
 }
@@ -369,8 +402,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 94px;
-  height: 94px;
+  width: 82px;
+  height: 82px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.75);
   color: var(--grey-700);
@@ -384,7 +417,7 @@
 .tarot-card-front-title {
   margin: 0;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.08rem;
   color: var(--grey-900);
 }
 
@@ -400,12 +433,14 @@
 
 .tarot-card-photo {
   object-fit: cover;
-  transition: transform 0.45s var(--ease);
+  transition: transform 0.24s var(--ease);
+  transform: translateZ(0);
 }
 
 .tarot-card:hover .tarot-card-photo,
+.tarot-card.is-hovered .tarot-card-photo,
 .tarot-card.is-active .tarot-card-photo {
-  transform: scale(1.05);
+  transform: scale(1.035);
 }
 
 .tarot-card-photo-ph {
@@ -433,8 +468,8 @@
 }
 
 .tarot-card-logo-watermark {
-  width: 94px;
-  height: 94px;
+  width: 82px;
+  height: 82px;
   object-fit: contain;
   opacity: 0.26;
 }
@@ -450,7 +485,7 @@
 
 .tarot-card-role {
   margin: 0 0 0.35rem;
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -460,15 +495,15 @@
 .tarot-card-name {
   margin: 0 0 0.3rem;
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.05rem;
+  font-size: 0.94rem;
   line-height: 1.15;
   color: var(--white);
 }
 
 .tarot-card-label {
   margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.45;
+  font-size: 0.62rem;
+  line-height: 1.35;
   color: rgba(255, 255, 255, 0.82);
 }
 
@@ -556,206 +591,19 @@
   aspect-ratio: 1 / 1.05;
 }
 
-.organization-list {
+.fsofs-spotlight {
   display: flex;
+  align-items: flex-start;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 1.25rem;
+  padding: 1rem 0 0.5rem;
 }
 
-.organization-card {
-  display: flex;
-  align-items: stretch;
-  width: min(100%, 420px);
-  padding: 0;
-  border: 1px solid var(--grey-100);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+.fsofs-spotlight-card {
+  flex: 0 0 auto;
 }
 
-.organization-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
-}
-
-.organization-card-media {
-  width: 150px;
-  min-width: 150px;
-  background: linear-gradient(180deg, rgba(200, 16, 46, 0.08), rgba(200, 16, 46, 0.02));
-}
-
-.organization-card-image,
-.organization-card-image-ph {
-  width: 100%;
-  height: 100%;
-}
-
-.organization-card-image {
-  object-fit: cover;
-}
-
-.organization-card-image-ph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--red);
-  font-size: 2.5rem;
-  font-weight: 700;
-}
-
-.organization-card-body {
-  padding: 1.15rem 1.15rem 1rem;
-  text-align: left;
-}
-
-.organization-card-role {
-  margin: 0 0 0.4rem;
-  color: var(--red);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-.organization-card-name {
-  margin: 0 0 0.3rem;
-  font-family: 'Playfair Display', Georgia, serif;
-  color: var(--grey-900);
-  font-size: 1.2rem;
-}
-
-.organization-card-org {
-  margin: 0;
-  color: var(--grey-500);
-  line-height: 1.55;
-}
-
-.org-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(17, 13, 12, 0.42);
-  backdrop-filter: blur(5px);
-  animation: fadeIn 0.2s var(--ease);
-}
-
-.org-modal {
-  position: relative;
-  width: 420px;
-  max-width: 100%;
-  max-height: 90vh;
-  overflow: auto;
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.28s var(--ease);
-}
-
-.org-modal-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--grey-100);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--grey-500);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.org-modal-top {
-  display: flex;
-  justify-content: center;
-  padding: 2.5rem 2rem 1.5rem;
-  background: linear-gradient(180deg, var(--off-white), #fff);
-  border-bottom: 1px solid var(--grey-100);
-}
-
-.org-modal-avatar,
-.org-modal-avatar-ph {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-}
-
-.org-modal-avatar {
-  object-fit: cover;
-  background: white;
-  box-shadow: var(--shadow-sm);
-}
-
-.org-modal-avatar-ph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--red);
-  background: var(--red-light);
-}
-
-.org-modal-body {
-  padding: 1.5rem 2rem 2rem;
-  text-align: center;
-}
-
-.org-modal-name {
-  margin: 0 0 0.25rem;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.35rem;
-  color: var(--grey-900);
-}
-
-.org-modal-position {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-
-.org-modal-logo {
-  display: block;
-  width: 50px;
-  height: 50px;
-  margin: 1rem auto 0;
-  object-fit: contain;
-}
-
-.org-modal-divider {
-  margin: 1.25rem 0;
-  border: 0;
-  border-top: 1px solid var(--grey-100);
-}
-
-.org-modal-org-name {
-  margin: 0 0 0.2rem;
-  font-size: 1rem;
-  color: var(--grey-900);
-}
-
-.org-modal-council {
-  margin: 0 0 0.8rem;
-  color: var(--grey-400);
-  font-size: 0.84rem;
-}
-
-.org-modal-desc {
-  margin: 0;
-  line-height: 1.65;
-  color: var(--grey-500);
+.profile-card--fsofs {
+  width: 240px;
 }
 
 @keyframes fadeIn {
@@ -798,31 +646,33 @@
 @media (max-width: 900px) {
   .org-heads-layout {
     width: min(100%, 620px);
-    min-height: 400px;
+    min-height: 340px;
   }
 
   .org-heads-chiefside {
-    top: -68px;
-    left: calc(50% + 146px);
+    top: -16px;
+    left: calc(50% + 132px);
   }
 
   .org-heads-chief-joint {
-    left: -146px;
-    top: 149px;
-    width: 146px;
+    left: -124px;
+    top: 118px;
+    width: 124px;
   }
 
-  .org-card-stack {
+  .org-card-fan {
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
+    gap: 0.85rem;
   }
 
   .tarot-card {
-    margin-left: 0;
-    width: 190px;
-    min-width: 190px;
-    height: 320px;
+    flex: 0 1 180px;
+    max-width: 180px;
+    height: 330px;
+  }
+
+  .tarot-card.is-active {
+    transform: translateY(-6px);
   }
 }
 
@@ -862,7 +712,8 @@
   .profile-card,
   .profile-card--president,
   .profile-card--chief,
-  .profile-card--vice {
+  .profile-card--vice,
+  .profile-card--fsofs {
     width: min(100%, 260px);
   }
 
@@ -874,19 +725,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .organization-card {
-    flex-direction: column;
-  }
-
-  .organization-card-media {
-    width: 100%;
-    min-width: 100%;
-    height: 180px;
-  }
-
-  .org-modal {
-    align-self: flex-end;
-    border-radius: 24px 24px 0 0;
+  .fsofs-spotlight {
+    align-items: center;
   }
 }
 
@@ -908,7 +748,8 @@
   }
 
   .tarot-card {
-    width: min(100%, 220px);
-    min-width: min(100%, 220px);
+    flex: 1 1 100%;
+    max-width: 220px;
+    height: 340px;
   }
 }
