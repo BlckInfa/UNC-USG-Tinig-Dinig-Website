@@ -8,12 +8,14 @@ import {
     LuWallet,
 } from "react-icons/lu";
 import { Card } from "../components";
+import { usePageTitle } from '../hooks';
 import "./Dashboard.css";
 
 /**
  * Dashboard Page
  */
 const Dashboard = () => {
+    usePageTitle('Dashboard');
     const stats = [
         { label: "Active Tickets", value: 24, icon: LuMail },
         { label: "Resolved", value: 156, icon: LuCheckCircle },

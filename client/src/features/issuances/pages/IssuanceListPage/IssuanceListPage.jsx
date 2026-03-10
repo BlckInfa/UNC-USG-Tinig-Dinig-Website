@@ -9,6 +9,7 @@ import {
     commentService,
 } from "../../services/issuance.service";
 import { useAuth } from "../../../../hooks/useAuth";
+import { usePageTitle } from '../../../../hooks';
 import "./IssuanceListPage.css";
 
 /**
@@ -73,6 +74,7 @@ const generateMockVersionHistory = (issuanceId) => [
  * Uses IssuanceFilters and IssuanceList components
  */
 const IssuanceListPage = () => {
+    usePageTitle('Issuances');
     const { user, isAuthenticated } = useAuth();
     const [issuances, setIssuances] = useState([]);
     const [loading, setLoading] = useState(true);

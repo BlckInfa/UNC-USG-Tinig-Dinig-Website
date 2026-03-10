@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { usePageTitle } from '../../../hooks';
 import {
   COLLEGE_DEPARTMENTS,
   ORGANIZATIONS,
@@ -96,6 +97,7 @@ const TarotCard = ({
 };
 
 const OrgChart = () => {
+  usePageTitle('Organization');
   const [activeTab, setActiveTab] = useState('departments');
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(null);
   const [hoveredDepartmentId, setHoveredDepartmentId] = useState(null);

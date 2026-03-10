@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Button } from '../components';
+import { usePageTitle } from '../hooks';
 import './NotFound.css';
 
 /**
  * 404 Not Found Page
  */
 const NotFound = () => {
+  usePageTitle('404 Not Found');
   return (
     <div className="not-found-page">
       <div className="not-found-content">

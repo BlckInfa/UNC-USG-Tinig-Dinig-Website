@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { usePageTitle } from '../../../hooks';
 import {
     LuPlus,
     LuClipboardList,
@@ -32,6 +33,7 @@ const INITIAL_FILTERS = {
  * Handles list, create, and edit views
  */
 const AdminIssuanceList = () => {
+    usePageTitle('Admin – Issuances');
     const [issuances, setIssuances] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

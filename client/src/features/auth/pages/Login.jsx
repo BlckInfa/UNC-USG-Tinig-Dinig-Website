@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
+import { usePageTitle } from '../../../hooks';
 import { Button, Input, Card } from "../../../components";
 import "./Login.css";
 
@@ -8,6 +9,7 @@ import "./Login.css";
  * Login Page - Auth Feature
  */
 const Login = () => {
+    usePageTitle('Login');
     const [formData, setFormData] = useState({
         email: "",
         password: "",

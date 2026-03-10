@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePageTitle } from '../../../hooks';
 import { Button, Input, Card } from '../../../components';
 import './Register.css';
 
@@ -8,6 +9,7 @@ import './Register.css';
  * Register Page - Auth Feature
  */
 const Register = () => {
+  usePageTitle('Register');
   const [formData, setFormData] = useState({
     name: '',
     email: '',

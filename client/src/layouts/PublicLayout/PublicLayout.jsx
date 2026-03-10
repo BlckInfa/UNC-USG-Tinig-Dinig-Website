@@ -38,7 +38,7 @@ const PublicLayout = () => {
             <img src={USG_LOGO} alt="USG Logo" className="logo-img" />
             <div className="logo-text-group">
               <span className="logo-text">USG</span>
-              <span className="logo-subtitle">Tinig Dinig</span>
+              <span className="logo-subtitle">University of Nueva Caceres</span>
             </div>
           </Link>
 
@@ -52,11 +52,15 @@ const PublicLayout = () => {
 
           <nav className={`public-nav ${menuOpen ? 'nav-open' : ''}`}>
             <Link to="/">Home</Link>
-            <a href="#tinig-dinig">Tinig Dinig</a>
-            <Link to="/issuances">Issuances</Link>
             <Link to="/organization">Organization</Link>
-            <Link to="/login" className="nav-btn nav-btn-outline">Sign In</Link>
-            <Link to="/register" className="nav-btn nav-btn-primary">Register</Link>
+            <Link to="/issuances">Issuances</Link>
+            <Link to="/finance">Finance</Link>
+            <Link to="/tinig" className="nav-btn nav-btn-tinig">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 11l18-5v12L3 13v-2z" /><path d="M11.6 16.8a3 3 0 11-5.8-1.6" />
+              </svg>
+              Tinig Dinig
+            </Link>
           </nav>
         </div>
       </header>

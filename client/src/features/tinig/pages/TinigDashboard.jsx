@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Card, Button, Modal } from '../../../components';
+import { usePageTitle } from '../../../hooks';
 import './TinigDashboard.css';
 
 /**
  * Tinig Dinig Dashboard - Ticket Management
  */
 const TinigDashboard = () => {
+  usePageTitle('Tinig Dinig');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const tickets = [

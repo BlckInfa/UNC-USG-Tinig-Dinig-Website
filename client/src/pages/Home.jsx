@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+﻿import { useEffect, useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { usePageTitle } from '../hooks';
 import './Home.css';
 
-/* ── Assets ── */
+/* -- Assets -- */
 import UNC_LOGO from '../assets/UNC.png';
 import USG_LOGO from '../assets/USG LOGO NO BG.png';
 import USG_COVER from '../assets/USG COVER.jpg';
@@ -24,7 +25,7 @@ import SSNS from '../assets/department_logo/SSNS.png';
 import STEd from '../assets/department_logo/STEd.png';
 
 
-/* ═══════════ SVG ICONS ═══════════ */
+/* ====== SVG ICONS ====== */
 const ArrowRight = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -101,30 +102,32 @@ const DollarIcon = () => (
   </svg>
 );
 
-const HeartIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-  </svg>
-);
-
-const SchoolIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 22V8l10-6 10 6v14" />
-    <line x1="2" y1="22" x2="22" y2="22" />
-    <rect x="9" y="14" width="6" height="8" />
-    <rect x="5" y="10" width="3" height="3" />
-    <rect x="16" y="10" width="3" height="3" />
-  </svg>
-);
-
 const StarFill = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
   </svg>
 );
 
+const ChatBubbleIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+  </svg>
+);
 
-/* ═══════════ SCROLL REVEAL HOOK ═══════════ */
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const SendIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+  </svg>
+);
+
+
+/* ====== SCROLL REVEAL HOOK ====== */
 function useReveal() {
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -138,21 +141,168 @@ function useReveal() {
 }
 
 
-/* ═══════════ DATA ═══════════ */
+/* ====== DATA ====== */
 const deptLogos = [
   { src: CEA, alt: 'CEA' }, { src: CJE, alt: 'CJE' }, { src: SCIS, alt: 'SCIS' },
   { src: SBA, alt: 'SBA' }, { src: SNAHS, alt: 'SNAHS' }, { src: SSNS, alt: 'SSNS' },
   { src: STEd, alt: 'STEd' }, { src: LAW, alt: 'LAW' },
 ];
 
+/* Chatbot quick-action responses */
+const CHATBOT_OPTIONS = [
+  { label: 'Submit a concern', desc: 'Voice out your concern to the USG', link: '/tinig' },
+  { label: 'Track my ticket', desc: 'Check the status of your submission', link: '/tinig' },
+  { label: 'View Organization', desc: 'See the USG leadership structure', link: '/organization' },
+  { label: 'Financial Reports', desc: 'Transparency in student funds', link: '/finance' },
+  { label: 'Issuances & Reports', desc: 'Official documents and resolutions', link: '/issuances' },
+];
 
-/* ═══════════════════════════════════════════════════
-   COMPONENT
-   ═══════════════════════════════════════════════════ */
+
+/* ====== TINIG DINIG CHATBOT WIDGET ====== */
+const TinigChatbot = () => {
+  const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [messages, setMessages] = useState([
+    { from: 'bot', text: 'Hi there, Greyhound! I\'m the Tinig Dinig assistant. How can I help you today?' }
+  ]);
+  const [inputVal, setInputVal] = useState('');
+  const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
+
+  const closeChat = () => {
+    setClosing(true);
+    setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+    }, 320);
+  };
+
+  const toggleChat = () => {
+    if (open) {
+      closeChat();
+    } else {
+      setOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleOptionClick = (opt) => {
+    setMessages(prev => [
+      ...prev,
+      { from: 'user', text: opt.label },
+      { from: 'bot', text: `Redirecting you to ${opt.label}...` }
+    ]);
+    setTimeout(() => {
+      navigate(opt.link);
+      setOpen(false);
+      setClosing(false);
+    }, 800);
+  };
+
+  const handleSend = () => {
+    if (!inputVal.trim()) return;
+    const userMsg = inputVal.trim();
+    setInputVal('');
+    setMessages(prev => [...prev, { from: 'user', text: userMsg }]);
+
+    // Simple keyword matching to redirect
+    const lower = userMsg.toLowerCase();
+    setTimeout(() => {
+      if (lower.includes('concern') || lower.includes('complain') || lower.includes('voice') || lower.includes('submit') || lower.includes('feedback') || lower.includes('problem')) {
+        setMessages(prev => [...prev, { from: 'bot', text: 'I can help you submit a concern! Let me take you to Tinig Dinig.' }]);
+        setTimeout(() => { navigate('/tinig'); setOpen(false); }, 1000);
+      } else if (lower.includes('track') || lower.includes('ticket') || lower.includes('status')) {
+        setMessages(prev => [...prev, { from: 'bot', text: 'Let me take you to the ticket tracker!' }]);
+        setTimeout(() => { navigate('/tinig'); setOpen(false); }, 1000);
+      } else if (lower.includes('org') || lower.includes('chart') || lower.includes('leader')) {
+        setMessages(prev => [...prev, { from: 'bot', text: 'Taking you to the Organizational Chart!' }]);
+        setTimeout(() => { navigate('/organization'); setOpen(false); }, 1000);
+      } else if (lower.includes('financ') || lower.includes('money') || lower.includes('budget') || lower.includes('fund')) {
+        setMessages(prev => [...prev, { from: 'bot', text: 'Let me show you the Financial Transparency dashboard!' }]);
+        setTimeout(() => { navigate('/finance'); setOpen(false); }, 1000);
+      } else if (lower.includes('issuanc') || lower.includes('report') || lower.includes('resolution') || lower.includes('document')) {
+        setMessages(prev => [...prev, { from: 'bot', text: 'I\'ll take you to our Issuances & Reports!' }]);
+        setTimeout(() => { navigate('/issuances'); setOpen(false); }, 1000);
+      } else {
+        setMessages(prev => [...prev, {
+          from: 'bot',
+          text: 'I\'m not sure about that, but I can help you with the options below! Or you can go directly to Tinig Dinig to submit a concern.'
+        }]);
+      }
+    }, 500);
+  };
+
+  return (
+    <div className={`chatbot-widget ${open ? 'chatbot-open' : ''}`}>
+      {/* Chat Window */}
+      {(open || closing) && (
+        <div className={`chatbot-window${closing ? ' chatbot-window-closing' : ''}`}>
+          <div className="chatbot-header">
+            <div className="chatbot-header-info">
+              <MegaphoneIcon />
+              <div>
+                <h4>University of Nueva Caceres</h4>
+                <span>USG Communication Channel</span>
+              </div>
+            </div>
+            <button onClick={closeChat} className="chatbot-close"><CloseIcon /></button>
+          </div>
+
+          <div className="chatbot-messages">
+            {messages.map((msg, i) => (
+              <div key={i} className={`chatbot-msg chatbot-msg-${msg.from}`}>
+                <p>{msg.text}</p>
+              </div>
+            ))}
+
+            {/* Quick actions after first bot message */}
+            {messages.length === 1 && (
+              <div className="chatbot-quick-actions">
+                {CHATBOT_OPTIONS.map((opt, i) => (
+                  <button key={i} className="chatbot-quick-btn" onClick={() => handleOptionClick(opt)}>
+                    <strong>{opt.label}</strong>
+                    <small>{opt.desc}</small>
+                  </button>
+                ))}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="chatbot-input-area">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            />
+            <button onClick={handleSend} className="chatbot-send"><SendIcon /></button>
+          </div>
+        </div>
+      )}
+
+      {/* Floating trigger button */}
+      <button className="chatbot-trigger" onClick={toggleChat}>
+        {open ? <CloseIcon /> : <ChatBubbleIcon />}
+        {!open && <span className="chatbot-trigger-badge">Need help?</span>}
+      </button>
+    </div>
+  );
+};
+
+
+/* ====== ROTATING WORDS ====== */
 const SVC_WORDS = ['Tinig Dinig', 'Governance', 'Transparency', 'Issuances', 'Programs', 'Student Welfare', 'Finances'];
 
+
+/* ====== COMPONENT ====== */
 const Home = () => {
   useReveal();
+  usePageTitle('Home');
 
   const [wordIdx, setWordIdx] = useState(0);
   const [wordVisible, setWordVisible] = useState(true);
@@ -171,16 +321,16 @@ const Home = () => {
   return (
     <div className="home-page">
 
-      {/* ═══════════ §1 HERO ═══════════ */}
+      {/* ====== S1 HERO ====== */}
       <section className="hero">
         <div className="hero-bg">
           <img src={USG_COVER} alt="USG Campus" />
           <div className="hero-bg-overlay" />
         </div>
 
-        {/* Decorative floating orbs */}
         <div className="hero-float-1" />
         <div className="hero-float-2" />
+        <div className="hero-float-3" />
 
         <div className="hero-inner">
           <div className="hero-left">
@@ -197,7 +347,7 @@ const Home = () => {
             </h1>
 
             <p className="hero-desc">
-              The official digital platform of the UNC Supreme Student Council —
+              The official digital platform of the UNC University Student Government —
               bridging transparency, student welfare, and the collective voice of
               every Greyhound through innovation and service.
             </p>
@@ -206,29 +356,44 @@ const Home = () => {
               <Link to="/tinig" className="btn btn-red">
                 Voice Out Now <ArrowRight />
               </Link>
-              <Link to="/login" className="btn btn-white-outline">
-                Sign In
-              </Link>
+              <a href="#services" className="btn btn-white-outline">
+                Explore Features
+              </a>
+            </div>
+
+            <div className="hero-stats">
+              <div className="hero-stat">
+                <span className="hero-stat-num">7</span>
+                <span className="hero-stat-label">Features</span>
+              </div>
+              <div className="hero-stat-divider" />
+              <div className="hero-stat">
+                <span className="hero-stat-num">8</span>
+                <span className="hero-stat-label">Colleges</span>
+              </div>
+              <div className="hero-stat-divider" />
+              <div className="hero-stat">
+                <span className="hero-stat-num">1</span>
+                <span className="hero-stat-label">Voice</span>
+              </div>
             </div>
           </div>
 
-          {/* Right — Feature card */}
           <div className="hero-right">
             <div className="hero-card">
               <span className="hero-card-badge">Tinig Dinig</span>
               <h3>Your Communication Channel is Live</h3>
               <p>
-                Submit concerns, feedback, or suggestions directly to the SSC.
+                Submit concerns, feedback, or suggestions directly to the USG.
                 Anonymous or identified — your voice will be heard and acted upon.
               </p>
               <Link to="/tinig" className="hero-card-link">
-                Learn More <Chevron />
+                Open Channel <Chevron />
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Scroll hint */}
         <div className="hero-scroll-hint">
           <div className="scroll-mouse" />
           <span className="scroll-text">Scroll</span>
@@ -236,10 +401,9 @@ const Home = () => {
       </section>
 
 
-      {/* ═══════════ §2 WE CHAMPION EXCELLENCE ═══════════ */}
+      {/* ====== S2 WE CHAMPION EXCELLENCE ====== */}
       <section className="champion-section">
         <div className="champ-grid-bg" aria-hidden="true" />
-        {/* Animated floating light particles */}
         <div className="champ-particle champ-particle-1" aria-hidden="true" />
         <div className="champ-particle champ-particle-2" aria-hidden="true" />
         <div className="champ-particle champ-particle-3" aria-hidden="true" />
@@ -260,46 +424,47 @@ const Home = () => {
           </div>
 
           <div className="champion-cards">
-            {/* Left — dark maroon */}
-            <div className="champion-card champ-dark reveal d1">
-              <div className="cc-shimmer" aria-hidden="true" />
+            <div className="champion-card champ-card-1 reveal d1">
               <div className="cc-icon-wrap"><EyeIcon /></div>
-              <h3>Full Transparency</h3>
-              <p>Every resolution, budget allocation, and decision is documented and accessible to the student body.</p>
-              <Link to="/finance" className="cc-link">View Financial Records ↗</Link>
+              <div className="cc-body">
+                <span className="cc-tag">Finance</span>
+                <h3>Full Transparency</h3>
+                <p>Every resolution, budget allocation, and decision is documented and accessible to the student body.</p>
+              </div>
+              <Link to="/finance" className="cc-link">View Financial Records <span className="cc-arrow">&#x2192;</span></Link>
             </div>
 
-            {/* Center — featured white card (overlapping) */}
-            <div className="champion-card champ-featured reveal d2">
-              <div className="cc-shimmer" aria-hidden="true" />
+            <div className="champion-card champ-card-2 reveal d2">
               <div className="cc-icon-wrap"><UsersIcon /></div>
-              <h3>Student Advocacy</h3>
-              <p>Programs &amp; services dedicated to amplifying student voices and ensuring campus-wide welfare.</p>
-              <Link to="/programs" className="cc-link">Explore Our Programs ↗</Link>
+              <div className="cc-body">
+                <span className="cc-tag">Portal</span>
+                <h3>Student Advocacy</h3>
+                <p>Programs &amp; services dedicated to amplifying student voices and ensuring campus-wide welfare.</p>
+              </div>
+              <Link to="/tinig" className="cc-link">Open Tinig Dinig <span className="cc-arrow">&#x2192;</span></Link>
             </div>
 
-            {/* Right — dark maroon */}
-            <div className="champion-card champ-dark reveal d3">
-              <div className="cc-shimmer" aria-hidden="true" />
+            <div className="champion-card champ-card-3 reveal d3">
               <div className="cc-icon-wrap"><ShieldIcon /></div>
-              <h3>Accountable Governance</h3>
-              <p>Issuances, resolutions, and official documents — all publicly available for every Greyhound.</p>
-              <Link to="/issuances" className="cc-link">Browse Issuances ↗</Link>
+              <div className="cc-body">
+                <span className="cc-tag">Governance</span>
+                <h3>Accountable Governance</h3>
+                <p>Issuances, resolutions, and official documents — all publicly available for every Greyhound.</p>
+              </div>
+              <Link to="/issuances" className="cc-link">Browse Issuances <span className="cc-arrow">&#x2192;</span></Link>
             </div>
           </div>
         </div>
       </section>
 
 
-      {/* ═══════════ §3 ACCREDITATION / DEPARTMENTS ═══════════ */}
+      {/* ====== S3 ACCREDITATION / DEPARTMENTS ====== */}
       <section className="accred-section">
-        {/* Animated background layers */}
         <div className="accred-bg-pattern" aria-hidden="true" />
         <div className="accred-float accred-float-1" aria-hidden="true" />
         <div className="accred-float accred-float-2" aria-hidden="true" />
 
         <div className="accred-inner">
-          {/* Left: Photo */}
           <div className="accred-photo reveal-left">
             <div className="accred-photo-frame">
               <img src={STUDENTS_IMG} alt="UNC Students" />
@@ -310,7 +475,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right: Content + Logo Grid */}
           <div className="accred-content">
             <div className="reveal">
               <div className="section-tag">
@@ -327,7 +491,6 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Department Logo Grid */}
             <div className="accred-grid">
               {deptLogos.map((d, i) => (
                 <div key={i} className={`accred-card reveal d${(i % 6) + 1}`}>
@@ -343,16 +506,9 @@ const Home = () => {
       </section>
 
 
-      {/* ═══════════ §3.5 UNESCO RECOGNITION ═══════════ */}
+      {/* ====== S3.5 UNESCO RECOGNITION ====== */}
       <section className="unesco-section">
         <div className="unesco-inner">
-          {/* Floating red badge */}
-          <div className="unesco-badge-circle" aria-hidden="true">
-            <span className="unesco-badge-star">★</span>
-            <p>Outstanding<br />Club</p>
-          </div>
-
-          {/* Left: section label + heading + photo */}
           <div className="unesco-left reveal">
             <div className="section-tag">
               <span className="section-tag-line" />
@@ -363,15 +519,14 @@ const Home = () => {
               Why is UNC-USG recognized as an Outstanding Club for UNESCO?
             </h2>
             <div className="unesco-img-wrap">
-              <div className="unesco-img-tag">2023 · 2024</div>
+              <div className="unesco-img-tag">2023 &middot; 2024</div>
               <img src={UNESCO_IMG} alt="UNC-USG UNESCO Outstanding Club Recognition" />
             </div>
           </div>
 
-          {/* Right: text panel */}
           <div className="unesco-right reveal d1">
             <p className="unesco-red-label">Outstanding Club for UNESCO</p>
-            <p className="unesco-category">College Level · Cultural Category</p>
+            <p className="unesco-category">College Level &middot; Cultural Category</p>
             <p className="unesco-desc">
               Congratulations to the UNC-University Student Government, which was first
               accredited by the UNESCO Clubs Philippines in 2023 and has now been recognized
@@ -381,8 +536,7 @@ const Home = () => {
             <p className="unesco-desc">
               We are also thrilled to announce that UNC-USG is once again an accredited
               organization of the UNESCO Clubs Philippines. Let's aim for more sustainable
-              and impactful events for the students and the community. Here's to more
-              milestones and achievements!
+              and impactful events for the students and the community.
             </p>
             <a
               href="https://www.facebook.com/UNCUSG"
@@ -390,14 +544,40 @@ const Home = () => {
               rel="noreferrer"
               className="unesco-btn"
             >
-              Learn more about UNC-USG ↗
+              Learn more about UNC-USG &#x2197;
             </a>
+
+            <div className="unesco-highlights">
+              <div className="unesco-hl-card">
+                <span className="unesco-hl-num">2023</span>
+                <span className="unesco-hl-label">First Accredited</span>
+              </div>
+              <div className="unesco-hl-card">
+                <span className="unesco-hl-num">2&#x00D7;</span>
+                <span className="unesco-hl-label">Consecutive Recognition</span>
+              </div>
+              <div className="unesco-hl-card">
+                <span className="unesco-hl-num">&#x2605;</span>
+                <span className="unesco-hl-label">Outstanding Club</span>
+              </div>
+            </div>
+
+            <div className="unesco-callout">
+              <span className="unesco-callout-star">&#x2605;</span>
+              <div>
+                <p className="unesco-callout-title">UNESCO Clubs Philippines</p>
+                <p className="unesco-callout-body">
+                  &ldquo;Recognized for exemplary cultural programs and sustainable
+                  community engagement at the college level.&rdquo;
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
 
-      {/* ═══════════ §4 ZIGZAG FEATURES ═══════════ */}
+      {/* ====== S4 ZIGZAG FEATURES ====== */}
       <section className="features-section">
         <div className="features-float features-float-1" aria-hidden="true" />
         <div className="features-float features-float-2" aria-hidden="true" />
@@ -416,7 +596,6 @@ const Home = () => {
             <div className="feature-big-num">#1</div>
           </div>
 
-          {/* Row 1: TINIG DINIG */}
           <div className="zigzag-row reveal">
             <div className="zigzag-img reveal-left">
               <span className="zigzag-img-tag">Flagship</span>
@@ -427,7 +606,7 @@ const Home = () => {
               <p>
                 A dedicated communication channel where every student can submit concerns,
                 feedback, and suggestions directly to the student council. Whether anonymous
-                or identified, every voice is heard, categorized, and acted upon — with full
+                or identified, every voice is heard, categorized, and acted upon &#x2014; with full
                 tracking and resolution updates.
               </p>
               <Link to="/tinig" className="zigzag-link">
@@ -436,7 +615,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Row 2: Constitution & Org Chart */}
           <div className="zigzag-row reverse reveal">
             <div className="zigzag-img reveal-right">
               <span className="zigzag-img-tag">Governance</span>
@@ -445,7 +623,7 @@ const Home = () => {
             <div className="zigzag-content reveal-left">
               <h3>Constitution & Organizational Chart</h3>
               <p>
-                Access the USG Constitution and By-Laws — the foundation of student governance.
+                Access the USG Constitution and By-Laws &#x2014; the foundation of student governance.
                 View the complete organizational structure, from the executive board to every
                 committee, ensuring clarity in leadership and responsibilities.
               </p>
@@ -455,7 +633,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Row 3: Programs & Accomplishments */}
           <div className="zigzag-row reveal">
             <div className="zigzag-img reveal-left">
               <span className="zigzag-img-tag">Impact</span>
@@ -465,7 +642,7 @@ const Home = () => {
               <h3>Programs, Accomplishments & Announcements</h3>
               <p>
                 Stay updated with USG initiatives, completed programs, and campus-wide
-                announcements. From community outreach to academic forums — every accomplishment
+                announcements. From community outreach to academic forums &#x2014; every accomplishment
                 is documented and celebrated.
               </p>
               <a href="#services" className="zigzag-link">
@@ -477,12 +654,12 @@ const Home = () => {
       </section>
 
 
-      {/* ═══════════ §5 RED BANNER ═══════════ */}
+      {/* ====== S5 RED BANNER ====== */}
       <section className="red-banner">
         <div className="red-banner-inner reveal">
           <h2>Supporting Students Just Like You</h2>
           <p>
-            From enrollment concerns to campus safety, financial transparency to organizational clarity —
+            From enrollment concerns to campus safety, financial transparency to organizational clarity &#x2014;
             the USG is committed to serving every Greyhound with integrity and passion.
           </p>
           <Link to="/tinig" className="btn-white">
@@ -492,7 +669,7 @@ const Home = () => {
       </section>
 
 
-      {/* ═══════════ §6 SERVICES GRID ═══════════ */}
+      {/* ====== S6 SERVICES GRID ====== */}
       <section className="services-section" id="services">
         <div className="services-inner">
           <div className="services-header reveal">
@@ -508,74 +685,86 @@ const Home = () => {
               </span>
             </h2>
             <p className="services-sub">
-              Everything you need from your student government — organized, transparent, and accessible.
+              Everything you need from your student government &#x2014; organized, transparent, and accessible.
             </p>
           </div>
 
           <div className="services-grid">
-            {/* Tinig Dinig — featured red gradient card, spans 2 cols */}
-            <Link to="/tinig" className="svc-card svc-card-tinig reveal d1">
+            <Link to="/tinig" className="svc-card-tinig reveal d1">
               <div className="tinig-icon-wrap">
                 <MegaphoneIcon />
               </div>
               <div className="tinig-content">
                 <span className="tinig-badge">Flagship Feature</span>
                 <h3>Tinig Dinig</h3>
-                <p>USG Communication Channel — submit concerns, track resolutions, and make your voice count.</p>
+                <p>USG Communication Channel &#x2014; submit concerns, track resolutions, and make your voice count.</p>
                 <span className="tinig-cta">
                   Open Channel <ArrowRight />
                 </span>
               </div>
               <div className="tinig-deco" aria-hidden="true" />
+              <div className="tinig-sheen" aria-hidden="true" />
             </Link>
 
-            {/* Constitution */}
-            <Link to="/issuances" className="svc-card reveal d2">
-              <div className="svc-icon svc-icon-red"><BookIcon /></div>
-              <h3>USG Constitution & By-Laws</h3>
-              <p>The foundational document governing student representation and rights.</p>
+            <Link to="/issuances" className="svc-card svc-feat-card reveal d2">
+              <div className="svc-feat-icon"><BookIcon /></div>
+              <div className="svc-feat-body">
+                <h3>USG Constitution &amp; By-Laws</h3>
+                <p>The foundational document governing student representation and rights.</p>
+              </div>
+              <span className="svc-feat-link">Read Document &#x2192;</span>
             </Link>
 
-            {/* Org Chart */}
-            <Link to="/organization" className="svc-card reveal d3">
-              <div className="svc-icon svc-icon-dark"><LayoutIcon /></div>
-              <h3>Organizational Chart</h3>
-              <p>View the complete leadership structure of the student government.</p>
+            <Link to="/organization" className="svc-card svc-feat-card reveal d3">
+              <div className="svc-feat-icon"><LayoutIcon /></div>
+              <div className="svc-feat-body">
+                <h3>Organizational Chart</h3>
+                <p>View the complete leadership structure of the student government.</p>
+              </div>
+              <span className="svc-feat-link">View Org Chart &#x2192;</span>
             </Link>
 
-            {/* Programs */}
-            <Link to="/dashboard" className="svc-card reveal d4">
-              <div className="svc-icon svc-icon-gold"><CalendarIcon /></div>
-              <h3>Programs & Services</h3>
-              <p>Student-centered initiatives, events, and support programs.</p>
+            <Link to="/dashboard" className="svc-card svc-feat-card reveal d4">
+              <div className="svc-feat-icon"><CalendarIcon /></div>
+              <div className="svc-feat-body">
+                <h3>Programs &amp; Services</h3>
+                <p>Student-centered initiatives, events, and support programs.</p>
+              </div>
+              <span className="svc-feat-link">See Programs &#x2192;</span>
             </Link>
 
-            {/* Accomplishments */}
-            <Link to="/dashboard" className="svc-card reveal d5">
-              <div className="svc-icon svc-icon-red"><AwardIcon /></div>
-              <h3>Accomplishments & Announcements</h3>
-              <p>Track milestones, achievements, and campus-wide updates.</p>
+            <Link to="/dashboard" className="svc-card svc-feat-card reveal d5">
+              <div className="svc-feat-icon"><AwardIcon /></div>
+              <div className="svc-feat-body">
+                <h3>Accomplishments &amp; Announcements</h3>
+                <p>Track milestones, achievements, and campus-wide updates.</p>
+              </div>
+              <span className="svc-feat-link">View Achievements &#x2192;</span>
             </Link>
 
-            {/* Issuances */}
-            <Link to="/issuances" className="svc-card reveal d6">
-              <div className="svc-icon svc-icon-dark"><FileTextIcon /></div>
-              <h3>Issuances & Reports</h3>
-              <p>Official resolutions, memorandums, and transparency reports.</p>
+            <Link to="/issuances" className="svc-card svc-feat-card reveal d6">
+              <div className="svc-feat-icon"><FileTextIcon /></div>
+              <div className="svc-feat-body">
+                <h3>Issuances &amp; Reports</h3>
+                <p>Official resolutions, memorandums, and transparency reports.</p>
+              </div>
+              <span className="svc-feat-link">Browse Issuances &#x2192;</span>
             </Link>
 
-            {/* Financial */}
-            <Link to="/finance" className="svc-card reveal d7">
-              <div className="svc-icon svc-icon-gold"><DollarIcon /></div>
-              <h3>Financial Transactions</h3>
-              <p>Full visibility into how student funds are allocated and spent.</p>
+            <Link to="/finance" className="svc-card svc-feat-card reveal d7">
+              <div className="svc-feat-icon"><DollarIcon /></div>
+              <div className="svc-feat-body">
+                <h3>Financial Transactions</h3>
+                <p>Full visibility into how student funds are allocated and spent.</p>
+              </div>
+              <span className="svc-feat-link">View Finances &#x2192;</span>
             </Link>
           </div>
         </div>
       </section>
 
 
-      {/* ═══════════ §8 MASCOT CTA ═══════════ */}
+      {/* ====== S8 MASCOT CTA ====== */}
       <section className="mascot-section">
         <div className="mascot-inner">
           <div className="mascot-img-wrap reveal-left">
@@ -585,21 +774,21 @@ const Home = () => {
             <h2>A Future-Ready University</h2>
             <p>
               The Greyhound spirit runs through every initiative. Whether it's student advocacy,
-              campus events, or community service — the USG moves forward together as one pack.
+              campus events, or community service &#x2014; the USG moves forward together as one pack.
               Join us in building a better UNC.
             </p>
-            <Link to="/register" className="btn btn-red">
-              Create an Account <ArrowRight />
+            <Link to="/tinig" className="btn btn-red">
+              Voice Out Now <ArrowRight />
             </Link>
             <div className="mascot-tagline">
-              <StarFill /> Non Sibi, Sed Suis <StarFill />
+              <StarFill /> Non Scholae, Sed Vitae <StarFill />
             </div>
           </div>
         </div>
       </section>
 
 
-      {/* ═══════════ §9 FOOTER ═══════════ */}
+      {/* ====== S9 FOOTER ====== */}
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-grid">
@@ -612,7 +801,7 @@ const Home = () => {
               <span className="footer-brand-tag">Tinig Dinig Portal</span>
               <p>
                 The official digital archive and transparency platform of the
-                Supreme Student Council — University of Nueva Caceres.
+                University Student Government &#x2014; University of Nueva Caceres.
               </p>
             </div>
 
@@ -626,27 +815,30 @@ const Home = () => {
 
             <div className="footer-col">
               <h4>Quick Links</h4>
-              <Link to="/login">Sign In</Link>
-              <Link to="/register">Register</Link>
               <Link to="/dashboard">Dashboard</Link>
+              <a href="#services">Platform Features</a>
+              <a href="https://www.facebook.com/UNCUSG" target="_blank" rel="noreferrer">USG Facebook</a>
             </div>
 
             <div className="footer-col">
               <h4>University</h4>
               <a href="https://unc.edu.ph" target="_blank" rel="noopener noreferrer">UNC Official Site</a>
               <a href="#services">About USG</a>
-              <a href="mailto:usg.official@unc.edu.ph">Contact SSC</a>
+              <a href="mailto:usg.official@unc.edu.ph">Contact USG</a>
             </div>
           </div>
 
           <div className="footer-bottom">
-            <span>&copy; {new Date().getFullYear()} University of Nueva Caceres — Supreme Student Council. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} University of Nueva Caceres &#x2014; University Student Government. All rights reserved.</span>
             <span className="footer-bicol-tag">
               Bicol's First University
             </span>
           </div>
         </div>
       </footer>
+
+      {/* ====== CHATBOT WIDGET ====== */}
+      <TinigChatbot />
 
     </div>
   );

@@ -1,10 +1,12 @@
 import { Card } from '../../../components';
+import { usePageTitle } from '../../../hooks';
 import './FinanceDashboard.css';
 
 /**
  * Finance Dashboard - Finance Feature
  */
 const FinanceDashboard = () => {
+  usePageTitle('Finance');
   const summaryData = [
     { label: 'Total Budget', value: '₱500,000.00', trend: 'neutral' },
     { label: 'Total Income', value: '₱125,000.00', trend: 'up' },
