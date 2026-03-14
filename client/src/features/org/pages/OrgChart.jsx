@@ -8,8 +8,11 @@ import {
 } from '../data/orgData';
 import './OrgChart.css';
 
-const DEPARTMENT_OFFICER_ROLES = [
+const VICE_CHAIRPERSON_ROLES = [
   'Vice Chairperson',
+];
+
+const DEPARTMENT_OFFICER_ROLES = [
   'Secretary',
   'Treasurer',
   'Auditor',
@@ -147,6 +150,23 @@ const OrgChart = () => {
     [selectedDepartmentId]
   );
 
+  const selectedDepartmentViceChairs = useMemo(() => {
+    if (!selectedDepartment) return [];
+
+    return VICE_CHAIRPERSON_ROLES.map((role, index) => ({
+      id: `${selectedDepartment.id}-${role.toLowerCase().replace(/\s+/g, '-')}`,
+      fullName: selectedDepartment.fullName,
+      councilName: selectedDepartment.councilName,
+      councilAbbr: selectedDepartment.councilAbbr,
+      leader: {
+        name: `Officer ${index + 1}`,
+        position: role,
+        imageNoBg: null,
+        imageBg: null,
+      },
+    }));
+  }, [selectedDepartment]);
+
   const selectedDepartmentOfficers = useMemo(() => {
     if (!selectedDepartment) {
       return [];
@@ -158,7 +178,7 @@ const OrgChart = () => {
       councilName: selectedDepartment.councilName,
       councilAbbr: selectedDepartment.councilAbbr,
       leader: {
-        name: `Officer ${index + 1}`,
+        name: `Officer ${index + 2}`,
         position: role,
         imageNoBg: null,
         imageBg: null,
@@ -261,11 +281,17 @@ const OrgChart = () => {
                     <ProfileCard item={selectedDepartment} className="profile-card--department" />
                   </div>
                   <div className="department-tree-spine" />
-                  <div className="department-tree-branch-line" />
+                  {selectedDepartmentViceChairs.length > 0 && (
+                    <>
+                      <div className="department-tree-root">
+                        <ProfileCard item={selectedDepartmentViceChairs[0]} className="profile-card--department" />
+                      </div>
+                      <div className="department-tree-spine" />
+                    </>
+                  )}
                   <div className="department-tree-officers">
                     {selectedDepartmentOfficers.map((officer) => (
                       <div key={officer.id} className="department-tree-node">
-                        <div className="department-tree-node-line" />
                         <ProfileCard item={officer} className="profile-card--officer" />
                       </div>
                     ))}
@@ -282,6 +308,12 @@ const OrgChart = () => {
               </div>
             ) : null
           )}
+          
+          {/* Board of Directors label — always visible and centered */}
+          <div className="org-board-label-wrap">
+            <div className="org-board-label-connector" />
+            <span className="org-board-label">USG BOARD OF DIRECTORS</span>
+          </div>
         </div>
       </section>
     </div>
