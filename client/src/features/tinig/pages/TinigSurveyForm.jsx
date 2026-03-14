@@ -81,6 +81,44 @@ const MORE_CATEGORIES_OPTIONS = [
     "No, I prefer a stricter recognition system",
 ];
 
+const STEPS = [
+    {
+        title: "Data Privacy Consent",
+        description: "Review and accept our data privacy policy",
+        fields: ["dataPrivacyConsent"],
+    },
+    {
+        title: "Respondent's Profile",
+        description: "Tell us about yourself",
+        fields: ["studentNumber", "collegeDepartment", "yearLevel", "aimingForLatinHonors"],
+    },
+    {
+        title: "Awareness & Understanding",
+        description: "Your familiarity with the new IRR",
+        fields: ["awareOfNewIRR", "understandingLevel", "familiarAspects"],
+    },
+    {
+        title: "Viewpoints Scale",
+        description: "Rate the following statements",
+        fields: ["gwaRangesFair", "noFailingGradeEncourages", "minimumUnitLoadReasonable", "irrCausesStress"],
+    },
+    {
+        title: "Sentiments & Opinions",
+        description: "Share your perspective",
+        fields: ["newCriteriaDifficulty", "favorRetainingPreviousGWA", "favorAcademicDistinction", "preferMoreCategories", "criteriaReflectExcellence", "gradingVsTeaching"],
+    },
+    {
+        title: "Open Feedback",
+        description: "Tell us what you think",
+        fields: ["strengths", "concerns", "suggestions", "importanceOfPrestige", "mainFactor"],
+    },
+    {
+        title: "Share Your Voice",
+        description: "Any final thoughts?",
+        fields: ["shareYourVoice"],
+    },
+];
+
 const INITIAL_FORM_DATA = {
     dataPrivacyConsent: "",
     name: "",
@@ -114,6 +152,7 @@ const TinigSurveyForm = () => {
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [currentStep, setCurrentStep] = useState(0);
 
     const consentGiven = formData.dataPrivacyConsent === "yes";
     const consentDenied = formData.dataPrivacyConsent === "no";
@@ -139,71 +178,106 @@ const TinigSurveyForm = () => {
         }
     };
 
-    const validate = () => {
+    const validateFields = (fieldKeys) => {
         const newErrors = {};
 
-        if (!formData.dataPrivacyConsent) {
-            newErrors.dataPrivacyConsent = "Please select a consent option";
+        fieldKeys.forEach((field) => {
+            switch (field) {
+                case "dataPrivacyConsent":
+                    if (!formData.dataPrivacyConsent)
+                        newErrors.dataPrivacyConsent = "Please select a consent option";
+                    if (consentDenied)
+                        newErrors.dataPrivacyConsent = "You must give consent to submit this survey";
+                    break;
+                case "studentNumber":
+                    if (!formData.studentNumber.trim())
+                        newErrors.studentNumber = "Student Number is required";
+                    break;
+                case "collegeDepartment":
+                    if (!formData.collegeDepartment)
+                        newErrors.collegeDepartment = "College Department is required";
+                    break;
+                case "yearLevel":
+                    if (!formData.yearLevel)
+                        newErrors.yearLevel = "Year Level is required";
+                    break;
+                case "aimingForLatinHonors":
+                    if (!formData.aimingForLatinHonors)
+                        newErrors.aimingForLatinHonors = "This field is required";
+                    break;
+                case "awareOfNewIRR":
+                    if (!formData.awareOfNewIRR)
+                        newErrors.awareOfNewIRR = "This field is required";
+                    break;
+                case "understandingLevel":
+                    if (!formData.understandingLevel)
+                        newErrors.understandingLevel = "This field is required";
+                    break;
+                case "familiarAspects":
+                    if (formData.familiarAspects.length === 0)
+                        newErrors.familiarAspects = "Select at least one aspect";
+                    break;
+                case "gwaRangesFair":
+                case "noFailingGradeEncourages":
+                case "minimumUnitLoadReasonable":
+                case "irrCausesStress":
+                case "newCriteriaDifficulty":
+                case "favorRetainingPreviousGWA":
+                case "favorAcademicDistinction":
+                case "preferMoreCategories":
+                case "criteriaReflectExcellence":
+                case "gradingVsTeaching":
+                    if (!formData[field])
+                        newErrors[field] = "This field is required";
+                    break;
+                case "strengths":
+                case "concerns":
+                case "suggestions":
+                case "importanceOfPrestige":
+                case "mainFactor":
+                case "shareYourVoice":
+                    if (!formData[field].trim())
+                        newErrors[field] = "This field is required";
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        return newErrors;
+    };
+
+    const validateStep = (stepIndex) => {
+        const stepFields = STEPS[stepIndex].fields;
+        const stepErrors = validateFields(stepFields);
+        setErrors((prev) => {
+            const cleared = { ...prev };
+            stepFields.forEach((f) => delete cleared[f]);
+            return { ...cleared, ...stepErrors };
+        });
+        return Object.keys(stepErrors).length === 0;
+    };
+
+    const handleNext = () => {
+        if (validateStep(currentStep)) {
+            setCurrentStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
-        if (consentDenied) {
-            newErrors.dataPrivacyConsent =
-                "You must give consent to submit this survey";
-        }
+    };
 
-        if (consentGiven) {
-            if (!formData.studentNumber.trim())
-                newErrors.studentNumber = "Student Number is required";
-            if (!formData.collegeDepartment)
-                newErrors.collegeDepartment = "College Department is required";
-            if (!formData.yearLevel)
-                newErrors.yearLevel = "Year Level is required";
-            if (!formData.aimingForLatinHonors)
-                newErrors.aimingForLatinHonors = "This field is required";
-            if (!formData.awareOfNewIRR)
-                newErrors.awareOfNewIRR = "This field is required";
-            if (!formData.understandingLevel)
-                newErrors.understandingLevel = "This field is required";
-            if (formData.familiarAspects.length === 0)
-                newErrors.familiarAspects = "Select at least one aspect";
-
-            LIKERT_STATEMENTS.forEach(({ key }) => {
-                if (!formData[key]) newErrors[key] = "This field is required";
-            });
-
-            if (!formData.newCriteriaDifficulty)
-                newErrors.newCriteriaDifficulty = "This field is required";
-            if (!formData.favorRetainingPreviousGWA)
-                newErrors.favorRetainingPreviousGWA = "This field is required";
-            if (!formData.favorAcademicDistinction)
-                newErrors.favorAcademicDistinction = "This field is required";
-            if (!formData.preferMoreCategories)
-                newErrors.preferMoreCategories = "This field is required";
-            if (!formData.criteriaReflectExcellence)
-                newErrors.criteriaReflectExcellence = "This field is required";
-            if (!formData.gradingVsTeaching)
-                newErrors.gradingVsTeaching = "This field is required";
-
-            if (!formData.strengths.trim())
-                newErrors.strengths = "This field is required";
-            if (!formData.concerns.trim())
-                newErrors.concerns = "This field is required";
-            if (!formData.suggestions.trim())
-                newErrors.suggestions = "This field is required";
-            if (!formData.importanceOfPrestige.trim())
-                newErrors.importanceOfPrestige = "This field is required";
-            if (!formData.mainFactor.trim())
-                newErrors.mainFactor = "This field is required";
-            if (!formData.shareYourVoice.trim())
-                newErrors.shareYourVoice = "This field is required";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+    const handleBack = () => {
+        setCurrentStep((prev) => Math.max(prev - 1, 0));
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validate()) {
+
+        const allFields = STEPS.flatMap((s) => s.fields);
+        const allErrors = validateFields(allFields);
+        setErrors(allErrors);
+
+        if (Object.keys(allErrors).length > 0) {
             window.scrollTo({ top: 0, behavior: "smooth" });
             return;
         }
@@ -240,6 +314,7 @@ const TinigSurveyForm = () => {
                             setFormData(INITIAL_FORM_DATA);
                             setIsSubmitted(false);
                             setErrors({});
+                            setCurrentStep(0);
                         }}>
                         Submit Another Response
                     </Button>
@@ -258,92 +333,111 @@ const TinigSurveyForm = () => {
                 </p>
             </div>
 
+            {/* Progress Bar */}
+            <div className="survey-progress">
+                <div className="survey-progress__bar">
+                    <div
+                        className="survey-progress__fill"
+                        style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
+                    />
+                </div>
+                <span className="survey-progress__text">
+                    Step {currentStep + 1} of {STEPS.length}
+                </span>
+            </div>
+
+            {/* Step Header */}
+            <div className="survey-step-header">
+                <h3 className="survey-step-header__title">{STEPS[currentStep].title}</h3>
+                <p className="survey-step-header__description">{STEPS[currentStep].description}</p>
+            </div>
+
             {errors.general && (
                 <div className="survey-error-alert">{errors.general}</div>
             )}
 
             <form onSubmit={handleSubmit} noValidate>
-                {/* SECTION 1: DATA PRIVACY CONSENT */}
-                <div
-                    className={`survey-section ${errors.dataPrivacyConsent ? "survey-section--error" : ""}`}>
-                    <div className="survey-section__header">
-                        DATA PRIVACY CONSENT
-                    </div>
-                    <div className="survey-section__body">
-                        <p className="survey-consent-text">
-                            The organizing body and its extensions recognize
-                            their responsibilities under the{" "}
-                            <strong>Republic Act No. 10173</strong>, otherwise
-                            known as the{" "}
-                            <em>&quot;Data Privacy Act of 2012&quot;</em>, with
-                            respect to the data they collect, record, recognize,
-                            update, use, consolidate or destruct from
-                            registering participants. The data obtained from this
-                            online form is entered and stored within the
-                            authorized information and communications system of
-                            the team and will only be accessed by authorized
-                            entities. We assure to institute appropriate
-                            organizational, technical, and physical security
-                            measures to ensure the protection of the
-                            participant&apos;s personal information apart for the
-                            cause of the event without their consent; for
-                            storage, the body shall retain the information for
-                            one year only.
-                        </p>
+                {/* Step content with transition */}
+                <div className="survey-step-content" key={currentStep}>
 
-                        <div className="survey-radio-group">
-                            <label className="survey-radio">
-                                <input
-                                    type="radio"
-                                    name="dataPrivacyConsent"
-                                    value="yes"
-                                    checked={
-                                        formData.dataPrivacyConsent === "yes"
-                                    }
-                                    onChange={handleChange}
-                                />
-                                <span>I understand and give my consent</span>
-                            </label>
-                            <label className="survey-radio">
-                                <input
-                                    type="radio"
-                                    name="dataPrivacyConsent"
-                                    value="no"
-                                    checked={
-                                        formData.dataPrivacyConsent === "no"
-                                    }
-                                    onChange={handleChange}
-                                />
-                                <span>I do not give my consent</span>
-                            </label>
+                    {/* STEP 0: DATA PRIVACY CONSENT */}
+                    {currentStep === 0 && (
+                        <div
+                            className={`survey-section ${errors.dataPrivacyConsent ? "survey-section--error" : ""}`}>
+                            <div className="survey-section__header">
+                                DATA PRIVACY CONSENT
+                            </div>
+                            <div className="survey-section__body">
+                                <p className="survey-consent-text">
+                                    The organizing body and its extensions recognize
+                                    their responsibilities under the{" "}
+                                    <strong>Republic Act No. 10173</strong>, otherwise
+                                    known as the{" "}
+                                    <em>&quot;Data Privacy Act of 2012&quot;</em>, with
+                                    respect to the data they collect, record, recognize,
+                                    update, use, consolidate or destruct from
+                                    registering participants. The data obtained from this
+                                    online form is entered and stored within the
+                                    authorized information and communications system of
+                                    the team and will only be accessed by authorized
+                                    entities. We assure to institute appropriate
+                                    organizational, technical, and physical security
+                                    measures to ensure the protection of the
+                                    participant&apos;s personal information apart for the
+                                    cause of the event without their consent; for
+                                    storage, the body shall retain the information for
+                                    one year only.
+                                </p>
+
+                                <div className="survey-radio-group">
+                                    <label className="survey-radio">
+                                        <input
+                                            type="radio"
+                                            name="dataPrivacyConsent"
+                                            value="yes"
+                                            checked={
+                                                formData.dataPrivacyConsent === "yes"
+                                            }
+                                            onChange={handleChange}
+                                        />
+                                        <span>I understand and give my consent</span>
+                                    </label>
+                                    <label className="survey-radio">
+                                        <input
+                                            type="radio"
+                                            name="dataPrivacyConsent"
+                                            value="no"
+                                            checked={
+                                                formData.dataPrivacyConsent === "no"
+                                            }
+                                            onChange={handleChange}
+                                        />
+                                        <span>I do not give my consent</span>
+                                    </label>
+                                </div>
+                                {errors.dataPrivacyConsent && (
+                                    <span className="survey-field-error">
+                                        {errors.dataPrivacyConsent}
+                                    </span>
+                                )}
+
+                                {consentDenied && (
+                                    <p className="survey-consent-denied">
+                                        You must give your consent to participate in this
+                                        survey. If you change your mind, please select
+                                        &quot;I understand and give my consent&quot;
+                                        above.
+                                    </p>
+                                )}
+                            </div>
                         </div>
-                        {errors.dataPrivacyConsent && (
-                            <span className="survey-field-error">
-                                {errors.dataPrivacyConsent}
-                            </span>
-                        )}
-                    </div>
-                </div>
+                    )}
 
-                {consentDenied && (
-                    <div className="survey-section">
-                        <div className="survey-section__body">
-                            <p className="survey-consent-denied">
-                                You must give your consent to participate in this
-                                survey. If you change your mind, please select
-                                &quot;I understand and give my consent&quot;
-                                above.
-                            </p>
-                        </div>
-                    </div>
-                )}
-
-                {consentGiven && (
-                    <>
-                        {/* SECTION 2: RESPONDENTS PROFILE */}
+                    {/* STEP 1: RESPONDENTS PROFILE */}
+                    {currentStep === 1 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
-                                RESPONDENTS PROFILE
+                                RESPONDENT&apos;S PROFILE
                             </div>
                             <div className="survey-section__body">
                                 {/* Name */}
@@ -363,9 +457,7 @@ const TinigSurveyForm = () => {
                                 <div className="survey-field">
                                     <label className="survey-label">
                                         Student Number{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -386,11 +478,10 @@ const TinigSurveyForm = () => {
                                 <div className="survey-field">
                                     <label className="survey-label">
                                         College Department{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
-                                    <div className="survey-radio-group">
+                                    {/* Desktop: radio group */}
+                                    <div className="survey-radio-group survey-radio-group--desktop-only">
                                         {COLLEGE_DEPARTMENTS.map((dept) => (
                                             <label
                                                 key={dept}
@@ -409,6 +500,18 @@ const TinigSurveyForm = () => {
                                             </label>
                                         ))}
                                     </div>
+                                    {/* Mobile: select dropdown */}
+                                    <select
+                                        className="survey-select survey-select--mobile-only"
+                                        name="collegeDepartment"
+                                        value={formData.collegeDepartment}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select your department</option>
+                                        {COLLEGE_DEPARTMENTS.map((dept) => (
+                                            <option key={dept} value={dept}>{dept}</option>
+                                        ))}
+                                    </select>
                                     {errors.collegeDepartment && (
                                         <span className="survey-field-error">
                                             {errors.collegeDepartment}
@@ -420,9 +523,7 @@ const TinigSurveyForm = () => {
                                 <div className="survey-field">
                                     <label className="survey-label">
                                         Year Level{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {YEAR_LEVELS.map((level) => (
@@ -454,9 +555,7 @@ const TinigSurveyForm = () => {
                                 <div className="survey-field">
                                     <label className="survey-label">
                                         Are you aiming for Latin Honors?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {LATIN_HONORS_OPTIONS.map((option) => (
@@ -485,8 +584,10 @@ const TinigSurveyForm = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* SECTION 3: AWARENESS AND UNDERSTANDING */}
+                    {/* STEP 2: AWARENESS AND UNDERSTANDING */}
+                    {currentStep === 2 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
                                 AWARENESS AND UNDERSTANDING
@@ -497,9 +598,7 @@ const TinigSurveyForm = () => {
                                     <label className="survey-label">
                                         Before this survey, were you aware of
                                         the new IRR for Latin honors?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {["Yes", "No"].map((option) => (
@@ -532,9 +631,7 @@ const TinigSurveyForm = () => {
                                     <label className="survey-label">
                                         How well do you understand the changes
                                         made in the new IRR?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {UNDERSTANDING_LEVELS.map((level) => (
@@ -568,9 +665,7 @@ const TinigSurveyForm = () => {
                                         Which aspects of the new IRR are you
                                         most familiar with? (Check all that
                                         apply){" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-checkbox-group">
                                         {FAMILIAR_ASPECTS.map((aspect) => (
@@ -599,8 +694,10 @@ const TinigSurveyForm = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* SECTION 4: VIEWPOINTS SCALE */}
+                    {/* STEP 3: VIEWPOINTS SCALE */}
+                    {currentStep === 3 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
                                 VIEWPOINTS SCALE
@@ -615,9 +712,7 @@ const TinigSurveyForm = () => {
                                     <div key={key} className="survey-field">
                                         <label className="survey-label">
                                             {label}{" "}
-                                            <span className="survey-required">
-                                                *
-                                            </span>
+                                            <span className="survey-required">*</span>
                                         </label>
                                         <div className="survey-likert">
                                             <span className="survey-likert__label">
@@ -636,14 +731,10 @@ const TinigSurveyForm = () => {
                                                             name={key}
                                                             value={String(num)}
                                                             checked={
-                                                                formData[
-                                                                    key
-                                                                ] ===
+                                                                formData[key] ===
                                                                 String(num)
                                                             }
-                                                            onChange={
-                                                                handleChange
-                                                            }
+                                                            onChange={handleChange}
                                                         />
                                                     </label>
                                                 ))}
@@ -661,8 +752,10 @@ const TinigSurveyForm = () => {
                                 ))}
                             </div>
                         </div>
+                    )}
 
-                        {/* SECTION 5: SENTIMENTS AND OPINIONS */}
+                    {/* STEP 4: SENTIMENTS AND OPINIONS */}
+                    {currentStep === 4 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
                                 SENTIMENTS AND OPINIONS
@@ -674,9 +767,7 @@ const TinigSurveyForm = () => {
                                         Do you think the new criteria make it
                                         easier, harder, or about the same to
                                         qualify for Latin honors?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {CRITERIA_DIFFICULTY_OPTIONS.map(
@@ -715,9 +806,7 @@ const TinigSurveyForm = () => {
                                         the number of resident scholars in your
                                         department based on the percentage of the
                                         total population?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {LIKERT_AGREE_OPTIONS.map((option) => (
@@ -758,9 +847,7 @@ const TinigSurveyForm = () => {
                                         Student with the highest General
                                         Weighted Average, as long as the GWA is
                                         not below 1.50?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {LIKERT_AGREE_OPTIONS.map((option) => (
@@ -796,9 +883,7 @@ const TinigSurveyForm = () => {
                                         distinction (beyond Latin honors) to
                                         recognize a broader range of academic
                                         achievements?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {MORE_CATEGORIES_OPTIONS.map(
@@ -834,9 +919,7 @@ const TinigSurveyForm = () => {
                                         Do you believe the current Latin honors
                                         criteria accurately reflect academic
                                         excellence in your department?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {LIKERT_AGREE_OPTIONS.map((option) => (
@@ -871,9 +954,7 @@ const TinigSurveyForm = () => {
                                         grading system has a greater impact on
                                         academic outcomes compared to the
                                         professors&apos; teaching methods?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <div className="survey-radio-group">
                                         {LIKERT_AGREE_OPTIONS.map((option) => (
@@ -902,8 +983,10 @@ const TinigSurveyForm = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* SECTION 6: OPEN FEEDBACK */}
+                    {/* STEP 5: OPEN FEEDBACK */}
+                    {currentStep === 5 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
                                 OPEN FEEDBACK
@@ -913,9 +996,7 @@ const TinigSurveyForm = () => {
                                     <label className="survey-label">
                                         What do you think are the strengths of
                                         the new Latin honors criteria?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="strengths"
@@ -937,9 +1018,7 @@ const TinigSurveyForm = () => {
                                         What concerns or challenges do you
                                         foresee with the implementation of the
                                         new IRR?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="concerns"
@@ -960,9 +1039,7 @@ const TinigSurveyForm = () => {
                                     <label className="survey-label">
                                         What suggestions do you have to improve
                                         the Latin honors qualification process?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="suggestions"
@@ -984,9 +1061,7 @@ const TinigSurveyForm = () => {
                                         How important is it to you that Latin
                                         honors are perceived as prestigious and
                                         exclusive within the University?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="importanceOfPrestige"
@@ -1008,9 +1083,7 @@ const TinigSurveyForm = () => {
                                         What do you think is the main factor
                                         influencing the University&apos;s
                                         academic culture?{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="mainFactor"
@@ -1028,8 +1101,10 @@ const TinigSurveyForm = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
 
-                        {/* SECTION 7: SHARE YOUR VOICE */}
+                    {/* STEP 6: SHARE YOUR VOICE */}
+                    {currentStep === 6 && (
                         <div className="survey-section">
                             <div className="survey-section__header">
                                 SHARE YOUR VOICE
@@ -1039,9 +1114,7 @@ const TinigSurveyForm = () => {
                                     <label className="survey-label">
                                         Share to us other matters that requires
                                         attention (other concerns):{" "}
-                                        <span className="survey-required">
-                                            *
-                                        </span>
+                                        <span className="survey-required">*</span>
                                     </label>
                                     <textarea
                                         name="shareYourVoice"
@@ -1059,20 +1132,38 @@ const TinigSurveyForm = () => {
                                 </div>
                             </div>
                         </div>
+                    )}
+                </div>
 
-                        {/* Submit button */}
-                        <div className="survey-submit">
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="lg"
-                                loading={isLoading}
-                                disabled={isLoading}>
-                                Submit
-                            </Button>
-                        </div>
-                    </>
-                )}
+                {/* Navigation Buttons */}
+                <div className={`survey-nav ${currentStep === 0 ? "survey-nav--end" : ""}`}>
+                    {currentStep > 0 && (
+                        <Button
+                            variant="secondary"
+                            type="button"
+                            onClick={handleBack}>
+                            Back
+                        </Button>
+                    )}
+                    {currentStep < STEPS.length - 1 ? (
+                        <Button
+                            variant="primary"
+                            type="button"
+                            onClick={handleNext}
+                            disabled={currentStep === 0 && !consentGiven}>
+                            Next
+                        </Button>
+                    ) : (
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            size="lg"
+                            loading={isLoading}
+                            disabled={isLoading}>
+                            Submit
+                        </Button>
+                    )}
+                </div>
             </form>
         </div>
     );
